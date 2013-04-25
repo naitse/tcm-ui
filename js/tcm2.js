@@ -88,7 +88,7 @@
 	   getReleases();
 	   
 	   makeResizable()
-	   
+	   colapseExpandRightPanel('none')
 	   
 	  $(window).resize(function() {
 		  
@@ -99,6 +99,7 @@
 				'width' : wc + '%'  //'100%'
 			})
 
+			panelRightWidth()
 		});	
 	   
 	   
@@ -129,11 +130,11 @@
 			   'width' : wc + '%',  //'100%'
 			   'height' : '80'
 		   })
-              
+            
+		   if($('.desc-expander').size() == 1){
+		   		$('#desc-expander').click()  
+		   }
         	  displayed = true
-          },
-          destroyed: function(){
-        	  console.log('no ta')
           }
         })
 
@@ -177,7 +178,8 @@
         
         $('.dropdown-menu > li').live({
         	click: function(){
-        		var newState = $('<i class="'+$(this).children('i').attr('class')+'" style="margin-top: 2px;"></i>')
+        		var icon_white = ($(this).children('i').attr('class') == 'icon-off')?' icon-white':'';
+        		var newState = $('<i class="'+$(this).children('i').attr('class')+icon_white+'" style="margin-top: 2px;"></i>')
         		var caret = $('<span class="caret"></span>')
         		$(this).parents('.btn-group').find('.dropdown-toggle').removeClass(function (index, css) {
         		    return (css.match (/\bddm-\S+/g) || []).join(' ')
@@ -193,16 +195,24 @@
 		    }
 		});
         
-        $('.modal .cancel').live({
+        $('#rp-wrapper .cancel').live({
         	click: function(){
-        		$(this).parents('.modal').find('.close-modal').click()
-        		$(this).parents('.modal').find('.alert').addClass('hide')
+        		hideRightPanel()
+//        		$(this).parents('#rp-wrapper').find('.close-modal').click()
+//        		$(this).parents('#rp-wrapper').find('.alert').addClass('hide')
         	}
         })
         
-         $('.modal .save').live({
+         $('#rp-wrapper .save').live({
         	click: function(){
-        		saveTc($(this).parents('.modal'))
+        		saveTc($(this).parents('#rp-wrapper'))
+        	}
+        })
+        
+         $('.add-tc').live({
+        	click: function(){
+        		colapseExpandRightPanel('block')
+        		tri()
         	}
         })
        
@@ -225,7 +235,42 @@
 //	   var tcc = $('#tc-container').height() - $('.desc-header').height();
 //	   $('#tc-container').css('height',tcc)
 //	   }
+ 
+ function tri(){
+    		   $('.left-center-panel').css({
+					'height' : '100%',
+					'width' : '65%'
+    		   });	
+    		   makeResizable()
+    		   
+    		   panelRightWidth()
+    		   $("#rp-wrapper").show('fast')   
+    	   }  
    
+function panelRightWidth(){
+	
+    $("#rp-wrapper").css({
+//		'height' : '100%',
+		'width' : $('#pannel-wrapper').outerWidth() -$('.left-center-panel').outerWidth() -9
+});
+	
+}
+function colapseExpandRightPanel(state){
+	
+	  $($('.left-center-panel .ui-resizable-e')[1]).css({
+			'display':state
+	  })
+	
+}    	   
+
+function hideRightPanel(){
+	colapseExpandRightPanel('none')
+	$("#rp-wrapper").hide('fast')
+	$('.left-center-panel').css({
+		'width':'100%'
+	})
+}
+
  function makeResizable(){
     		   $('.left-center-panel').resizable({
     				handles : 'e',
@@ -236,11 +281,10 @@
 //    						'height' : '100%',
 //    						'width' : '100%'
 //    					})
-    					console.log($(this).outerWidth() - $('#pannel-wrapper').outerWidth())
-    					var por = (($(this).width() * 100) / $('#pannel-wrapper').width())
+    					var por = ((($('#pannel-wrapper').outerWidth() -$(this).outerWidth() -9) * 100) / $('#pannel-wrapper').outerWidth()) + '%'
     					$("#rp-wrapper").css({
-    								'height' : '100%',
-    								'width' : $('#pannel-wrapper').outerWidth() -$(this).outerWidth() -5
+//    								'height' : '100%',
+    								'width' : por
     					});
     				}
     			});
@@ -273,27 +317,33 @@
    $("#lp-wrapper").resizable({
 		handles : 'e',
 		minWidth : 218,
-		containment : '#pannel-wrapper',
+		containment : '.left-center-panel',
 		stop : function() {
 			$("#feature-container").css({
 				'height' : '100%',
 				'width' : '100%'
 			})
 			
-			var porcentage = (($(this).width() * 100) / $('.tcm-container').width());
+			var porcentage = (($(this).width() * 100) / $('.left-center-panel').width());
 			$(this).css({
 						'height' : '100%',
 						'width' : porcentage + '%'
 			});
 			
+//			var por = ((($('#pannel-wrapper').outerWidth() -$(this).outerWidth() -5) * 100) / $('#pannel-wrapper').outerWidth()) + '%'
+//			$(".right-pannel").css({
+//						'height' : '100%',
+//						'width' : (100 - porcentage) +'%'
+//			});
+			
 //			$('.right-pannel').css({
 //				'height' : '100%',
-//				'width' : (100 - ((($(this).width() + $('#rp-wrapper').width()) * 100) / $('.tcm-container').width())) + '%'
+//				'width' : (100 - ((($(this).width() + $('#rp-wrapper').width()) * 100) / $('.left-center-panel').width())) + '%'
 //			});
 		}
 	});
    
-
+   
    }  
    
 function _makeResizable(){
@@ -458,6 +508,14 @@ function createTcHTML(tcObject){
 	  statusClass = ''
 		  statusIcon = 'icon-hand-right icon-white '
 	}
+	var statusText = ''
+		
+	if(tcObject.proposed == 1){
+		statusClass = 'proposed'
+			statusClass = ''
+				statusText = ' Proposed '
+			  statusIcon = 'icon-question-sign icon-white '
+	}
 	
 	var tc = $('<div>').addClass('tc').attr('tc-id',tcObject.tcId)
 	var wrapper = $('<div>').addClass('wrapper')
@@ -465,7 +523,7 @@ function createTcHTML(tcObject){
 	var description = $('<div>').addClass('tc-description ds').text(tcObject.tcName.trunc(100,false))
 	var stats = $('<div>').addClass('tc-stats ds')
 		var btn_group = $('<div class="btn-group">')
-		var toggle = $('<a class="btn dropdown-toggle btn-inverse btn-mini ddm-'+statusClass+'" data-toggle="dropdown" href="#">').append($('<i class="'+statusIcon+'" style="margin-top: 2px;"></i>'),$('<span class="caret"></span>'))
+		var toggle = $('<a class="btn dropdown-toggle btn-inverse btn-mini ddm-'+statusClass+'" data-toggle="dropdown" href="#">').append($('<i class="'+statusIcon+'" style="margin-top: 2px;"></i>'),statusText,$('<span class="caret"></span>'))
 		var list = $('<ul class="dropdown-menu pull-right">')
 		var nodes = $('<li class="ddm-notrun"><i class="icon-off"></i> Not Run </li><li class="ddm-inprogress"><i class="icon-hand-right"></i> In Progress </li><li class="ddm-block"><i class="icon-exclamation-sign"></i> Blocked </li><li class="ddm-failed"><i class="icon-thumbs-down"></i> Fail </li><li class="ddm-pass"><i class="icon-thumbs-up"></i> Pass </li>')
 //	var status = $('<div>').addClass('tc-status '+ statusClass).attr('status', this.statusId).attr('title', this.statusName)
@@ -565,7 +623,7 @@ function saveTc(modal){
 	var desc = $(modal).find('.new-tc-desc').val()
 	var feature= $('.active').attr('feature-id')
 	
-	if (jQuery.trim($('.modal').find('.new-tc-title').val()).length <= 0){
+	if (jQuery.trim($('#rp-wrapper').find('.new-tc-title').val()).length <= 0){
 		$(modal).find('.new-tc-title').addClass('title-error')
 		return false
 	}else{

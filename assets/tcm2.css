@@ -678,6 +678,10 @@ text-shadow:0;
 	moz-box-shadow: inset 0px 0px 6px -3px skyblue !important;
 	box-shadow: inset 0px 0px 6px -3px skyblue !important;
 }
+.icon-question-sign{
+	margin-top: -1px !important;
+}
+
 .add-tc{
 	float: right;
 margin-top: 3px;
@@ -715,6 +719,23 @@ border-radius: 6px;
 }
 .left-center-panel{
 	float:left;
+	width:100%;
 }
 
+.left-center-panel .ui-resizable-e {
+	width:9px !important;
+	right:-8px;
+}
+
+#lp-wrapper .ui-resizable-e {
+	width:7px !important;
+	right:-5px;
+}
+
+.modal-body {
+position: relative;
+max-height: 400px;
+padding: 15px;
+overflow: hidden;
+}
 /**************************/
