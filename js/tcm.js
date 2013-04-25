@@ -344,19 +344,19 @@ function expandIssueDescription(){
 	   })
 	   $('#desc-expander').removeClass('desc-collapser').addClass('desc-expander')
    }
-    var releases = {
-    url: backend + 'releases_iterations',  
-  
-    fetch: function () {
-      return $.ajax({
-				type: "GET",
-				url: this.url,
-				dataType: "json"
-			});
-    }
-  };
-   
 
+
+
+   var releases = {
+       url: backend + 'releases_iterations',
+
+       fetch: function () {
+           return $.ajax({
+               type: "GET",
+               url: this.url,
+               dataType: "json"
+           });
+       } };
    
 function getReleases(){
 	releases.fetch().done(function(data){
