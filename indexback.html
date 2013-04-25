@@ -1,0 +1,108 @@
+<html>
+<head>
+<!-- 	<script src="js/require.js" type="text/javascript" charset="utf-8"></script> -->
+<!-- 	<script src="js/main.js" type="text/javascript" charset="utf-8"></script> -->
+<script src="js/jQuery-1.8.3.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/tcm.js" type="text/javascript" charset="utf-8"></script>
+<link rel="stylesheet" type="text/css" href="assets/tcm.css" />
+<script type="text/javascript" src="js/chosen/chosen.jquery.min.js"></script>
+<script type="text/javascript" src="js/jquery-ui-1.10.2.custom.min.js"></script>
+<link href="js/chosen/chosen.css" rel="stylesheet" />
+<link href="assets/jqui/jquery-ui-1.10.2.custom.min.css"
+	rel="stylesheet" />
+</head>
+<body>
+	<div class='container round-corner-all'>
+		<div class='menu-bar round-corner-all'>
+			<div id="test-viewer-menu" class="menu-element">Tests Viewer</div>
+			<div id="test-creator-menu" class="menu-element">Tests Creator</div>
+			<div id="test-metrics-menu" class="menu-element">Metrics</div>
+		</div>
+		<div id="pannel-wrapper">
+			<div class='left-pannel round-corner-all'>
+				<div id="demo1">
+					<div class="toolbar">
+						<select data-placeholder="Choose an Iteration..."
+							id="release-select" tabindex="3">
+							<option></option>
+						</select>
+						<div class="refresh-icon"></div>
+						<!--             <input type="button" id="setTree" value="SET"/> -->
+						<!--             <input type="button" id="genTree" value="GET"/> -->
+					</div>
+	
+					<div id="feature-container">
+						<div class="feature" feature-id="1">
+							<div class="title-bar">
+								<div class="jira-key">ION-2079</div>
+								<div class="stats">
+									<div
+										class="bar ui-progressbar ui-widget ui-widget-content ui-corner-all"
+										role="progressbar" aria-valuemin="0" aria-valuemax="4"
+										aria-valuenow="3" style="width: 40px; height: 12px;">
+										<div
+											class="ui-progressbar-value ui-widget-header ui-corner-left"
+											style="width: 75%; border-color: rgb(134, 149, 168); background-color: rgb(177, 187, 200); background-position: initial initial; background-repeat: initial initial;"></div>
+									</div>
+									<div class="count">3/4</div>
+								</div>
+							</div>
+							<div class="summary">Confirm Rolling Redeployment Works for
+								All Workers</div>
+						</div>
+					</div>
+				</div>
+			</div>
+				<div class="handle" ></div>
+			<div class='right-pannel round-corner-all' >
+			<div id="description">
+				<div class="desc-header">
+					<div id="desc-expander" class="desc-expander ds"></div>
+					<div class="desc-header-text ds">Issue description...</div>
+				</div>
+				<div id="desc-container" style="display: none;" class=""></div>
+
+			</div>
+			<div id="tc-container" class="round-corner-all">
+				<div class="tc">
+					<div class="wrapper">
+						<div class="tc-expander ds"></div>
+						<div class="tc-description ds">first deloy to region A then
+						deploy to region
+						</div>
+						<div class="tc-stats ds">
+							<div class="tc-status pass" status="4" title="Pass"></div>
+						</div>
+					</div>
+					<div class="tc-steps" style="display: none;">
+					</div>
+				</div>
+				<div class="tc" tc-id="1">
+					<div class="tc-header">
+						<div class="tc-name">change regions</div>
+						<div class="tc-status pass" status="4" title="Pass"></div>
+					</div>
+					<div class="tc-description">first deloy to region A then
+						deploy to region</div>
+				</div>
+			</div>
+		</div>
+		</div>
+	</div>
+</body>
+</html>
+
+<!-- <div></div> -->
+
+<!-- <div class="feature"> -->
+<!-- 	<div class="jira-key">ION-2154</div> -->
+<!-- 	<div class="summary">Set Up Properties Files for all...</div> -->
+<!-- 	<div class="stats"> -->
+<!-- 		<div class="count">1/2</div> -->
+<!-- 		<div class="bar"></div> -->
+<!-- 	</div> -->
+<!-- </div> -->
+
+
+
+
