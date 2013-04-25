@@ -40,6 +40,8 @@
     			    url: {
     			    	get:backend +'testcases?ftId=',
     			    	add:backend +'testcases',
+    			    	del:backend +'testcases/',
+    			    	update:backend +'testcases',
     			    },  
     			  
     			    fetch: function (feature_id) {
@@ -55,6 +57,25 @@
       							type: "POST",
       							cache:false,
       							url: this.url.add,
+      							data:JSON.stringify(req),
+      							contentType: "application/json",
+      							dataType: "json"
+      						});
+      			    },
+    			    del: function (tcId) {
+      			      return $.ajax({
+      							type: "DELETE",
+      							cache:false,
+      							url: this.url.del + tcId,
+      							contentType: "application/json",
+      							dataType: "json"
+      						});
+      			    },
+      			    update: function (req) {
+      			      return $.ajax({
+      							type: "PUT",
+      							cache:false,
+      							url: this.url.update,
       							data:JSON.stringify(req),
       							contentType: "application/json",
       							dataType: "json"
@@ -78,7 +99,7 @@
     
     
    $("document").ready(function(){
-	   console.log("readddyyyyy");
+
 	   it_select = $('#release-select').chosen()
 	   
 	   $('.modal').modal({
@@ -153,12 +174,20 @@
         	  
           }
         })
-        $('.icon-refresh').live({
+        $('#feature-refresh').live({
           click: function(){
         	  $(this).addClass('refreshing');
         	  clearData()
         	  collapsIssueDescription();
         	  getReleases();
+          }
+        })
+
+        $('#tc-refresh').live({
+          click: function(){
+        	  $(this).addClass('refreshing');
+        	  clearTCs()
+        	  getTC($('.feature.active').attr('feature-id'))
           }
         })
         
@@ -232,7 +261,19 @@
         
         $('.del-tc').live({
         	click: function(){
+        		removeTestCase($(this).parents('.tc').attr('tc-id'));
         	}
+        })
+
+        $('.tc').live({
+	 		mouseenter: function(){
+					$(this).find('.edit-tc').show();
+	        		//$(this).find('.del-tc').show();
+	           },
+	        mouseleave: function(){
+					$(this).find('.edit-tc').hide();
+	        		//$(this).find('.del-tc').hide();
+	           }
         })
         
        
@@ -294,6 +335,7 @@ function hideRightPanel(){
  function makeResizable(){
     		   $('.left-center-panel').resizable({
     				handles : 'e',
+    				minWidth : 550,
 //    				minWidth : 218,
 //    				containment : '#pannel-wrapper',
     				resize : function() {
@@ -337,6 +379,7 @@ function hideRightPanel(){
    $("#lp-wrapper").resizable({
 		handles : 'e',
 		minWidth : 218,
+		maxWidth : 430,
 		containment : '.left-center-panel',
 		stop : function() {
 			$("#feature-container").css({
@@ -470,7 +513,7 @@ function getReleases(){
 			$('#release-select').append(optionG)
 		})
 		$('#release-select').trigger("liszt:updated")
-		$('.icon-refresh').removeClass('refreshing')
+		$('#feature-refresh').removeClass('refreshing')
 	});
 }   
 
@@ -499,6 +542,8 @@ function prepareTCs(data){
 
     	
     })
+
+    $('#tc-refresh').removeClass('refreshing')
 	
 }   
 
@@ -541,8 +586,9 @@ function createTcHTML(tcObject){
 	}
 	
 	var tc = $('<div>').addClass('tc').attr('tc-id',tcObject.tcId)
-	var wrapper = $('<div>').addClass('wrapper')
-	var delete_btn = $('<button type="button" class="btn btn-mini btn-danger del-tc" ><i class="icon-remove icon-white"></i></button>')
+	var wrapper = $('<div>').addClass('wrapper');
+	var edit_btn = $('<button type="button" class="btn btn-mini edit-tc" ><i class="icon-pencil"></i></button>');
+	var delete_btn = $('<button type="button" class="btn btn-mini del-tc" ><i class="icon-trash"></i></button>');
 	var expander = $('<div>').addClass('tc-expander detailsIcon ds')
 	var description = $('<div>').addClass('tc-description ds').text(tcObject.tcName.trunc(100,false))
 	var stats = $('<div>').addClass('tc-stats ds')
@@ -556,7 +602,7 @@ function createTcHTML(tcObject){
 	$(list).append(nodes)
 	$(btn_group).append(toggle, list)
 	$(stats).append(btn_group)
-	$(wrapper).append(description,expander, stats, delete_btn)
+	$(wrapper).append(description,expander, stats, edit_btn, delete_btn)
 	$(tc).append(wrapper,steps)
 	
 	renderTC(tc)
@@ -570,6 +616,11 @@ function clearData(){
 	$('#desc-container').text('');
 	$('#desc-wrapper').hide()
 	$('#desc-expander').removeClass('desc-collapser').addClass('desc-expander')
+	$('#tc-container').children().remove()
+}
+
+function clearTCs(){
+
 	$('#tc-container').children().remove()
 }
 
@@ -615,7 +666,6 @@ function renderStatsCount(feature,data){
 
 function renderFeature(feature){
 	var feature_id = $(feature).attr('feature-id');
-	console.log(feature_id)
 	$('#feature-container').append(feature);
 	$(feature).find('.stats').addClass('loading-small');
 	feature_teststats.fetch(feature_id).done(function(data){
@@ -675,5 +725,13 @@ function saveTc(modal){
 		$(modal).find('.alert').removeClass('hide')
 	})
 	
+
+}
+
+function removeTestCase(tcId){
+
+	test_cases.del(tcId).done(function(){
+		$('.tc[tc-id="'+tcId+'"]').remove();	
+	})
 
 }

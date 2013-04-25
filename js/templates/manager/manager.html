@@ -6,7 +6,7 @@
                         id="release-select" tabindex="3">
                     <option></option>
                 </select>
-                <div class="icon-refresh"></div>
+                <div id="feature-refresh" class="icon-refresh"></div>
             </div>
             <div id="feature-container"></div>
         </div>
@@ -18,6 +18,7 @@
                 <div class="desc-header-text ds">Issue description...</div>
                 <button type="button" class="btn btn-mini add-tc" disabled="disabled">Add TC</button>
                 <button type="button" class="btn btn-mini del-tc-trigger del-tc-t" data-toggle="button" disabled="disabled">Remove Tcs</button>
+                <div id="tc-refresh" class="icon-refresh"></div>
             </div>
             <div id="desc-wrapper" style="display: none; width:100%;">
                 <pre id="desc-container"  class=""></pre>
@@ -42,6 +43,6 @@
         <label class="checkbox inline" style="float:left;margin-left:5px;">
             <input type="checkbox" class="proposed" /> Save as proposed</label>
         <a href="#" class="btn cancel">Close</a>
-        <a href="#" class="btn btn-primary save">Save changes</a>
+        <a href="#" class="btn btn-primary save">Save</a>
     </div>
 </div>

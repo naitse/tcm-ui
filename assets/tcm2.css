@@ -467,7 +467,7 @@ font-size: 12;
 
 .feature .title-bar{
 width: 64px;
-background: #E8E9EC;
+background: #f7f7f7;
 height: 100%;
 z-index: 2;
 position: relative;
@@ -486,7 +486,7 @@ left: 11px;
 .feature {
 font-size: 13;
 padding: 0px 5px 0px 3px;
-background-color: rgba(232,233,236,0.296);
+background-color: white;
 border-bottom: 1px solid #6C7885;
 height: 51px;
 overflow: hidden;
@@ -494,6 +494,10 @@ margin-left: 2px;
 padding-left: 0px;
 font-weight: bold;
 margin-bottom: 1px;
+}
+
+.feature:hover{
+	background-color: #f7f7f7;
 }
 .stats .count {
 width: 40px;
@@ -740,8 +744,17 @@ overflow: hidden;
 }
 
 .del-tc {
-float: right;
-margin-right: 16px;
+position: absolute;
+right: 34px;
+margin-right: 36px;
+margin-top: 7px;
+display:none;
+}
+
+.edit-tc {
+position: absolute;
+right: 64px;
+margin-right: 50px;
 margin-top: 7px;
 display:none;
 }
@@ -757,7 +770,13 @@ float: right;
 margin-right: 6px;
 margin-top: 3px;
 }
+
 .tc .wrapper:hover{
 	background:#f7f7f7
+}
+#tc-refresh {
+float: right;
+margin-top: 8px;
+margin-right: 3px;
 }
 /**************************/
