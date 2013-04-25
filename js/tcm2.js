@@ -78,7 +78,7 @@
     
     
    $("document").ready(function(){
-	   
+	   console.log("readddyyyyy");
 	   it_select = $('#release-select').chosen()
 	   
 	   $('.modal').modal({
@@ -215,6 +215,26 @@
         		tri()
         	}
         })
+        
+        $('.del-tc-t.active').live({
+        	click: function(){
+        		$('.del-tc').hide('fast')
+        		$(this).addClass('del-tc-trigger')
+        	}
+        })
+        
+                $('.del-tc-trigger').live({
+        	click: function(){
+        		$('.del-tc').show('fast')
+        		$(this).removeClass('del-tc-trigger')
+        	}
+        })
+        
+        $('.del-tc').live({
+        	click: function(){
+        	}
+        })
+        
        
    })
 
@@ -462,6 +482,9 @@ function getTC(feature_id){
 }   
 function prepareTCs(data){
 	$('#tc-container').children().remove();
+	if($(data).size() >0){
+		$('.del-tc-trigger').attr('disabled',false)
+	}
 	$(data).each(function(){
         
 //		  {
@@ -519,6 +542,7 @@ function createTcHTML(tcObject){
 	
 	var tc = $('<div>').addClass('tc').attr('tc-id',tcObject.tcId)
 	var wrapper = $('<div>').addClass('wrapper')
+	var delete_btn = $('<button type="button" class="btn btn-mini btn-danger del-tc" ><i class="icon-remove icon-white"></i></button>')
 	var expander = $('<div>').addClass('tc-expander detailsIcon ds')
 	var description = $('<div>').addClass('tc-description ds').text(tcObject.tcName.trunc(100,false))
 	var stats = $('<div>').addClass('tc-stats ds')
@@ -532,7 +556,7 @@ function createTcHTML(tcObject){
 	$(list).append(nodes)
 	$(btn_group).append(toggle, list)
 	$(stats).append(btn_group)
-	$(wrapper).append(description,expander, stats)
+	$(wrapper).append(description,expander, stats, delete_btn)
 	$(tc).append(wrapper,steps)
 	
 	renderTC(tc)

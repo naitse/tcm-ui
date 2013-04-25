@@ -738,4 +738,26 @@ max-height: 400px;
 padding: 15px;
 overflow: hidden;
 }
+
+.del-tc {
+float: right;
+margin-right: 16px;
+margin-top: 7px;
+display:none;
+}
+
+.del-tc-trigger {
+float: right;
+margin-right: 6px;
+margin-top: 3px;
+}
+
+.del-tc-t {
+float: right;
+margin-right: 6px;
+margin-top: 3px;
+}
+.tc .wrapper:hover{
+	background:#f7f7f7
+}
 /**************************/

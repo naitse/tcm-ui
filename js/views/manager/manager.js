@@ -4,7 +4,7 @@ define([
     'chosen',
     'bootstrap',
     'jqueryui',
-    'tcm'
+    'tcm2'
 ], function($, managerTemplate){
 
     var ManagerView = {

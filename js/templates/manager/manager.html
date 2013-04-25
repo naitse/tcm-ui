@@ -1,37 +1,33 @@
-<div id="lp-wrapper">
-    <div class='left-pannel round-corner-all'>
-        <div class="toolbar">
-            <select data-placeholder="Choose an Iteration..."
-                    id="release-select" tabindex="3">
-                <option></option>
-            </select>
-            <div class="icon-refresh"></div>
+<div class="left-center-panel">
+    <div id="lp-wrapper">
+        <div class='left-pannel round-corner-all'>
+            <div class="toolbar">
+                <select data-placeholder="Choose an Iteration..."
+                        id="release-select" tabindex="3">
+                    <option></option>
+                </select>
+                <div class="icon-refresh"></div>
+            </div>
+            <div id="feature-container"></div>
         </div>
-        <div id="feature-container"></div>
+    </div>
+    <div class='right-pannel round-corner-all'>
+        <div id="description">
+            <div class="desc-header">
+                <div id="desc-expander" class="desc-expander detailsIcon ds"></div>
+                <div class="desc-header-text ds">Issue description...</div>
+                <button type="button" class="btn btn-mini add-tc" disabled="disabled">Add TC</button>
+                <button type="button" class="btn btn-mini del-tc-trigger del-tc-t" data-toggle="button" disabled="disabled">Remove Tcs</button>
+            </div>
+            <div id="desc-wrapper" style="display: none; width:100%;">
+                <pre id="desc-container"  class=""></pre>
+            </div>
+        </div>
+        <div id="tc-container" class="round-corner-all">
+        </div>
     </div>
 </div>
-<div class='right-pannel round-corner-all'>
-    <div id="description">
-        <div class="desc-header">
-            <div id="desc-expander" class="desc-expander detailsIcon ds"></div>
-            <div class="desc-header-text ds">Issue description...</div>
-            <button type="button" class="btn btn-mini add-tc" disabled="disabled" data-toggle="modal" data-target=".modal">add TC</button>
-        </div>
-        <div id="desc-wrapper" style="display: none; width:100%;">
-            <pre id="desc-container"  class=""></pre>
-        </div>
-    </div>
-    <div id="tc-container" class="round-corner-all">
-    </div>
-</div>
-
-
-<div class="modal hide fade">
-    <div class="modal-header" style=" height: 20px; padding: 0px 15px 5px 15px; ">
-        <button type="button" class="close close-modal" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h5>New Test Case</h5>
-
-    </div>
+<div id="rp-wrapper" style="display:none;">
     <div class="modal-body">
         <h7>Title:</h7>
         <input class="new-tc-title" type="text" style=" width: 100%; "></input>
@@ -45,8 +41,7 @@
         </div>
         <label class="checkbox inline" style="float:left;margin-left:5px;">
             <input type="checkbox" class="proposed" /> Save as proposed</label>
-        <a href="#" class="btn cancel">Cancel</a>
+        <a href="#" class="btn cancel">Close</a>
         <a href="#" class="btn btn-primary save">Save changes</a>
     </div>
 </div>
-
