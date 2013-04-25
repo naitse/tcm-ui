@@ -41,7 +41,7 @@
     			    	get:backend +'testcases?ftId=',
     			    	add:backend +'testcases',
     			    	del:backend +'testcases/',
-    			    	update:backend +'testcases',
+    			    	update:backend +'testcases/',
     			    },  
     			  
     			    fetch: function (feature_id) {
@@ -71,12 +71,11 @@
       							dataType: "json"
       						});
       			    },
-      			    update: function (req) {
+      			    update: function (tcId, statusId) {
       			      return $.ajax({
       							type: "PUT",
       							cache:false,
-      							url: this.url.update,
-      							data:JSON.stringify(req),
+      							url: this.url.update + tcId +'/status/' + statusId,
       							contentType: "application/json",
       							dataType: "json"
       						});
@@ -213,6 +212,8 @@
         		$(this).parents('.btn-group').find('.dropdown-toggle').removeClass(function (index, css) {
         		    return (css.match (/\bddm-\S+/g) || []).join(' ')
         		}).addClass($(this).attr('class')).text('').append(newState, caret)
+
+        		updateTCstatus($(this).parents('.tc').attr('tc-id'),$(this).data('statusId'))
         	}
         })
 
@@ -595,11 +596,15 @@ function createTcHTML(tcObject){
 		var btn_group = $('<div class="btn-group">')
 		var toggle = $('<a class="btn dropdown-toggle btn-inverse btn-mini ddm-'+statusClass+'" data-toggle="dropdown" href="#">').append($('<i class="'+statusIcon+'" style="margin-top: 2px;"></i>'),statusText,$('<span class="caret"></span>'))
 		var list = $('<ul class="dropdown-menu pull-right">')
-		var nodes = $('<li class="ddm-notrun"><i class="icon-off"></i> Not Run </li><li class="ddm-inprogress"><i class="icon-hand-right"></i> In Progress </li><li class="ddm-block"><i class="icon-exclamation-sign"></i> Blocked </li><li class="ddm-failed"><i class="icon-thumbs-down"></i> Fail </li><li class="ddm-pass"><i class="icon-thumbs-up"></i> Pass </li>')
+		var nr = $('<li class="ddm-notrun"><i class="icon-off"></i> Not Run </li>').data('statusId', 0)
+		var ip = $('<li class="ddm-inprogress"><i class="icon-hand-right"></i> In Progress </li>').data('statusId',1)
+		var bl = $('<li class="ddm-block"><i class="icon-exclamation-sign"></i> Blocked </li>').data('statusId', 2)
+		var fa = $('<li class="ddm-failed"><i class="icon-thumbs-down"></i> Fail </li>').data('statusId',3)
+		var pa = $('<li class="ddm-pass"><i class="icon-thumbs-up"></i> Pass </li>').data('statusId',4)
 //	var status = $('<div>').addClass('tc-status '+ statusClass).attr('status', this.statusId).attr('title', this.statusName)
 	var steps = $('<div>').addClass('tc-steps').text(tcObject.tcDescription).css('display','none');
 	
-	$(list).append(nodes)
+	$(list).append(nr,ip,bl,fa,pa)
 	$(btn_group).append(toggle, list)
 	$(stats).append(btn_group)
 	$(wrapper).append(description,expander, stats, edit_btn, delete_btn)
@@ -725,6 +730,12 @@ function saveTc(modal){
 		$(modal).find('.alert').removeClass('hide')
 	})
 	
+
+}
+
+function updateTCstatus(tcId,statusId){
+
+	test_cases.update(tcId,statusId)
 
 }
 
