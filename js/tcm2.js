@@ -115,7 +115,7 @@ define(['jquery-plugins'], function ($) {
     
    $("document").ready(function(){
 
-     it_select = $('#release-select').chosen()
+    
      
      $('.modal').modal({
        show:false
@@ -532,7 +532,8 @@ function getReleases(){
       })
       $('#release-select').append(optionG)
     })
-    $('#release-select').trigger("liszt:updated")
+     $('#release-select').chosen()
+    //$('#release-select').trigger("liszt:updated")
     $('#feature-refresh').removeClass('refreshing')
   });
 }   
