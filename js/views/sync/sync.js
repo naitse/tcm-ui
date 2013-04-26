@@ -5,7 +5,7 @@ define(function(require){
 
     var SyncView = {
         render: function(){
-            $("#pannel-wrapper").empty();
+
             $("#pannel-wrapper").append(syncTemplate);
         }
     };

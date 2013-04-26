@@ -10,8 +10,8 @@ define(function(require){
             $(".tcm-top-menu-container").empty();
             $(".tcm-top-menu-container").append(menuTemplate);
 
-            $("#tm-manager").on("click", function(){ managerView.render(); } );
-            $("#tm-sync").on("click", function(){ syncView.render(); } );
+            $("#tm-manager").on("click", function(){ $("#tcViewer").show(); $("#tcSync").hide();} );
+            $("#tm-sync").on("click", function(){ $("#tcViewer").hide();  $("#tcSync").show();} );
             $("#tm-metrics").on("click", function(){ console.log("soon"); } );
         }
     };
