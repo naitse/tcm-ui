@@ -4,6 +4,17 @@ require.config({
     bootstrap: "libs/bootstrap/js/bootstrap.min",
     chosen: "libs/chosen/chosen.jquery.min",
     jqueryui: "libs/jqueryui/jquery-ui-1.10.2.custom.min"
+  },
+  shim: {
+  	bootstrap: {
+  		deps: ['jqueryui']
+  	},
+  	jqueryui: {
+  		deps: ['jquery']
+  	},
+  	chosen: {
+  		deps: ['jquery']
+  	}
   }
 });
 

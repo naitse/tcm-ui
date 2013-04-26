@@ -745,9 +745,12 @@ overflow: hidden;
 
 .del-tc {
 position: absolute;
-right: 34px;
+right: 37px;
 margin-right: 36px;
-margin-top: 7px;
+margin-top: 5px;
+width: 24;
+padding-left: 4;
+height: 18;
 display:none;
 }
 
@@ -755,8 +758,21 @@ display:none;
 position: absolute;
 right: 64px;
 margin-right: 50px;
-margin-top: 7px;
+margin-top: 5px;
+width: 24;
+padding-left: 4;
+height: 18;
 display:none;
+}
+
+.prop-tc {
+position: absolute;
+right: 44px;
+margin-right: 50px;
+margin-top: 5px;
+width: 24;
+padding-left: 4;
+height: 18;
 }
 
 .del-tc-trigger {
