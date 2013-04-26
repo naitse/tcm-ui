@@ -795,4 +795,8 @@ float: right;
 margin-top: 8px;
 margin-right: 3px;
 }
+
+.wrapper.proposed{
+	background: #f9f7ea;
+}
 /**************************/

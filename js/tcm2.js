@@ -14,7 +14,18 @@ define(['jquery-plugins'], function ($) {
        return  toLong ? s_ + '...' : s_;
     };
     
-      
+    var releases = {
+    url: backend + 'releases_iterations',  
+  
+    fetch: function () {
+      return $.ajax({
+        type: "GET",
+        url: this.url,
+        dataType: "json"
+      });
+    }
+  };
+
     var features = {
           url: backend +'features?itId=',  
         
@@ -232,22 +243,24 @@ define(['jquery-plugins'], function ($) {
         
         $('#rp-wrapper .cancel').live({
           click: function(){
-            hideRightPanel()
-//            $(this).parents('#rp-wrapper').find('.close-modal').click()
-//            $(this).parents('#rp-wrapper').find('.alert').addClass('hide')
+            
+            clearTCModal();
+            colapseExpandRightPanel('none')
+
           }
         })
         
          $('#rp-wrapper .save').live({
           click: function(){
-            saveTc($(this).parents('#rp-wrapper'))
+            saveTc($(this).parents('#rp-wrapper'), $('.modal-body').data('flag'), $('.modal-body').data('tcObject'))
           }
         })
         
          $('.add-tc').live({
           click: function(){
             colapseExpandRightPanel('block')
-            tri()
+            clearTCModal();
+            
           }
         })
         
@@ -316,39 +329,39 @@ define(['jquery-plugins'], function ($) {
 //     $('#tc-container').css('height',tcc)
 //     }
  
- function tri(){
-           $('.left-center-panel').css({
-          'height' : '100%',
-          'width' : '65%'
-           });  
-           makeResizable()
-           
-           panelRightWidth()
-           $("#rp-wrapper").show('fast')   
-         }  
-   
+
+function colapseExpandRightPanel(state){
+  
+    if(state == 'block'){
+      $('.left-center-panel').css({
+        'width':'65%'
+      })
+      makeResizable()
+      panelRightWidth()
+       $("#rp-wrapper").show('fast') 
+    }else{
+      $('.left-center-panel').css({
+        'width':'100%'
+      })
+
+      $("#rp-wrapper").hide('fast')
+     
+    }
+
+
+      $($('.left-center-panel .ui-resizable-e')[1]).css({
+        'display':state
+      })
+
+      
+} 
+
 function panelRightWidth(){
   
     $("#rp-wrapper").css({
 //    'height' : '100%',
     'width' : $('#pannel-wrapper').outerWidth() -$('.left-center-panel').outerWidth() -9
-});
-  
-}
-function colapseExpandRightPanel(state){
-  
-    $($('.left-center-panel .ui-resizable-e')[1]).css({
-      'display':state
-    })
-  
-}        
-
-function hideRightPanel(){
-  colapseExpandRightPanel('none')
-  $("#rp-wrapper").hide('fast')
-  $('.left-center-panel').css({
-    'width':'100%'
-  })
+    });       
 }
 
  function makeResizable(){
@@ -503,19 +516,7 @@ function expandIssueDescription(){
      })
      $('#desc-expander').removeClass('desc-collapser').addClass('desc-expander')
    }
-    var releases = {
-    url: backend + 'releases_iterations',  
-  
-    fetch: function () {
-      return $.ajax({
-        type: "GET",
-        url: this.url,
-        dataType: "json"
-      });
-    }
-  };
    
-
    
 function getReleases(){
   releases.fetch().done(function(data){
@@ -597,13 +598,14 @@ function createTcHTML(tcObject){
   }
   var prop_btn = ''
 
-    
+  var proposed_class = '';
   if(tcObject.proposed == 1){
     prop_btn = $('<button type="button" class="btn btn-mini prop-tc" ><i class="icon-question-sign"></i></button>');
+    proposed_class = ' proposed'
   }
   
   var tc = $('<div>').addClass('tc').attr('tc-id',tcObject.tcId)
-  var wrapper = $('<div>').addClass('wrapper');
+  var wrapper = $('<div>').addClass('wrapper' + proposed_class);
   var edit_btn = $('<button type="button" class="btn btn-mini edit-tc" ><i class="icon-pencil"></i></button>');
   var delete_btn = $('<button type="button" class="btn btn-mini del-tc" ><i class="icon-trash"></i></button>');
   var expander = $('<div>').addClass('tc-expander detailsIcon ds')
@@ -637,14 +639,24 @@ function clearData(){
   $('#desc-container').text('');
   $('#desc-wrapper').hide()
   $('#desc-expander').removeClass('desc-collapser').addClass('desc-expander')
-  $('#tc-container').children().remove()
+  clearTCs()
 }
 
 function clearTCs(){
 
   $('#tc-container').children().remove()
+  clearTCModal()
 }
 
+function clearTCModal(){
+
+            $('.new-tc-title').val('');
+            $('.new-tc-desc').val('');
+            $('.modal-body').data('flag',0)
+            $('.modal-body').data('tcObject','')
+            $('.proposed').attr('checked',false)
+
+}
 function itSelected(selected_node){
    //console.log($(selected_node).val())
 
@@ -710,7 +722,7 @@ function renderTC(tc){
 }
 
 
-function saveTc(modal){
+function saveTc(modal, flag, tcObject){
   
   $(modal).find('.alert').addClass('hide')
   
@@ -733,18 +745,41 @@ function saveTc(modal){
   }
   
   console.log(JSON.stringify(req))
-  test_cases.add(req).done(function(){
-    $(modal).modal('hide')
-    test_cases.fetch(feature).done(function(data){
-      $(data).each(function(){
-        if($('.tc[tc-id="'+this.tcId+'"]').size() == 0){
-          createTcHTML(this);
-        }
+  if (flag == 0){
+      test_cases.add(req).done(function(){
+      $(modal).modal('hide')
+      test_cases.fetch(feature).done(function(data){
+        $(data).each(function(){
+          if($('.tc[tc-id="'+this.tcId+'"]').size() == 0){
+            createTcHTML(this);
+          }
+        })
       })
+    }).fail(function(){
+      $(modal).find('.alert').removeClass('hide')
     })
-  }).fail(function(){
-    $(modal).find('.alert').removeClass('hide')
-  })
+  }else{
+
+  var updateReq = {
+    tcId:tcObject.tcId,
+    featureId:feature,
+    name:title,
+    description:desc,
+    proposed:proposed
+  }
+
+    test_cases.update(updateReq).done(function(){
+      $(modal).modal('hide')
+      test_cases.fetch(feature).done(function(data){
+            $('.tc[tc-id="'+updateReq.tcId+'"]').data('tcObject',updateReq);
+            $('.tc[tc-id="'+updateReq.tcId+'"]').find('.tc-description').text(updateReq.name);
+            $('.tc[tc-id="'+updateReq.tcId+'"]').find('.tc-steps').text(updateReq.description);
+      })
+    }).fail(function(){
+      $(modal).find('.alert').removeClass('hide')
+    })
+  }
+  
   
 
 }
@@ -758,9 +793,29 @@ function updateTCstatus(tcId,statusId){
 function updateTCprop(tcObject){
 
   tcObject.proposed = 0
-  test_cases.update(tcObject)
+  test_cases.update(tcObject).done(function(){
+    $('.tc[tc-id="'+tcObject.tcId+'"]').find('.prop-tc').remove();
+    $('.tc[tc-id="'+tcObject.tcId+'"]').find('.wrapper').removeClass('proposed');
+  })
 
 }
+
+
+function editTc(tcObject){
+  colapseExpandRightPanel('block')
+
+  $('.new-tc-title').val(tcObject.name);
+  $('.new-tc-desc').val(tcObject.description);
+
+  $('.modal-body').data('flag',1);
+  $('.modal-body').data('tcObject',tcObject);
+
+  if(tcObject.proposed == 1){
+    $('.proposed').attr('checked','checked')
+  }
+  
+}
+
 
 function removeTestCase(tcId){
 
