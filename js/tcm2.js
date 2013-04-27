@@ -230,7 +230,7 @@ define(['jquery', 'chosen', 'bootstrap', 'jqueryui'], function ($, chosen,bootst
                 return (css.match (/\bddm-\S+/g) || []).join(' ')
             }).addClass($(this).attr('class')).text('').append(newState, caret)
 
-            updateTCstatus($(this).parents('.tc').attr('tc-id'),$(this).data('statusId'))
+            updateTCstatus($(this).parents('.tc').attr('tc-id'),$(this).data('statusId'),$('.feature.active'))
           }
         });
 
@@ -255,7 +255,7 @@ define(['jquery', 'chosen', 'bootstrap', 'jqueryui'], function ($, chosen,bootst
          $('#rp-wrapper .save').live({
           click: function(e){
             e.stopPropagation();
-            saveTc($(this).parents('#rp-wrapper'), $('.modal-body').data('flag'), $('.modal-body').data('tcObject'),$('.feature.active'))
+            saveTc($(this).parents('#rp-wrapper'), $('#rp-wrapper .modal-body').data('flag'), $('#rp-wrapper .modal-body').data('tcObject'),$('.feature.active'))
           }
         });
         
@@ -287,7 +287,17 @@ define(['jquery', 'chosen', 'bootstrap', 'jqueryui'], function ($, chosen,bootst
         $('.del-tc').live({
           click: function(e){
             e.stopPropagation();
-            removeTestCase($(this).parents('.tc').attr('tc-id'),$('.feature.active'));
+            $('#delete-tc-alert').data('tcId',$(this).parents('.tc').attr('tc-id'));
+            $('#delete-tc-alert').data('feature',$('.feature.active'));
+            $('#delete-tc-alert').modal()
+            //removeTestCase($(this).parents('.tc').attr('tc-id'),$('.feature.active'));
+          }
+        });
+
+        $('#delete-tc-btn').live({
+          click: function(e){
+            e.stopPropagation();
+            deleteInterceptor($(this).parents('#delete-tc-alert').data('tcId'),$(this).parents('#delete-tc-alert').data('feature'));
           }
         });
 
@@ -620,8 +630,8 @@ function clearTCModal(){
 
             $('.new-tc-title').val('');
             $('.new-tc-desc').val('');
-            $('.modal-body').data('flag',0);
-            $('.modal-body').data('tcObject','');
+            $('#rp-wrapper .modal-body').data('flag',0);
+            $('#rp-wrapper .modal-body').data('tcObject','');
             $('.proposed').attr('checked',false);
             proposed = 0;
 
@@ -773,9 +783,13 @@ function saveTc(modal, flag, tcObject, featureReference){
 
 }
 
-function updateTCstatus(tcId,statusId){
+function updateTCstatus(tcId,statusId,feature){
 
-  test_cases.updateStatus(tcId,statusId)
+  test_cases.updateStatus(tcId,statusId).done(function(){
+    if(statusId >=2){
+      updateFeatureTestStats(feature);
+    }
+  })
 
 }
 
@@ -797,8 +811,8 @@ function editTc(tcObject){
   $('.new-tc-title').val(tcObject.name);
   $('.new-tc-desc').val(tcObject.description);
 
-  $('.modal-body').data('flag',1);
-  $('.modal-body').data('tcObject',tcObject);
+  $('#rp-wrapper .modal-body').data('flag',1);
+  $('#rp-wrapper .modal-body').data('tcObject',tcObject);
 
   if(tcObject.proposed == 1){
     $('.proposed').attr('checked','checked')
@@ -806,6 +820,10 @@ function editTc(tcObject){
   
 }
 
+function deleteInterceptor(tcId,feature){
+    removeTestCase(tcId,feature);
+        $('#delete-tc-alert').modal('hide')
+}
 
 function removeTestCase(tcId,feature){
 
