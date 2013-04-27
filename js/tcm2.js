@@ -1,4 +1,4 @@
-define(['jquery', 'chosen', 'bootstrap', 'jqueryui','domReady'], function ($, chosen,bootstrap,jqueryui) {
+define(['jquery', 'chosen', 'bootstrap', 'jqueryui'], function ($, chosen,bootstrap,jqueryui) {
 
    var prefix = '';
    var displayed = false;
