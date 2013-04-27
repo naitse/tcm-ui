@@ -5,7 +5,6 @@ define([
     'views/topmenu',
     'views/sync/sync'
 ], function($, ManagerView, TopMenuView, SyncView ){
-//], function($, TopMenuView ){
     var initialize = function(){
         
         TopMenuView.render();
