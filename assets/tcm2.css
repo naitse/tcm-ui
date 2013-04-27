@@ -744,10 +744,7 @@ overflow: hidden;
 }
 
 .del-tc {
-position: absolute;
-right: 37px;
-margin-right: 36px;
-margin-top: 5px;
+margin-top: 0px;
 width: 24;
 padding-left: 4;
 height: 18;
@@ -755,10 +752,7 @@ display:none;
 }
 
 .edit-tc {
-position: absolute;
-right: 64px;
-margin-right: 50px;
-margin-top: 5px;
+margin-top: 0px;
 width: 24;
 padding-left: 4;
 height: 18;
@@ -766,10 +760,7 @@ display:none;
 }
 
 .prop-tc {
-position: absolute;
-right: 44px;
-margin-right: 50px;
-margin-top: 5px;
+margin-top: 0px;
 width: 24;
 padding-left: 4;
 height: 18;

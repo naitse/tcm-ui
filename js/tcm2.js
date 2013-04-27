@@ -1,13 +1,12 @@
-define(['jquery-plugins'], function ($) {
+define(['jquery', 'chosen', 'bootstrap', 'jqueryui','domReady'], function ($, chosen,bootstrap,jqueryui) {
 
-   var it_select;
    var prefix = '';
    var displayed = false;
    var backend = 'http://tcm-backend.cloudhub.io/api/';
    var proposed=0;
+   var FuckRequireJS = 0;
 
-   String.prototype.trunc = 
-     function(n,useWordBoundary){
+   String.prototype.trunc = function(n,useWordBoundary){
        var toLong = this.length>n,
            s_ = toLong ? this.substr(0,n-1) : this;
        s_ = useWordBoundary && toLong ? s_.substr(0,s_.lastIndexOf(' ')) : s_;
@@ -15,16 +14,15 @@ define(['jquery-plugins'], function ($) {
     };
     
     var releases = {
-    url: backend + 'releases_iterations',  
-  
-    fetch: function () {
-      return $.ajax({
-        type: "GET",
-        url: this.url,
-        dataType: "json"
-      });
-    }
-  };
+        url: backend + 'releases_iterations',
+        fetch: function () {
+          return $.ajax({
+            type: "GET",
+            url: this.url,
+            dataType: "json"
+          });
+        }
+    };
 
     var features = {
           url: backend +'features?itId=',  
@@ -44,7 +42,7 @@ define(['jquery-plugins'], function ($) {
                 get:backend +'testcases?ftId=',
                 add:backend +'testcases',
                 del:backend +'testcases/',
-                update:backend +'testcases/',
+                update:backend +'testcases/'
               },  
             
               fetch: function (feature_id) {
@@ -98,7 +96,7 @@ define(['jquery-plugins'], function ($) {
 
          };
 
-         var feature_teststats ={
+         var feature_teststats = {
               url: backend +'features/executedtestcases?ftId=',  
               
               fetch: function (feature_id) {
@@ -110,118 +108,121 @@ define(['jquery-plugins'], function ($) {
                 });
               }   
         
-         }    
+         };    
     
     
-   $("document").ready(function(){
+   $('document').ready(function(){
 
-    
-     
-     $('.modal').modal({
-       show:false
-     });
-     
-     getReleases();
-     
-     makeResizable()
-     colapseExpandRightPanel('none')
-     
-    $(window).resize(function() {
       
-      
-      var wc = 100 - ((($('#desc-wrapper').outerWidth() * 100) / ($('#description').outerWidth() - 20)) - 100)
-      
-      $("#desc-container").css({
-        'width' : wc + '%'  //'100%'
-      })
 
-      panelRightWidth()
-    }); 
-     
-     
-       $('#release-select').live({
+        initDummy();
+        getReleases();
+
+        
+        
+
+        $(window).resize(function() {
+            var wc = 100 - ((($('#desc-wrapper').outerWidth() * 100) / ($('#description').outerWidth() - 20)) - 100);
+
+            $("#desc-container").css({
+              'width' : wc + '%'
+            });
+            panelRightWidth()
+        });
+ 
+        $('#release-select').live({
           change: function(){
               itSelected($(this).find('option:selected'))
           }
-        })
+        });
         
         $('.feature').live({
-          click: function(){
-            $('.feature').removeClass('active');
-            $(this).addClass('active');
-            loadFeatureDesc($(this).data('desc'))
-            $('.add-tc').attr('disabled',false)
-              getTC($(this).attr('feature-id'))
-         
-              $('#desc-wrapper').css({
-           'height':100
-           })
-          $( ".right-pannel" ).css({
-             'padding-bottom':29
-           })
+          click: function(e){
+                e.stopPropagation();
+                $('.feature').removeClass('active');
+                $(this).addClass('active');
+                loadFeatureDesc($(this).data('desc'))
+                $('.add-tc').attr('disabled',false)
+                getTC($(this).attr('feature-id'))
+             
+                $('#desc-wrapper').css({
+                  'height':100
+                });
+                $( ".right-pannel" ).css({
+                 'padding-bottom':29
+                });
+               
+               var wc = 100 - ((($('#desc-wrapper').outerWidth() * 100) / ($('#description').outerWidth() - 20)) - 100)
            
-                 var wc = 100 - ((($('#desc-wrapper').outerWidth() * 100) / ($('#description').outerWidth() - 20)) - 100)
-       
-       $("#desc-container").css({
-         'width' : wc + '%',  //'100%'
-         'height' : '80'
-       })
-            
-       if($('.desc-expander').size() == 1){
-          $('#desc-expander').click()  
-       }
-            displayed = true
-          }
-        })
+                $("#desc-container").css({
+                 'width' : wc + '%',  //'100%'
+                 'height' : '80'
+                })
+                    
+                if($('.desc-expander').size() == 1){
+                  $('#desc-expander').click()  
+                }
+                displayed = true
+            }
+        });
 
         $('.desc-expander').live({
-          click: function(){
+          click: function(e){
+            e.stopPropagation();
             if($('.feature').size() != 0){
               $(this).addClass('detailsOpen')
                 expandIssueDescription();
-                }
+            }
           }
-        })
+        });
+
         $('.desc-collapser').live({
-          click: function(){
+          click: function(e){
+            e.stopPropagation();
             $(this).removeClass('detailsOpen')
             collapsIssueDescription();
-            
           }
-        })
+        });
+
         $('#feature-refresh').live({
-          click: function(){
+          click: function(e){
+            e.stopPropagation();
             $(this).addClass('refreshing');
-            clearData()
+            clearData();
             collapsIssueDescription();
             getReleases();
           }
-        })
+        });
 
         $('#tc-refresh').live({
-          click: function(){
+          click: function(e){
+            e.stopPropagation();
             $(this).addClass('refreshing');
             clearTCs()
-            getTC($('.feature.active').attr('feature-id'))
+            getTC($('.feature.active').attr('feature-id'));
           }
-        })
+        });
         
         $('.tc-expander').live({
-          click: function(){
-            $(this).parents('.tc').find('.tc-steps').show('fast')
+          click: function(e){
+            e.stopPropagation();
+            $(this).parents('.tc').find('.tc-steps').show('fast');
             $(this).removeClass('tc-expander').addClass('tc-collapse detailsOpen');
           }
-        })
+        });
         
         $('.tc-collapse').live({
-          click: function(){
-            $(this).parents('.tc').find('.tc-steps').hide('fast')
+          click: function(e){
+            e.stopPropagation();
+            $(this).parents('.tc').find('.tc-steps').hide('fast');
             $(this).removeClass('tc-collapse detailsOpen').addClass('tc-expander');
           }
-        })
+        });
         
         $('.dropdown-menu > li').live({
-          click: function(){
+          click: function(e){
+            e.stopPropagation();
+            $(this).parents('.btn-group').removeClass('open')
             var icon_white = ($(this).children('i').attr('class') == 'icon-off')?' icon-white':'';
             var newState = $('<i class="'+$(this).children('i').attr('class')+icon_white+'" style="margin-top: 2px;"></i>')
             var caret = $('<span class="caret"></span>')
@@ -231,104 +232,128 @@ define(['jquery-plugins'], function ($) {
 
             updateTCstatus($(this).parents('.tc').attr('tc-id'),$(this).data('statusId'))
           }
-        })
+        });
 
-     $('.proposed').live('change', function(){
-        if($(this).is(':checked')){
-            proposed=1;
-        } else {
-          proposed=0;
-        }
-    });
+         $('.proposed').live('change', function(){
+            if($(this).is(':checked')){
+                proposed=1;
+            } else {
+              proposed=0;
+            }
+        });
         
         $('#rp-wrapper .cancel').live({
-          click: function(){
+          click: function(e){
+            e.stopPropagation();
             
             clearTCModal();
             colapseExpandRightPanel('none')
 
           }
-        })
+        });
         
          $('#rp-wrapper .save').live({
-          click: function(){
-            saveTc($(this).parents('#rp-wrapper'), $('.modal-body').data('flag'), $('.modal-body').data('tcObject'))
+          click: function(e){
+            e.stopPropagation();
+            saveTc($(this).parents('#rp-wrapper'), $('.modal-body').data('flag'), $('.modal-body').data('tcObject'),$('.feature.active'))
           }
-        })
+        });
         
          $('.add-tc').live({
-          click: function(){
+          click: function(e){
+            e.stopPropagation();
             colapseExpandRightPanel('block')
             clearTCModal();
             
           }
-        })
+        });
         
         $('.del-tc-t.active').live({
-          click: function(){
+          click: function(e){
+            e.stopPropagation();
             $('.del-tc').hide('fast')
             $(this).addClass('del-tc-trigger')
           }
-        })
+        });
         
         $('.del-tc-trigger').live({
-          click: function(){
+          click: function(e){
+            e.stopPropagation();
             $('.del-tc').show('fast')
             $(this).removeClass('del-tc-trigger')
           }
-        })
+        });
         
         $('.del-tc').live({
-          click: function(){
-            removeTestCase($(this).parents('.tc').attr('tc-id'));
+          click: function(e){
+            e.stopPropagation();
+            removeTestCase($(this).parents('.tc').attr('tc-id'),$('.feature.active'));
           }
-        })
+        });
 
         $('.tc').live({
-      mouseenter: function(){
-          $(this).find('.edit-tc').show();
-              //$(this).find('.del-tc').show();
-             },
-          mouseleave: function(){
-          $(this).find('.edit-tc').hide();
-              //$(this).find('.del-tc').hide();
-             }
-        })
+          mouseenter: function(e){
+            e.stopPropagation();
+              $(this).find('.edit-tc').show();
+              $(this).find('.del-tc').show();
+          },
+          mouseleave: function(e){
+            e.stopPropagation();
+              $(this).find('.edit-tc').hide();
+              $(this).find('.del-tc').hide();
+          }
+        });
 
-    $('.prop-tc').live({
-          click: function(){
+        $('.prop-tc').live({
+          click: function(e){
+            e.stopPropagation();
             updateTCprop($(this).parents('.tc').data('tcObject'))
           }
-        })
+        });
 
-    $('.edit-tc').live({
-          click: function(){
+        $('.edit-tc').live({
+          click: function(e){
+            e.stopPropagation();
             editTc($(this).parents('.tc').data('tcObject'))
           }
-        })
-        
-        
-       
-   })
+        });
 
-//   function adjustFF(first){
-//     
-//     var fooNotNull = (first === true) ? 90 : 70;
-//     
-//     var w = $(window).height() - 70;
-//       
-//     w=(w*100)/$(window).height() + '%'
-//     console.log(w, $('.tcm-container').height())
-//         $('html').css('height',w)
-//   }
-//   function adjustContainers(){
-//     var fc = $('#feature-container').height() -$('.toolbar').height();
-//     fc=(fc*100)/$('.left-pannel').height() + '%'
-//     $('#feature-container').css('height',fc)
-//     var tcc = $('#tc-container').height() - $('.desc-header').height();
-//     $('#tc-container').css('height',tcc)
-//     }
+        $('.tc').live({
+          click: function(e){
+            e.stopPropagation();  
+            $(this).find('.detailsIcon').click()
+          }
+        });
+      
+   });
  
+function initDummy(){
+  $('#release-select').chosen()
+      makeResizable();
+    colapseExpandRightPanel('none');
+}
+function getReleases(){
+  releases.fetch().done(function(data){
+    //[{"releaseName":"27","iterationName":"16,18,19,20,21,22"},{"releaseName":"28","iterationName":"23,24,25"}]
+    if(FuckRequireJS == 0){
+      initDummy();
+    }
+    $('#release-select').find('optgroup').remove();
+    $(data).each(function(){
+      var optionG = $('<optgroup>').attr('label', "Release "+this.releaseName)
+      var iterations = this.iterationName.split(',')
+      $(iterations).each(function(){
+        var option = $('<option>').attr('value', this).text(prefix + this);
+        $(optionG).append(option);
+      })
+      $('#release-select').append(optionG)
+    })
+     
+    $('#release-select').trigger("liszt:updated")
+    $('#feature-refresh').removeClass('refreshing')
+    FuckRequireJS = 1
+  });
+} 
 
 function colapseExpandRightPanel(state){
   
@@ -359,106 +384,66 @@ function colapseExpandRightPanel(state){
 function panelRightWidth(){
   
     $("#rp-wrapper").css({
-//    'height' : '100%',
-    'width' : $('#pannel-wrapper').outerWidth() -$('.left-center-panel').outerWidth() -9
-    });       
-}
+        'width' : $('#pannel-wrapper').outerWidth() - $('.left-center-panel').outerWidth() - 9
+    });
+
+};
 
  function makeResizable(){
+
+          console.log($('.left-center-panel'))
+
            $('.left-center-panel').resizable({
             handles : 'e',
             minWidth : 550,
-//            minWidth : 218,
-//            containment : '#pannel-wrapper',
             resize : function() {
-//              $("#feature-container").css({
-//                'height' : '100%',
-//                'width' : '100%'
-//              })
               var por = ((($('#pannel-wrapper').outerWidth() -$(this).outerWidth() -9) * 100) / $('#pannel-wrapper').outerWidth()) + '%'
               $("#rp-wrapper").css({
-//                    'height' : '100%',
                     'width' : por
               });
             }
           });
 
-  $('#desc-wrapper').resizable({
-    handles : 's',
-    minHeight : 100,
-    alsoResize : "#desc-container",
+           $('#desc-wrapper').resizable({
+              handles : 's',
+              minHeight : 100,
+              alsoResize : "#desc-container",
+              stop : function() {
+                var wc = 100 - ((($('#desc-wrapper').outerWidth() * 100) / ($('#description').outerWidth() - 20)) - 100)
+                $("#desc-container").css({
+                  'height' : $('#desc-wrapper').height() - 20,
+                  'width' : wc + '%'  //'100%'
+                });
+                $(".right-pannel").css({
+                  'padding-bottom' : $('#desc-wrapper').height() + 29
+                });
+              }
+          });
 
-    stop : function() {
-      var wc = 100 - ((($('#desc-wrapper').outerWidth() * 100) / ($('#description').outerWidth() - 20)) - 100)
-      
-      $("#desc-container").css({
-        'height' : $('#desc-wrapper').height() - 20,
-        'width' : wc + '%'  //'100%'
-      })
-      $(".right-pannel").css({
-        'padding-bottom' : $('#desc-wrapper').height() + 29
-      })
-    }
-  })
-
-  $("#desc-container").resizable({
-    ghost : true,
-    handles : 's'
-  });
-    
-    
-
-   $("#lp-wrapper").resizable({
-    handles : 'e',
-    minWidth : 218,
-    maxWidth : 430,
-    containment : '.left-center-panel',
-    stop : function() {
-      $("#feature-container").css({
-        'height' : '100%',
-        'width' : '100%'
-      })
-      
-      var porcentage = (($(this).width() * 100) / $('.left-center-panel').width());
-      $(this).css({
-            'height' : '100%',
-            'width' : porcentage + '%'
-      });
-      
-//      var por = ((($('#pannel-wrapper').outerWidth() -$(this).outerWidth() -5) * 100) / $('#pannel-wrapper').outerWidth()) + '%'
-//      $(".right-pannel").css({
-//            'height' : '100%',
-//            'width' : (100 - porcentage) +'%'
-//      });
-      
-//      $('.right-pannel').css({
-//        'height' : '100%',
-//        'width' : (100 - ((($(this).width() + $('#rp-wrapper').width()) * 100) / $('.left-center-panel').width())) + '%'
-//      });
-    }
-  });
+          $("#desc-container").resizable({
+              ghost : true,
+              handles : 's'
+          });
+              
+          $("#lp-wrapper").resizable({
+              handles : 'e',
+              minWidth : 218,
+              maxWidth : 430,
+              containment : '.left-center-panel',
+              stop : function() {
+                $("#feature-container").css({
+                  'height' : '100%',
+                  'width' : '100%'
+                });
+                var porcentage = (($(this).width() * 100) / $('.left-center-panel').width());
+                $(this).css({
+                      'height' : '100%',
+                      'width' : porcentage + '%'
+                });
+              }
+          });
+  }  
    
-   
-   }  
-   
-function _makeResizable(){
-     
-    $('.handle').draggable({ 
-      axis: "x",
-        stop:function(){
-          var elem = $(this);
-          var pl = elem.offset().left - elem.parents('body').offset().left - $('.left-pannel').position().left;
-          //var pl = Math.round((((elem.offset().left - elem.parents('body').offset().left) /*- $('.left-pannel').position().left*/) * 100)/$(document).width()) +'%'
-          $( ".left-pannel" ).css("width", pl)
-          $(this).position({
-            my:        "left",
-            at:        "right",
-            of:        $( ".left-pannel" ), // or $("#otherdiv)
-            collision: "fit"
-          })
-        }
-    });
-   }
    
   function renderFeatureBar(feature){
      var prob = $(feature).find('.bar');
@@ -518,25 +503,7 @@ function expandIssueDescription(){
    }
    
    
-function getReleases(){
-  releases.fetch().done(function(data){
-    //[{"releaseName":"27","iterationName":"16,18,19,20,21,22"},{"releaseName":"28","iterationName":"23,24,25"}]
-    
-    $('#release-select').find('optgroup').remove();
-    $(data).each(function(){
-      var optionG = $('<optgroup>').attr('label', "Release "+this.releaseName)
-      var iterations = this.iterationName.split(',')
-      $(iterations).each(function(){
-        var option = $('<option>').attr('value', this).text(prefix + this);
-        $(optionG).append(option);
-      })
-      $('#release-select').append(optionG)
-    })
-     $('#release-select').chosen()
-    //$('#release-select').trigger("liszt:updated")
-    $('#feature-refresh').removeClass('refreshing')
-  });
-}   
+  
 
 function getTC(feature_id){
   
@@ -601,18 +568,18 @@ function createTcHTML(tcObject){
 
   var proposed_class = '';
   if(tcObject.proposed == 1){
-    prop_btn = $('<button type="button" class="btn btn-mini prop-tc" ><i class="icon-question-sign"></i></button>');
+    prop_btn = $('<button type="button" title="accept tc" class="btn btn-mini prop-tc" ><i class="icon-question-sign"></i></button>');
     proposed_class = ' proposed'
   }
   
   var tc = $('<div>').addClass('tc').attr('tc-id',tcObject.tcId)
   var wrapper = $('<div>').addClass('wrapper' + proposed_class);
-  var edit_btn = $('<button type="button" class="btn btn-mini edit-tc" ><i class="icon-pencil"></i></button>');
-  var delete_btn = $('<button type="button" class="btn btn-mini del-tc" ><i class="icon-trash"></i></button>');
+  var edit_btn = $('<button type="button" title="edit" class="btn btn-mini edit-tc" ><i class="icon-pencil"></i></button>');
+  var delete_btn = $('<button type="button" title="delete" class="btn btn-mini del-tc" ><i class="icon-trash"></i></button>');
   var expander = $('<div>').addClass('tc-expander detailsIcon ds')
   var description = $('<div>').addClass('tc-description ds').text(tcObject.name.trunc(100,false))
   var stats = $('<div>').addClass('tc-stats ds')
-    var btn_group = $('<div class="btn-group">')
+    var status_group = $('<div class="btn-group">')
     var toggle = $('<a class="btn dropdown-toggle btn-inverse btn-mini ddm-'+statusClass+'" data-toggle="dropdown" href="#">').append($('<i class="'+statusIcon+'" style="margin-top: 2px;"></i>'),$('<span class="caret"></span>'))
     var list = $('<ul class="dropdown-menu pull-right">')
     var nr = $('<li class="ddm-notrun"><i class="icon-off"></i> Not Run </li>').data('statusId', 0)
@@ -621,12 +588,12 @@ function createTcHTML(tcObject){
     var fa = $('<li class="ddm-failed"><i class="icon-thumbs-down"></i> Fail </li>').data('statusId',3)
     var pa = $('<li class="ddm-pass"><i class="icon-thumbs-up"></i> Pass </li>').data('statusId',4)
 //  var status = $('<div>').addClass('tc-status '+ statusClass).attr('status', this.statusId).attr('title', this.statusName)
-  var steps = $('<div>').addClass('tc-steps').text(tcObject.description).css('display','none');
+  var steps = $('<pre>').addClass('tc-steps').text(tcObject.description).css('display','none');
   
   $(list).append(nr,ip,bl,fa,pa)
-  $(btn_group).append(toggle, list)
-  $(stats).append(btn_group)
-  $(wrapper).append(description,expander, stats, edit_btn, prop_btn, delete_btn)
+  $(status_group).append(delete_btn, edit_btn, prop_btn, toggle, list)
+  $(stats).append(status_group)
+  $(wrapper).append(description,expander, stats );
   $(tc).append(wrapper,steps).data('tcObject',tcObject)
   
   renderTC(tc)
@@ -653,9 +620,10 @@ function clearTCModal(){
 
             $('.new-tc-title').val('');
             $('.new-tc-desc').val('');
-            $('.modal-body').data('flag',0)
-            $('.modal-body').data('tcObject','')
-            $('.proposed').attr('checked',false)
+            $('.modal-body').data('flag',0);
+            $('.modal-body').data('tcObject','');
+            $('.proposed').attr('checked',false);
+            proposed = 0;
 
 }
 function itSelected(selected_node){
@@ -702,12 +670,30 @@ function renderFeature(feature){
   var feature_id = $(feature).attr('feature-id');
   $('#feature-container').append(feature);
   $(feature).find('.stats').addClass('loading-small');
+  getFeatureTestStats(feature)
+}
+
+function getFeatureTestStats(feature){
+  var feature_id = $(feature).attr('feature-id');
   feature_teststats.fetch(feature_id).done(function(data){
     renderStatsCount(feature, data)
     renderFeatureBar(feature);
     $(feature).find('.stats').removeClass('loading-small');
+    $(feature).find('.bar').show()
   })
-  
+}
+
+function resetFeatureTestStats(feature){
+
+  $(feature).find('.count').text('')
+
+}
+
+function updateFeatureTestStats(feature){
+  $(feature).find('.bar').hide()
+  resetFeatureTestStats(feature)
+  $(feature).find('.stats').addClass('loading-small');
+  getFeatureTestStats(feature)
 }
 
 function loadFeatureDesc(desc){
@@ -723,7 +709,7 @@ function renderTC(tc){
 }
 
 
-function saveTc(modal, flag, tcObject){
+function saveTc(modal, flag, tcObject, featureReference){
   
   $(modal).find('.alert').addClass('hide')
   
@@ -755,6 +741,8 @@ function saveTc(modal, flag, tcObject){
             createTcHTML(this);
           }
         })
+        console.log(feature)
+        updateFeatureTestStats(featureReference)
       })
     }).fail(function(){
       $(modal).find('.alert').removeClass('hide')
@@ -804,6 +792,7 @@ function updateTCprop(tcObject){
 
 function editTc(tcObject){
   colapseExpandRightPanel('block')
+  clearTCModal();
 
   $('.new-tc-title').val(tcObject.name);
   $('.new-tc-desc').val(tcObject.description);
@@ -818,10 +807,11 @@ function editTc(tcObject){
 }
 
 
-function removeTestCase(tcId){
+function removeTestCase(tcId,feature){
 
   test_cases.del(tcId).done(function(){
-    $('.tc[tc-id="'+tcId+'"]').remove();  
+    $('.tc[tc-id="'+tcId+'"]').remove();
+    updateFeatureTestStats(feature)
   })
 
 }  
