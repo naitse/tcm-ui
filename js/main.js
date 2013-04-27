@@ -5,7 +5,8 @@ require.config({
     chosen: "libs/chosen/chosen.jquery.min",
     jqueryui: "libs/jqueryui/jquery-ui-1.10.2.custom.min",
     underscore: "libs/underscore/underscore-min",
-    jiraModel: 'models/jira'
+    jiraModel: 'models/jira',
+    tcmModel: 'models/tcmModel'
   },
 
   shim: {

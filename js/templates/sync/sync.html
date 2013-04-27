@@ -3,12 +3,24 @@
     <div><select id="ddIterations"></select>
         <button type="button" id="btnStep1">Select</button></div>
     <div>
-        Jiras:
-        <br>
-        <input type="checkbox" id="allJiras"></input>
+        <div>Jiras:</div>
+        <div><input type="checkbox" id="allJiras"></input>
+            <button type="button" id="btnSync">Syncronize...</button>
+        </div>
+
         <table id="jiraItems"></table>
     </div>
-    <div>
-        <button type="button" id="btnSync">Syncronize...</button>
+
+    <div id="sync-wrapper" style="display:none;">
+        <div class="modal-body">
+            <h7>Iteration:</h7>
+            <select data-placeholder="Choose an Iteration..." id="sync-release-select" tabindex="3">
+                <option></option>
+            </select>
+        </div>
+        <div class="modal-footer">
+            <a href="#" class="btn cancel">Close</a>
+            <a href="#" class="btn btn-primary save">Save</a>
+        </div>
     </div>
 </div>
