@@ -4,7 +4,7 @@ define(function(require){
     var tcm_model = {
 
         releases: {
-            url: basePath + 'releases_iterations',
+            url: basePath + 'releases',
 
             fetch: function () {
                     return $.ajax({
@@ -12,19 +12,69 @@ define(function(require){
                         url: this.url,
                         dataType: "json"
                     });
+            },
+
+            create: function(rlsName) {
+                var data ={
+                    "name":rlsName
+                };
+
+                return $.ajax({
+                    type: "POST",
+                    url: this.url,
+                    data: JSON.stringify(data),
+                    dataType: "json",
+                    contentType : 'application/json'
+                });
+            }
+        },
+
+        iterations: {
+            url: basePath + 'releases/{rlsId}/iterations',
+
+            create: function(rlsName, iterName){
+                var data ={
+                    "name":iterName
+                };
+
+                return $.ajax({
+                    type: "POST",
+                    url: this.url.replace("{rlsId}", rlsName),
+                    data: JSON.stringify(data),
+                    dataType: "json",
+                    contentType : 'application/json'
+                });
             }
         },
 
         features: {
-            url: basePath +'features?itId=',
+            url: basePath +'features',
 
             fetch: function (iterationid) {
                 return $.ajax({
                     type: "GET",
                     cache:false,
-                    url: this.url + iterationid,
+                    url: this.url + '?itId=' + iterationid,
                     dataType: "json"
                 });
+            },
+
+            create: function(iterId, key, summary, desc ){
+                var data ={
+                    "iterId":iterId,
+                    "key":key,
+                    "summary":summary,
+                    "desc":desc
+                };
+
+                $.ajax({
+                    type: "POST",
+                    url: this.url,
+                    data: JSON.stringify(data),
+                    dataType: "json",
+                    contentType : 'application/json'
+                });
+
             }
         },
 

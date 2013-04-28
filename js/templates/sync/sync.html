@@ -1,26 +1,61 @@
 <div id="tcSync" style="display:none">
-    <div>Select Iteration: </div>
+    <div><h3>Select Iteration:</h3></div>
     <div><select id="ddIterations"></select>
-        <button type="button" id="btnStep1">Select</button></div>
+        <button type="button" id="btnStep1" class="btn btn-primary" data-loading-text="Loading...">Get Issues</button></div>
     <div>
-        <div>Jiras:</div>
-        <div><input type="checkbox" id="allJiras"></input>
-            <button type="button" id="btnSync">Syncronize...</button>
+        <div id="alertNoissuesfound" class="alert alert-error hide" stlye="width:200px;">
+            No issues found for given iteration!
         </div>
-
-        <table id="jiraItems"></table>
+    </div>
+    <div id="issuesContainer" style="display:none;">
+        <div id='navbar'>
+            <div class="nav">
+                <h3>Issues:</h3>
+                <input type="checkbox" id="allJiras"></input>
+                <button type="button" id="btnSync"  class="btn btn-primary" data-toggle="button" disabled="true" >Syncronize...</button>
+            </div>
+        </div>
+        <div data-target="#navbar" data-spy="scroll" data-offset="10" style="display: block; overflow: scroll; height: 500px;">
+            <div id="jiras">
+                <table id="jiraItems" class="nav"></table>
+            </div>
+        </div>
     </div>
 
-    <div id="sync-wrapper" style="display:none;">
-        <div class="modal-body">
-            <h7>Iteration:</h7>
-            <select data-placeholder="Choose an Iteration..." id="sync-release-select" tabindex="3">
-                <option></option>
-            </select>
+    <div id="sync-wrapper" style="display:none; " class="modal hide fade">
+        <div class="modal-header">
+            <h3>Select Destination</h3>
+        </div>
+        <div class="modal-body" >
+            <div>
+                <h7>Iteration:</h7>
+                <select data-placeholder="Choose an Iteration..." id="sync-release-select" tabindex="3">
+                    <option></option>
+                </select>
+            </div>
+            <div>
+                <label>
+                Create Release/Iteration:
+                <input type="checkbox" id="checkCreateDestination"></input>
+                </label>
+
+                <div id="sync-create-wrapper">
+                    <div class="modal-body">
+                        <label>Release:
+                        <input id="new-rls-title" type="text" disabled="true"></input>
+                        </label>
+                        <br/>
+                        <label>Itearation:
+                        <input id="new-iter-title" type="text" disabled="true"></input>
+                        </label>
+                    </div>
+                </div>
+
+            </div>
         </div>
         <div class="modal-footer">
-            <a href="#" class="btn cancel">Close</a>
-            <a href="#" class="btn btn-primary save">Save</a>
+            <a href="#" class="btn cancel" id="syncCancel">Cancel</a>
+            <a href="#" class="btn btn-primary save" id="syncSave">Save</a>
         </div>
     </div>
 </div>
