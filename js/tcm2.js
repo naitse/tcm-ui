@@ -113,9 +113,11 @@ define(['jquery', 'chosen', 'bootstrap', 'jqueryui', 'blockui'], function ($, ch
         $('#tc-refresh').live({
           click: function(e){
             e.stopPropagation();
-            $(this).addClass('refreshing');
-            clearTCs()
-            getTC(currentSS.featureId);
+            if (currentSS.featureId != 0){
+              $(this).addClass('refreshing');
+              clearTCs()
+              getTC(currentSS.featureId);
+            }
           }
         });
         
@@ -287,11 +289,17 @@ function getReleases(){
 
 function itSelected(iterationId){
    //console.log($(selected_node).val())
-
+    var noresult = $('<div>').addClass('noresult').text('No IONs found')
+    $('#feature-container').html('')
     toggleLoading('#feature-container',true, 'big')
     tcmModel.releases.iterations.features.fetch(currentSS.releaseId, currentSS.iterationId).done(function(data){
       clearData();
-      prepareFeatures(data)
+      if (data.length > 0){
+        prepareFeatures(data)
+      }else{
+
+        $('#feature-container').append(noresult)
+      }
       toggleLoading('#feature-container',false)
     });
 
@@ -447,9 +455,15 @@ function loadFeatureDesc(desc){
 //######################################### TC ops
 
 function getTC(feature_id){
-  
+  var noresult = $('<div>').addClass('noresult').text('No TCs found')
   tcmModel.releases.iterations.features.test_cases.fetch(currentSS.releaseId,currentSS.iterationId, feature_id).done(function(data){
-    prepareTCs(data)
+    if(data.length>0){
+      prepareTCs(data)
+    } else{
+      $('#tc-container').html('')
+      $('#tc-container').append(noresult)
+      $('#tc-refresh').removeClass('refreshing')
+    }   
   })
 }   
 function prepareTCs(data){
@@ -548,6 +562,16 @@ function renderTC(tc){
 }
 
 function clearData(){
+  currentSS ={
+        releaseName:'',
+        releaseId:0,
+        iterationName:'',
+        iterationId:0,
+        featureId:0,
+        feature:'',
+        tcId:0
+   }
+
   $('#feature-container').children().remove()
   $('.add-tc').attr('disabled',true)
   $('#desc-container').children().remove()

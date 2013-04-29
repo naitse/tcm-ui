@@ -835,4 +835,11 @@ position: relative;
 .active{
 	background: #D2E9FA !important;
 }
+.noresult{
+	margin-left: auto;
+margin-right: auto;
+width: 137px;
+margin-top: 30px;
+font-size: 19;
+}
 /**************************/
