@@ -114,7 +114,7 @@ define(function(require){
                                 dataType: "json"
                             });
                         },
-                        del: function (tcId) {
+                        del: function (releaseId, iterationid, featureId,tcId) {
                             return $.ajax({
                                 type: "DELETE",
                                 cache:false,
@@ -125,7 +125,7 @@ define(function(require){
                         },
                         status:{
                             url:basePath +'releases/{rlsId}/iterations/{iterId}/features/{ftrId}/testcases/{tstId}/status',
-                            updateStatus: function (tcId, statusId) {
+                            updateStatus: function (releaseId, iterationid, featureId, tcId, statusId) {
                                 var newStatus={
                                    'statusId':statusId
                                 };
@@ -134,19 +134,18 @@ define(function(require){
                                     type: "PUT",
                                     cache:false,
                                     data:JSON.stringify(newStatus),
-                                    url: this.url.replace('rlsId', releaseId).replace('{iterId}', iterationid).replace('{ftrId}',featureId).replace('{tstId}',tcId),
+                                    url: this.url.replace('{rlsId}', releaseId).replace('{iterId}', iterationid).replace('{ftrId}',featureId).replace('{tstId}',tcId),
                                     contentType: "application/json",
                                     dataType: "json"
                                 });
                             }
                         },
-                        update: function (tcObject) {
-                            console.log(JSON.stringify(tcObject))
+                        update: function (releaseId, iterationid, featureId,tcObject) {
                             return $.ajax({
                                 type: "PUT",
                                 cache:false,
-                                url: this.url.update + tcObject.tcId,
                                 data:JSON.stringify(tcObject),
+                                url: this.url.update.replace('{rlsId}', releaseId).replace('{iterId}', iterationid).replace('{ftrId}',featureId).replace('{tstId}',tcObject.tcId),
                                 contentType: "application/json",
                                 dataType: "json"
                             });
