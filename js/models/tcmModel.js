@@ -1,6 +1,7 @@
 define(function(require){
     var basePath = "http://tcm-backend.cloudhub.io/api/";
 
+
     var tcm_model = {
 
         releases: {
@@ -26,126 +27,133 @@ define(function(require){
                     dataType: "json",
                     contentType : 'application/json'
                 });
-            }
-        },
-
-        iterations: {
-            url: basePath + 'releases/{rlsId}/iterations',
-
-            create: function(rlsName, iterName){
-                var data ={
-                    "name":iterName
-                };
-
-                return $.ajax({
-                    type: "POST",
-                    url: this.url.replace("{rlsId}", rlsName),
-                    data: JSON.stringify(data),
-                    dataType: "json",
-                    contentType : 'application/json'
-                });
-            }
-        },
-
-        features: {
-            url: basePath +'features',
-
-            fetch: function (iterationid) {
-                return $.ajax({
-                    type: "GET",
-                    cache:false,
-                    url: this.url + '?itId=' + iterationid,
-                    dataType: "json"
-                });
             },
 
-            create: function(iterId, key, summary, desc ){
-                var data ={
-                    "iterId":iterId,
-                    "key":key,
-                    "summary":summary,
-                    "desc":desc
-                };
+            iterations: {
+                url: basePath + 'releases/{rlsId}/iterations',
 
-                $.ajax({
-                    type: "POST",
-                    url: this.url,
-                    data: JSON.stringify(data),
-                    dataType: "json",
-                    contentType : 'application/json'
-                });
+                create: function(rlsName, iterName){
+                    var data ={
+                        "name":iterName
+                    };
 
-            }
-        },
+                    return $.ajax({
+                        type: "POST",
+                        url: this.url.replace("{rlsId}", rlsName),
+                        data: JSON.stringify(data),
+                        dataType: "json",
+                        contentType : 'application/json'
+                    });
+                },
 
-        test_cases: {
-            url: {
-                get:basePath +'testcases?ftId=',
-                add:basePath +'testcases',
-                del:basePath +'testcases/',
-                update:basePath +'testcases/'
-            },
+                features: {
+                    url: basePath +'releases/{rlsId}/iterations/{iterId}/features',
 
-            fetch: function (feature_id) {
-                return $.ajax({
-                    type: "GET",
-                    cache:false,
-                    url: this.url.get + feature_id,
-                    dataType: "json"
-                });
-            },
-            add: function (req) {
-                return $.ajax({
-                    type: "POST",
-                    cache:false,
-                    url: this.url.add,
-                    data:JSON.stringify(req),
-                    contentType: "application/json",
-                    dataType: "json"
-                });
-            },
-            del: function (tcId) {
-                return $.ajax({
-                    type: "DELETE",
-                    cache:false,
-                    url: this.url.del + tcId,
-                    contentType: "application/json",
-                    dataType: "json"
-                });
-            },
-            updateStatus: function (tcId, statusId) {
-                return $.ajax({
-                    type: "PUT",
-                    cache:false,
-                    url: this.url.update + tcId +'/status/' + statusId,
-                    contentType: "application/json",
-                    dataType: "json"
-                });
-            },
-            update: function (tcObject) {
-                console.log(JSON.stringify(tcObject))
-                return $.ajax({
-                    type: "PUT",
-                    cache:false,
-                    url: this.url.update + tcObject.tcId,
-                    data:JSON.stringify(tcObject),
-                    contentType: "application/json",
-                    dataType: "json"
-                });
-            }
+                    fetch: function (releaseId, iterationid) {
+                        return $.ajax({
+                            type: "GET",
+                            cache:false,
+                            url: this.url.replace('rlsId', releaseId).replace('{iterId}', iterationid),
+                            dataType: "json"
+                        });
+                    },
 
-        },
+                    create: function(releaseId, iterationid, key, summary, desc ){
+                        var data ={
+                            "key":key,
+                            "summary":summary,
+                            "desc":desc
+                        };
 
-        feature_teststats:{
-            url: basePath +'features/executedtestcases?ftId=',
+                        $.ajax({
+                            type: "POST",
+                            url: this.url.replace('rlsId', releaseId).replace('{iterId}', iterationid),
+                            data: JSON.stringify(data),
+                            dataType: "json",
+                            contentType : 'application/json'
+                        });
 
-            fetch: function (feature_id) {
-                return $.ajax({
-                    type: "GET",
-                    cache:false,
-                    url: this.url + feature_id,
-                    dataType: "json"
-                });
+                    },
+
+                    executedTestCases:{
+                        url: basePath +'releases/{rlsId}/iterations/{iterId}/features/{ftrId}',
+
+                        fetch: function (releaseId, iterationid, featureId) {
+                            return $.ajax({
+                                type: "GET",
+                                cache:false,
+                                url:  this.url.replace('rlsId', releaseId).replace('{iterId}', iterationid).replace('{ftrId}',featureId),
+                                dataType: "json"
+                            });
+                        }
+                    },
+
+                    test_cases: {
+                        url: {
+                            get:basePath +'releases/{rlsId}/iterations/{iterId}/features/{ftrId}/testcases',
+                            add:basePath +'releases/{rlsId}/iterations/{iterId}/features/{ftrId}/testcases',
+                            del:basePath +'releases/{rlsId}/iterations/{iterId}/features/{ftrId}/testcases/{tstId}',
+                            update:basePath +'releases/{rlsId}/iterations/{iterId}/features/{ftrId}/testcases/{tstId}'
+                        },
+
+                        fetch: function (releaseId, iterationid, featureId) {
+                            return $.ajax({
+                                type: "GET",
+                                cache:false,
+                                url: this.url.replace('rlsId', releaseId).replace('{iterId}', iterationid).replace('{ftrId}',featureId),
+                                dataType: "json"
+                            });
+                        },
+                        add: function (req) {
+                            return $.ajax({
+                                type: "POST",
+                                cache:false,
+                                url: this.url.replace('rlsId', releaseId).replace('{iterId}', iterationid).replace('{ftrId}',featureId),
+                                data:JSON.stringify(req),
+                                contentType: "application/json",
+                                dataType: "json"
+                            });
+                        },
+                        del: function (tcId) {
+                            return $.ajax({
+                                type: "DELETE",
+                                cache:false,
+                                url: this.url.replace('rlsId', releaseId).replace('{iterId}', iterationid).replace('{ftrId}',featureId).replace('{tstId}',tcId),
+                                contentType: "application/json",
+                                dataType: "json"
+                            });
+                        },
+                        status:{
+                            url:basePath +'releases/{rlsId}/iterations/{iterId}/features/{ftrId}/testcases/{tstId}/status',
+                            updateStatus: function (tcId, statusId) {
+                                var newStatus={
+                                   'statusId':statusId
+                                };
+
+                                return $.ajax({
+                                    type: "PUT",
+                                    cache:false,
+                                    data:JSON.stringify(newStatus),
+                                    url: this.url.replace('rlsId', releaseId).replace('{iterId}', iterationid).replace('{ftrId}',featureId).replace('{tstId}',tcId),
+                                    contentType: "application/json",
+                                    dataType: "json"
+                                });
+                            }
+                        },
+                        update: function (tcObject) {
+                            console.log(JSON.stringify(tcObject))
+                            return $.ajax({
+                                type: "PUT",
+                                cache:false,
+                                url: this.url.update + tcObject.tcId,
+                                data:JSON.stringify(tcObject),
+                                contentType: "application/json",
+                                dataType: "json"
+                            });
+                        }
+
+                    }
+                }
             }
         }
     };

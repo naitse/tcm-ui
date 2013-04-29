@@ -146,12 +146,12 @@ define(function(require){
                 {
                     tcmModel.releases.create( $("#new-rls-title").val() ).done(function(data){
 
-                        tcmModel.iterations.create($("#new-rls-title").val(), $("#new-iter-title").val() ).done(function(data){
+                        tcmModel.releases.iterations.create($("#new-rls-title").val(), $("#new-iter-title").val() ).done(function(data){
 
                             $("#jiraItems tr input:checked").each(function(){
                                 var issue = $(this).parents('.jiraRow').data('jiraIssue');
 
-                                tcmModel.features.create($("#new-iter-title").val(), issue.key, issue.summary, issue.description);
+                                tcmModel.releases.iterations.features.create($("#new-iter-title").val(), issue.key, issue.summary, issue.description);
                             })
 
                         });
@@ -166,7 +166,7 @@ define(function(require){
                        $("#jiraItems tr input:checked").each(function(){
                            var issue = $(this).parents('.jiraRow').data('jiraIssue');
 
-                           tcmModel.features.create(iterationId, issue.key, issue.summary, issue.description);
+                           tcmModel.releases.iterations.features.create(iterationId, issue.key, issue.summary, issue.description);
                        })
 
                    }else{
