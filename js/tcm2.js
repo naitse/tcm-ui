@@ -564,7 +564,7 @@ function clearTCs(){
 
 function clearTCModal(){
 
-            $('.new-tc-title').val('');
+            $('.new-tc-title').val('').removeClass('title-error');
             $('.new-tc-desc').val('');
             $('#rp-wrapper .modal-body').data('flag',0);
             $('#rp-wrapper .modal-body').data('tcObject','');
