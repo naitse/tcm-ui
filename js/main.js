@@ -6,7 +6,8 @@ require.config({
     jqueryui: "libs/jqueryui/jquery-ui-1.10.2.custom.min",
     underscore: "libs/underscore/underscore-min",
     jiraModel: 'models/jira',
-    tcmModel: 'models/tcmModel'
+    tcmModel: 'models/tcmModel',
+    blockui: 'libs/blockui/jquery.blockUI'
   },
 
   shim: {
@@ -21,6 +22,9 @@ require.config({
   	},
     underscore:{
         exports: '_'
+    },
+    blockui:{
+      deps: ['jquery']
     }
   }
 });

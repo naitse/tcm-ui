@@ -53,7 +53,7 @@ define(function(require){
                         return $.ajax({
                             type: "GET",
                             cache:false,
-                            url: this.url.replace('rlsId', releaseId).replace('{iterId}', iterationid),
+                            url: this.url.replace('{rlsId}', releaseId).replace('{iterId}', iterationid),
                             dataType: "json"
                         });
                     },
@@ -67,7 +67,7 @@ define(function(require){
 
                         $.ajax({
                             type: "POST",
-                            url: this.url.replace('rlsId', releaseId).replace('{iterId}', iterationid),
+                            url: this.url.replace('{rlsId}', releaseId).replace('{iterId}', iterationid),
                             data: JSON.stringify(data),
                             dataType: "json",
                             contentType : 'application/json'
@@ -76,13 +76,13 @@ define(function(require){
                     },
 
                     executedTestCases:{
-                        url: basePath +'releases/{rlsId}/iterations/{iterId}/features/{ftrId}',
+                        url: basePath +'releases/{rlsId}/iterations/{iterId}/features/{ftrId}/executedtestcases',
 
                         fetch: function (releaseId, iterationid, featureId) {
                             return $.ajax({
                                 type: "GET",
                                 cache:false,
-                                url:  this.url.replace('rlsId', releaseId).replace('{iterId}', iterationid).replace('{ftrId}',featureId),
+                                url:  this.url.replace('{rlsId}', releaseId).replace('{iterId}', iterationid).replace('{ftrId}',featureId),
                                 dataType: "json"
                             });
                         }
@@ -100,15 +100,15 @@ define(function(require){
                             return $.ajax({
                                 type: "GET",
                                 cache:false,
-                                url: this.url.replace('rlsId', releaseId).replace('{iterId}', iterationid).replace('{ftrId}',featureId),
+                                url: this.url.get.replace('{rlsId}', releaseId).replace('{iterId}', iterationid).replace('{ftrId}',featureId),
                                 dataType: "json"
                             });
                         },
-                        add: function (req) {
+                        add: function (releaseId, iterationid, featureId, req) {
                             return $.ajax({
                                 type: "POST",
                                 cache:false,
-                                url: this.url.replace('rlsId', releaseId).replace('{iterId}', iterationid).replace('{ftrId}',featureId),
+                                url: this.url.add.replace('{rlsId}', releaseId).replace('{iterId}', iterationid).replace('{ftrId}',featureId),
                                 data:JSON.stringify(req),
                                 contentType: "application/json",
                                 dataType: "json"
@@ -118,7 +118,7 @@ define(function(require){
                             return $.ajax({
                                 type: "DELETE",
                                 cache:false,
-                                url: this.url.replace('rlsId', releaseId).replace('{iterId}', iterationid).replace('{ftrId}',featureId).replace('{tstId}',tcId),
+                                url: this.url.del.replace('{rlsId}', releaseId).replace('{iterId}', iterationid).replace('{ftrId}',featureId).replace('{tstId}',tcId),
                                 contentType: "application/json",
                                 dataType: "json"
                             });

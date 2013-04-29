@@ -1,10 +1,22 @@
-define(['jquery', 'chosen', 'bootstrap', 'jqueryui'], function ($, chosen,bootstrap,jqueryui) {
+define(['jquery', 'chosen', 'bootstrap', 'jqueryui', 'blockui'], function ($, chosen,bootstrap,jqueryui,blockui) {
+
+  tcmModel = require('tcmModel');
 
    var prefix = '';
    var displayed = false;
    var backend = 'http://tcm-backend.cloudhub.io/api/';
    var proposed=0;
    var FuckRequireJS = 0;
+
+   var currentSS ={
+        releaseName:'',
+        releaseId:0,
+        iterationName:'',
+        iterationId:0,
+        featureId:0,
+        feature:'',
+        tcId:0
+   }
 
    String.prototype.trunc = function(n,useWordBoundary){
        var toLong = this.length>n,
@@ -13,113 +25,9 @@ define(['jquery', 'chosen', 'bootstrap', 'jqueryui'], function ($, chosen,bootst
        return  toLong ? s_ + '...' : s_;
     };
     
-    var releases = {
-        url: backend + 'releases_iterations',
-        fetch: function () {
-          return $.ajax({
-            type: "GET",
-            url: this.url,
-            dataType: "json"
-          });
-        }
-    };
-
-    var features = {
-          url: backend +'features?itId=',  
-        
-          fetch: function (iterationid) {
-            return $.ajax({
-              type: "GET",
-              cache:false,
-              url: this.url + iterationid,
-              dataType: "json"
-            });
-          }
-        };
-         
-         var test_cases = {
-              url: {
-                get:backend +'testcases?ftId=',
-                add:backend +'testcases',
-                del:backend +'testcases/',
-                update:backend +'testcases/'
-              },  
-            
-              fetch: function (feature_id) {
-                return $.ajax({
-                  type: "GET",
-                  cache:false,
-                  url: this.url.get + feature_id,
-                  dataType: "json"
-                });
-              },
-              add: function (req) {
-                  return $.ajax({
-                    type: "POST",
-                    cache:false,
-                    url: this.url.add,
-                    data:JSON.stringify(req),
-                    contentType: "application/json",
-                    dataType: "json"
-                  });
-                },
-              del: function (tcId) {
-                  return $.ajax({
-                    type: "DELETE",
-                    cache:false,
-                    url: this.url.del + tcId,
-                    contentType: "application/json",
-                    dataType: "json"
-                  });
-                },
-                updateStatus: function (tcId, statusId) {
-                  return $.ajax({
-                    type: "PUT",
-                    cache:false,
-                    url: this.url.update + tcId +'/status/' + statusId,
-                    contentType: "application/json",
-                    dataType: "json"
-                  });
-                },
-                update: function (tcObject) {
-                  console.log(JSON.stringify(tcObject))
-                  return $.ajax({
-                    type: "PUT",
-                    cache:false,
-                    url: this.url.update + tcObject.tcId,
-                    data:JSON.stringify(tcObject),
-                    contentType: "application/json",
-                    dataType: "json"
-                  });
-                }
-
-
-         };
-
-         var feature_teststats = {
-              url: backend +'features/executedtestcases?ftId=',  
-              
-              fetch: function (feature_id) {
-                return $.ajax({
-                  type: "GET",
-                  cache:false,
-                  url: this.url + feature_id,
-                  dataType: "json"
-                });
-              }   
-        
-         };    
-    
-    
    $('document').ready(function(){
 
-      
-
-        initDummy();
         getReleases();
-
-        
-        
 
         $(window).resize(function() {
             var wc = 100 - ((($('#desc-wrapper').outerWidth() * 100) / ($('#description').outerWidth() - 20)) - 100);
@@ -132,18 +40,23 @@ define(['jquery', 'chosen', 'bootstrap', 'jqueryui'], function ($, chosen,bootst
  
         $('#release-select').live({
           change: function(){
-              itSelected($(this).find('option:selected'))
+            currentSS.releaseId = $(this).find('option:selected').parents('optgroup').attr('rel-id');
+            currentSS.iterationId = $(this).find('option:selected').val()
+              itSelected(currentSS.iterationId)
           }
         });
         
         $('.feature').live({
           click: function(e){
                 e.stopPropagation();
+                currentSS.featureId = parseInt($(this).attr('feature-id'));
+                currentSS.feature = $(this);
+
                 $('.feature').removeClass('active');
                 $(this).addClass('active');
                 loadFeatureDesc($(this).data('desc'))
                 $('.add-tc').attr('disabled',false)
-                getTC($(this).attr('feature-id'))
+                getTC(currentSS.featureId)
              
                 $('#desc-wrapper').css({
                   'height':100
@@ -162,6 +75,9 @@ define(['jquery', 'chosen', 'bootstrap', 'jqueryui'], function ($, chosen,bootst
                 if($('.desc-expander').size() == 1){
                   $('#desc-expander').click()  
                 }
+
+//updateFeatureTestStatsTEST($(this))
+
                 displayed = true
             }
         });
@@ -199,7 +115,7 @@ define(['jquery', 'chosen', 'bootstrap', 'jqueryui'], function ($, chosen,bootst
             e.stopPropagation();
             $(this).addClass('refreshing');
             clearTCs()
-            getTC($('.feature.active').attr('feature-id'));
+            getTC(currentSS.featureId);
           }
         });
         
@@ -230,7 +146,7 @@ define(['jquery', 'chosen', 'bootstrap', 'jqueryui'], function ($, chosen,bootst
                 return (css.match (/\bddm-\S+/g) || []).join(' ')
             }).addClass($(this).attr('class')).text('').append(newState, caret)
 
-            updateTCstatus($(this).parents('.tc').attr('tc-id'),$(this).data('statusId'),$('.feature.active'))
+            updateTCstatus($(this).parents('.tc').attr('tc-id'),$(this).data('statusId'),currentSS.feature)
           }
         });
 
@@ -255,7 +171,7 @@ define(['jquery', 'chosen', 'bootstrap', 'jqueryui'], function ($, chosen,bootst
          $('#rp-wrapper .save').live({
           click: function(e){
             e.stopPropagation();
-            saveTc($(this).parents('#rp-wrapper'), $('#rp-wrapper .modal-body').data('flag'), $('#rp-wrapper .modal-body').data('tcObject'),$('.feature.active'))
+            saveTc($(this).parents('#rp-wrapper'), $('#rp-wrapper .modal-body').data('flag'), $('#rp-wrapper .modal-body').data('tcObject'),currentSS.feature)
           }
         });
         
@@ -288,7 +204,7 @@ define(['jquery', 'chosen', 'bootstrap', 'jqueryui'], function ($, chosen,bootst
           click: function(e){
             e.stopPropagation();
             $('#delete-tc-alert').data('tcId',$(this).parents('.tc').attr('tc-id'));
-            $('#delete-tc-alert').data('feature',$('.feature.active'));
+            //$('#delete-tc-alert').data('feature',currentSS.feature);
             $('#delete-tc-alert').modal()
             //removeTestCase($(this).parents('.tc').attr('tc-id'),$('.feature.active'));
           }
@@ -331,29 +247,29 @@ define(['jquery', 'chosen', 'bootstrap', 'jqueryui'], function ($, chosen,bootst
         $('.tc').live({
           click: function(e){
             e.stopPropagation();  
-            $(this).find('.detailsIcon').click()
+            $(this).find('.detailsIcon').click();
+            $('.tc .wrapper').removeClass('active');
+            $(this).find('.wrapper').addClass('active');
           }
         });
       
    });
  
-function initDummy(){
-  $('#release-select').chosen()
-      makeResizable();
-    colapseExpandRightPanel('none');
-}
+//######################################### releases ops
+
 function getReleases(){
-  releases.fetch().done(function(data){
+  tcmModel.releases.fetch().done(function(data){
     //[{"releaseName":"27","iterationName":"16,18,19,20,21,22"},{"releaseName":"28","iterationName":"23,24,25"}]
     if(FuckRequireJS == 0){
-      initDummy();
+      $('#release-select').chosen()
+      makeResizable();
+    colapseExpandRightPanel('none');
     }
     $('#release-select').find('optgroup').remove();
     $(data).each(function(){
-      var optionG = $('<optgroup>').attr('label', "Release "+this.releaseName)
-      var iterations = this.iterationName.split(',')
-      $(iterations).each(function(){
-        var option = $('<option>').attr('value', this).text(prefix + this);
+      var optionG = $('<optgroup>').attr('label', "Release "+this.name).attr('rel-id',this.id)
+       $(this.iterations).each(function(){
+        var option = $('<option>').attr('value', this.id).text(prefix + this.name);
         $(optionG).append(option);
       })
       $('#release-select').append(optionG)
@@ -365,97 +281,73 @@ function getReleases(){
   });
 } 
 
-function colapseExpandRightPanel(state){
-  
-    if(state == 'block'){
-      $('.left-center-panel').css({
-        'width':'65%'
-      })
-      makeResizable()
-      panelRightWidth()
-       $("#rp-wrapper").show('fast') 
-    }else{
-      $('.left-center-panel').css({
-        'width':'100%'
-      })
+//######################################### releases ops end
 
-      $("#rp-wrapper").hide('fast')
-     
-    }
+//######################################### iteration ops
 
+function itSelected(iterationId){
+   //console.log($(selected_node).val())
 
-      $($('.left-center-panel .ui-resizable-e')[1]).css({
-        'display':state
-      })
-
-      
-} 
-
-function panelRightWidth(){
-  
-    $("#rp-wrapper").css({
-        'width' : $('#pannel-wrapper').outerWidth() - $('.left-center-panel').outerWidth() - 9
+    toggleLoading('#feature-container',true, 'big')
+    tcmModel.releases.iterations.features.fetch(currentSS.releaseId, currentSS.iterationId).done(function(data){
+      clearData();
+      prepareFeatures(data)
+      toggleLoading('#feature-container',false)
     });
 
-};
+}
 
- function makeResizable(){
+//######################################### iteration ops end
 
-          console.log($('.left-center-panel'))
+//######################################### feature ops
 
-           $('.left-center-panel').resizable({
-            handles : 'e',
-            minWidth : 550,
-            resize : function() {
-              var por = ((($('#pannel-wrapper').outerWidth() -$(this).outerWidth() -9) * 100) / $('#pannel-wrapper').outerWidth()) + '%'
-              $("#rp-wrapper").css({
-                    'width' : por
-              });
-            }
-          });
+function prepareFeatures(data){ 
+    $(data).each(function(){
+    
+      //[{"jiraKey":"ION-2333","featureName":"Enable global deployment","featureDescription":"hay que hacer muchas cosas locas","featureId":1}]
+      
+      var feature = $('<div>').addClass('feature').attr('feature-id',this.featureId).data('desc', this.featureDescription)
+      var title_bar = $('<div>').addClass('title-bar')
+      var jiraKey = $('<div>').addClass('jira-key').text(this.jiraKey)
+      var summary = $('<div>').addClass('summary').text(this.featureName)
+      var stats = $('<div>').addClass('stats')
+      var count = $('<div>').addClass('count')
+      var bar = $('<div>').addClass('bar')
+      
+      $(stats).append(bar,count)
+      $(title_bar).append(jiraKey,stats);
+      $(feature).append(title_bar,summary);
+      
+      renderFeature(feature)
+      
+    })
+}
 
-           $('#desc-wrapper').resizable({
-              handles : 's',
-              minHeight : 100,
-              alsoResize : "#desc-container",
-              stop : function() {
-                var wc = 100 - ((($('#desc-wrapper').outerWidth() * 100) / ($('#description').outerWidth() - 20)) - 100)
-                $("#desc-container").css({
-                  'height' : $('#desc-wrapper').height() - 20,
-                  'width' : wc + '%'  //'100%'
-                });
-                $(".right-pannel").css({
-                  'padding-bottom' : $('#desc-wrapper').height() + 29
-                });
-              }
-          });
 
-          $("#desc-container").resizable({
-              ghost : true,
-              handles : 's'
-          });
-              
-          $("#lp-wrapper").resizable({
-              handles : 'e',
-              minWidth : 218,
-              maxWidth : 430,
-              containment : '.left-center-panel',
-              stop : function() {
-                $("#feature-container").css({
-                  'height' : '100%',
-                  'width' : '100%'
-                });
-                var porcentage = (($(this).width() * 100) / $('.left-center-panel').width());
-                $(this).css({
-                      'height' : '100%',
-                      'width' : porcentage + '%'
-                });
-              }
-          });
-  }  
-   
-   
-  function renderFeatureBar(feature){
+function renderFeature(feature){
+  var feature_id = $(feature).attr('feature-id');
+  $('#feature-container').append(feature);
+  $(feature).find('.stats').addClass('loading-small');
+  getFeatureTestStats(feature)
+}
+
+function getFeatureTestStats(feature){
+  var feature_id = $(feature).attr('feature-id');
+  tcmModel.releases.iterations.features.executedTestCases.fetch(currentSS.releaseId,currentSS.iterationId,feature_id).done(function(data){
+    renderStatsCount(feature, data)
+    renderFeatureBar(feature);
+    $(feature).find('.stats').removeClass('loading-small');
+    $(feature).find('.bar').show()
+  })
+}
+
+function renderStatsCount(feature,data){
+  data = data[0]
+  $(feature).find('.count').text(data.run+'/'+data.total);
+  
+}
+
+function renderFeatureBar(feature){
      var prob = $(feature).find('.bar');
      var current_max = $(feature).find('.count').text().split('/')
      var current_value = parseInt(current_max[0]); 
@@ -482,42 +374,81 @@ function panelRightWidth(){
      
   }
 
-   
-   
-   
-   
-  //var domain = window.location.href
-function expandIssueDescription(){
-  $('#desc-wrapper').show('fast',function(){
-     $( ".right-pannel" ).css({
-         'padding-bottom':$('#desc-wrapper').height()+29
-       })
-       var wc = 100 - ((($('#desc-wrapper').outerWidth() * 100) / ($('#description').outerWidth() - 20)) - 100)
-       
-       $("#desc-container").css({
-         'width' : wc + '%'  //'100%'
-       })
-  })
+function resetFeatureTestStats(feature){
+
+  $(feature).find('.progress').remove()
+  $(feature).find('.count').text('')
+
+}
+
+
+function _updateFeatureTestStats(feature){
+  $(feature).find('.bar').remove()
+  resetFeatureTestStats(feature)
+  $(feature).find('.stats').addClass('loading-small');
+  getFeatureTestStats(feature)
+}
+
+function updateFeatureTestStats(feature){
+  $(feature).find('.bar').hide()
+  resetFeatureTestStats(feature)
+  $(feature).find('.stats').addClass('loading-small');
+    var feature_id = $(feature).attr('feature-id');
+  //tcmModel.feature_teststats.fetch(feature_id).done(function(data){
+    var data = {
+      total:10,
+      notrun:1,
+      blocked:1,
+      inprogress:1,
+      fail:3,
+      pass:4
+    }
+    var cellWidth = 100 / parseInt(data.total);
+    var propgressBar = $('<div class="progress" style="width: 40px; height: 12px; border: 1px solid rgb(108, 120, 133);">')
+    for(var i=0; i<parseInt(data.pass);i++){
+      var node = $('<div class="bar bar-success" style="width: '+cellWidth+'%;"></div>')
+      $(propgressBar).append(node)
+    }
+    for(var i=0; i<parseInt(data.blocked);i++){
+      var node = $('<div class="bar bar-warning" style="width: '+cellWidth+'%;"></div>')
+      $(propgressBar).append(node)
+    }
+    for(var i=0; i<parseInt(data.fail);i++){
+      var node = $('<div class="bar bar-danger" style="width: '+cellWidth+'%;"></div>')
+      $(propgressBar).append(node)
+    }
+    for(var i=0; i<parseInt(data.inprogress);i++){
+      var node = $('<div class="bar bar-info" style="width: '+cellWidth+'%;"></div>')
+      $(propgressBar).append(node)
+    }
+    for(var i=0; i<parseInt(data.notrun);i++){
+      var node = $('<div class="bar bar-notrun" style="width: '+cellWidth+'%;"></div>')
+      $(propgressBar).append(node)
+    }
+
+    var runned = data.pass + data.fail + data.blocked
+    $(feature).find('.stats').append(propgressBar)
+    $(feature).find('.count').text(runned +'/'+data.total)
+    $(feature).find('.stats').removeClass('loading-small');
+
+  //})
+}
+
+function loadFeatureDesc(desc){
   
+  $('#desc-container').text('');
+  $('#desc-container').text(desc);
   
-     $('#desc-expander').removeClass('desc-expander').addClass('desc-collapser')
-   }
-   
-   function collapsIssueDescription(){
-     $('#desc-wrapper').hide('fast',function(){
-       $( ".right-pannel" ).css({
-           'padding-bottom':29
-         })
-     })
-     $('#desc-expander').removeClass('desc-collapser').addClass('desc-expander')
-   }
-   
-   
-  
+}
+
+//######################################### feature ops end
+
+
+//######################################### TC ops
 
 function getTC(feature_id){
   
-  test_cases.fetch(feature_id).done(function(data){
+  tcmModel.releases.iterations.features.test_cases.fetch(currentSS.releaseId,currentSS.iterationId, feature_id).done(function(data){
     prepareTCs(data)
   })
 }   
@@ -610,6 +541,12 @@ function createTcHTML(tcObject){
   
 }
 
+
+function renderTC(tc){
+  $('#tc-container').append(tc);
+  
+}
+
 function clearData(){
   $('#feature-container').children().remove()
   $('.add-tc').attr('disabled',true)
@@ -621,7 +558,6 @@ function clearData(){
 }
 
 function clearTCs(){
-
   $('#tc-container').children().remove()
   clearTCModal()
 }
@@ -636,88 +572,6 @@ function clearTCModal(){
             proposed = 0;
 
 }
-function itSelected(selected_node){
-   //console.log($(selected_node).val())
-
-    iteration_name = $(selected_node).val().replace(prefix ,'')
-    
-    features.fetch(iteration_name).done(function(data){
-      clearData();
-      prepareFeatures(data)
-    });
-
-}
-
-function prepareFeatures(data){ 
-    $(data).each(function(){
-    
-      //[{"jiraKey":"ION-2333","featureName":"Enable global deployment","featureDescription":"hay que hacer muchas cosas locas","featureId":1}]
-      
-      var feature = $('<div>').addClass('feature').attr('feature-id',this.featureId).data('desc', this.featureDescription)
-      var title_bar = $('<div>').addClass('title-bar')
-      var jiraKey = $('<div>').addClass('jira-key').text(this.jiraKey)
-      var summary = $('<div>').addClass('summary').text(this.featureName)
-      var stats = $('<div>').addClass('stats')
-      var count = $('<div>').addClass('count')
-      var bar = $('<div>').addClass('bar')
-      
-      $(stats).append(bar,count)
-      $(title_bar).append(jiraKey,stats);
-      $(feature).append(title_bar,summary);
-      
-      renderFeature(feature)
-      
-    })
-}
-
-function renderStatsCount(feature,data){
-  data = data[0]
-  $(feature).find('.count').text(data.run+'/'+data.total);
-  
-}
-
-function renderFeature(feature){
-  var feature_id = $(feature).attr('feature-id');
-  $('#feature-container').append(feature);
-  $(feature).find('.stats').addClass('loading-small');
-  getFeatureTestStats(feature)
-}
-
-function getFeatureTestStats(feature){
-  var feature_id = $(feature).attr('feature-id');
-  feature_teststats.fetch(feature_id).done(function(data){
-    renderStatsCount(feature, data)
-    renderFeatureBar(feature);
-    $(feature).find('.stats').removeClass('loading-small');
-    $(feature).find('.bar').show()
-  })
-}
-
-function resetFeatureTestStats(feature){
-
-  $(feature).find('.count').text('')
-
-}
-
-function updateFeatureTestStats(feature){
-  $(feature).find('.bar').hide()
-  resetFeatureTestStats(feature)
-  $(feature).find('.stats').addClass('loading-small');
-  getFeatureTestStats(feature)
-}
-
-function loadFeatureDesc(desc){
-  
-  $('#desc-container').text('');
-  $('#desc-container').text(desc);
-  
-}
-
-function renderTC(tc){
-  $('#tc-container').append(tc);
-  
-}
-
 
 function saveTc(modal, flag, tcObject, featureReference){
   
@@ -725,7 +579,7 @@ function saveTc(modal, flag, tcObject, featureReference){
   
   var title = $(modal).find('.new-tc-title').val()
   var desc = $(modal).find('.new-tc-desc').val()
-  var feature= $('.active').attr('feature-id')
+  var feature= currentSS.featureId//$('.active').attr('feature-id')
   
   if (jQuery.trim($('#rp-wrapper').find('.new-tc-title').val()).length <= 0){
     $(modal).find('.new-tc-title').addClass('title-error')
@@ -735,7 +589,6 @@ function saveTc(modal, flag, tcObject, featureReference){
   }
   
   var req = {
-    featureId:feature,
     name:title,
     description:desc,
     proposed:proposed
@@ -743,9 +596,9 @@ function saveTc(modal, flag, tcObject, featureReference){
   
   console.log(JSON.stringify(req))
   if (flag == 0){
-      test_cases.add(req).done(function(){
-      $(modal).modal('hide')
-      test_cases.fetch(feature).done(function(data){
+      tcmModel.releases.iterations.features.test_cases.add(currentSS.releaseId, currentSS.iterationId, currentSS.featureId, req).done(function(data){
+      
+      tcmModel.releases.iterations.features.test_cases.fetch(currentSS.releaseId, currentSS.iterationId, currentSS.featureId).done(function(data){
         $(data).each(function(){
           if($('.tc[tc-id="'+this.tcId+'"]').size() == 0){
             createTcHTML(this);
@@ -753,7 +606,8 @@ function saveTc(modal, flag, tcObject, featureReference){
         })
         console.log(feature)
         updateFeatureTestStats(featureReference)
-      })
+      });
+
     }).fail(function(){
       $(modal).find('.alert').removeClass('hide')
     })
@@ -761,18 +615,19 @@ function saveTc(modal, flag, tcObject, featureReference){
 
   var updateReq = {
     tcId:tcObject.tcId,
-    featureId:feature,
     name:title,
     description:desc,
     proposed:proposed
   }
+    toggleLoading('.tc[tc-id="'+updateReq.tcId+'"]',true)
 
-    test_cases.update(updateReq).done(function(){
+    tcmModel.test_cases.update(updateReq).done(function(){
       $(modal).modal('hide')
-      test_cases.fetch(feature).done(function(data){
+      tcmModel.test_cases.fetch(feature).done(function(data){
             $('.tc[tc-id="'+updateReq.tcId+'"]').data('tcObject',updateReq);
             $('.tc[tc-id="'+updateReq.tcId+'"]').find('.tc-description').text(updateReq.name);
             $('.tc[tc-id="'+updateReq.tcId+'"]').find('.tc-steps').text(updateReq.description);
+            toggleLoading('.tc[tc-id="'+updateReq.tcId+'"]',false)
       })
     }).fail(function(){
       $(modal).find('.alert').removeClass('hide')
@@ -785,7 +640,7 @@ function saveTc(modal, flag, tcObject, featureReference){
 
 function updateTCstatus(tcId,statusId,feature){
 
-  test_cases.updateStatus(tcId,statusId).done(function(){
+  tcmModel.test_cases.updateStatus(tcId,statusId).done(function(){
     if(statusId >=2){
       updateFeatureTestStats(feature);
     }
@@ -796,7 +651,7 @@ function updateTCstatus(tcId,statusId,feature){
 function updateTCprop(tcObject){
 
   tcObject.proposed = 0
-  test_cases.update(tcObject).done(function(){
+  tcmModel.test_cases.update(tcObject).done(function(){
     $('.tc[tc-id="'+tcObject.tcId+'"]').find('.prop-tc').remove();
     $('.tc[tc-id="'+tcObject.tcId+'"]').find('.wrapper').removeClass('proposed');
   })
@@ -827,12 +682,158 @@ function deleteInterceptor(tcId,feature){
 
 function removeTestCase(tcId,feature){
 
-  test_cases.del(tcId).done(function(){
+  toggleLoading('.tc[tc-id="'+tcId+'"]', true)
+  tcmModel.test_cases.del(tcId).done(function(){
     $('.tc[tc-id="'+tcId+'"]').remove();
     updateFeatureTestStats(feature)
   })
 
 }  
 
+//######################################### tc ops end
+
+
+//######################################### UI ops
+function toggleLoading(container, toggle, size){
+
+  if (size != 'big'){
+    size = 'small';
+  }
+
+  if (toggle == true){
+    $(container).block({
+      message:'<div class="loading-'+size+'-block"></div>',
+      overlayCSS:  { 
+        backgroundColor: '#000', 
+        opacity:         0.2, 
+        cursor:          'wait' 
+    }
+  })
+  }else{
+    $(container).unblock()
+  }
+
+}
+
 });
+
+function colapseExpandRightPanel(state){
+  
+    if(state == 'block'){
+      $('.left-center-panel').css({
+        'width':'65%'
+      })
+      makeResizable()
+      panelRightWidth()
+       $("#rp-wrapper").show('fast') 
+    }else{
+      $('.left-center-panel').css({
+        'width':'100%'
+      })
+
+      $("#rp-wrapper").hide('fast')
+     
+    }
+
+
+      $($('.left-center-panel .ui-resizable-e')[1]).css({
+        'display':state
+      })
+
+      
+} 
+
+function panelRightWidth(){
+  
+    $("#rp-wrapper").css({
+        'width' : $('#pannel-wrapper').outerWidth() - $('.left-center-panel').outerWidth() - 9
+    });
+
+};
+
+ function makeResizable(){
+
+          console.log($('.left-center-panel'))
+
+           $('.left-center-panel').resizable({
+            handles : 'e',
+            minWidth : 550,
+            resize : function() {
+              var por = ((($('#pannel-wrapper').outerWidth() -$(this).outerWidth() -9) * 100) / $('#pannel-wrapper').outerWidth()) + '%'
+              $("#rp-wrapper").css({
+                    'width' : por
+              });
+            }
+          });
+
+           $('#desc-wrapper').resizable({
+              handles : 's',
+              minHeight : 100,
+              alsoResize : "#desc-container",
+              stop : function() {
+                var wc = 100 - ((($('#desc-wrapper').outerWidth() * 100) / ($('#description').outerWidth() - 20)) - 100)
+                $("#desc-container").css({
+                  'height' : $('#desc-wrapper').height() - 20,
+                  'width' : wc + '%'  //'100%'
+                });
+                $(".right-pannel").css({
+                  'padding-bottom' : $('#desc-wrapper').height() + 29
+                });
+              }
+          });
+
+          $("#desc-container").resizable({
+              ghost : true,
+              handles : 's'
+          });
+              
+          $("#lp-wrapper").resizable({
+              handles : 'e',
+              minWidth : 218,
+              maxWidth : 430,
+              containment : '.left-center-panel',
+              stop : function() {
+                $("#feature-container").css({
+                  'height' : '100%',
+                  'width' : '100%'
+                });
+                var porcentage = (($(this).width() * 100) / $('.left-center-panel').width());
+                $(this).css({
+                      'height' : '100%',
+                      'width' : porcentage + '%'
+                });
+              }
+          });
+  }  
+   
+   
+   
+  //var domain = window.location.href
+function expandIssueDescription(){
+  $('#desc-wrapper').show('fast',function(){
+     $( ".right-pannel" ).css({
+         'padding-bottom':$('#desc-wrapper').height()+29
+       })
+       var wc = 100 - ((($('#desc-wrapper').outerWidth() * 100) / ($('#description').outerWidth() - 20)) - 100)
+       
+       $("#desc-container").css({
+         'width' : wc + '%'  //'100%'
+       })
+  })
+  
+  
+     $('#desc-expander').removeClass('desc-expander').addClass('desc-collapser')
+   }
+   
+   function collapsIssueDescription(){
+     $('#desc-wrapper').hide('fast',function(){
+       $( ".right-pannel" ).css({
+           'padding-bottom':29
+         })
+     })
+     $('#desc-expander').removeClass('desc-collapser').addClass('desc-expander')
+   }
+   
+
+
 
