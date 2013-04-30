@@ -137,7 +137,7 @@ define(['jquery', 'chosen', 'bootstrap', 'jqueryui', 'blockui'], function ($, ch
           }
         });
         
-        $('.dropdown-menu > li').live({
+        $('.tc .dropdown-menu > li').live({
           click: function(e){
             e.stopPropagation();
             $(this).parents('.btn-group').removeClass('open')
