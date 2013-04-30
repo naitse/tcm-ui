@@ -3,17 +3,24 @@ define(function(require){
     var $ = require('jquery'),
     syncTemplate = require('text!templates/sync/sync.html'),
     jira = require('jiraModel'),
-    tcmModel = require('tcmModel');
-    _ = require('underscore');
+    tcmModel = require('tcmModel'),
+    _ = require('underscore'),
+    ddReleases = require('ddReleases');
 
 
     var SyncView = {
+        moduleId: "Sync",
+
+        rendered: false,
+
         render: function(){
+            if(!this.rendered){
+                $("#pannel-wrapper").append(syncTemplate);
 
-            $("#pannel-wrapper").append(syncTemplate);
-
-            this.loadIterations();
-            this.attachEvents();
+                this.loadIterations();
+                this.attachEvents();
+                this.rendered = true;
+            }
         },
 
         loadIterations: function(){
@@ -95,32 +102,15 @@ define(function(require){
             $('#btnSync').on('click', function(){
 
                     $('btnSync').button('toggle');
-                    tcmModel.releases.fetch().done(function(data){
 
 
-                        $('#sync-release-select').find('optgroup').remove();
 
-                        $(data).each(function(index, value){
+                    ddReleases.render('#ddcontainer','sync');
 
-                            var group = $('<optgroup label="Release "' + value.releaseName + ' />');
-                            var iterations = value.iterationName.split(',');
+                    $('#sync-wrapper').modal('show')
+                    $('#sync-release-select').chosen();
 
-
-                            $(iterations).each(function(indexIter, valueIter){
-
-                                var option = $('<option value="' + valueIter + '">' + valueIter + '</option>');
-                                $(group).append(option);
-                            });
-
-                            $('#sync-release-select').append(group);
-
-                        });
-
-                        $('#sync-wrapper').modal('show')
-                        $('#sync-release-select').chosen();
-                    });
-                }
-            );
+             });
 
             $("#checkCreateDestination").on('click', function(){
                 if( $("#checkCreateDestination").is(':checked')){

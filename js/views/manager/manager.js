@@ -3,11 +3,20 @@ define(function(require){
     var $ = require('jquery'),
         managerTemplate = require('text!templates/manager/manager.html');
         
-        require('tcm2');
+
 
     var ManagerView = {
+
+        moduleId: "Viewer",
+
+        rendered: false,
+
         render: function(){
-            $("#pannel-wrapper").append(managerTemplate);
+            if(!this.rendered){
+                $("#pannel-wrapper").append(managerTemplate);
+
+                this.rendered = true;
+            }
         }
     };
 

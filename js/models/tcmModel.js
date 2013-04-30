@@ -46,6 +46,19 @@ define(function(require){
                     });
                 },
 
+                plan: function(releaseId, iterationid){
+                    var urlplan =basePath +'releases/{rlsId}/iterations/{iterId}/plan'
+
+
+                    return $.ajax({
+                        type: "GET",
+                        cache:false,
+                        url: urlplan.replace('{rlsId}', releaseId).replace('{iterId}', iterationid),
+                        dataType: "json"
+                    });
+
+                },
+
                 features: {
                     url: basePath +'releases/{rlsId}/iterations/{iterId}/features',
 
