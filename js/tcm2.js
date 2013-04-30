@@ -36,6 +36,8 @@ define(['jquery', 'chosen', 'bootstrap', 'jqueryui', 'blockui'], function ($, ch
               'width' : wc + '%'
             });
             panelRightWidth()
+
+            $('#tcViewer').css('height',(($('.tcm-container').height() - 20)*100)/$('.tcm-container').height()+'%')
         });
  
         $('#release-select').live({
@@ -275,6 +277,7 @@ function getReleases(){
       $('#release-select').chosen()
       makeResizable();
     colapseExpandRightPanel('none');
+    $('#tcViewer').css('height',(($('.tcm-container').height() - 20)*100)/$('.tcm-container').height()+'%')
     }
     $('#release-select').find('optgroup').remove();
     $(data).each(function(){
@@ -794,7 +797,7 @@ function panelRightWidth(){
             handles : 'e',
             minWidth : 550,
             resize : function() {
-              var por = ((($('#pannel-wrapper').outerWidth() -$(this).outerWidth() -9) * 100) / $('#pannel-wrapper').outerWidth()) + '%'
+              var por = ((($('#pannel-wrapper').outerWidth() -$(this).outerWidth() - 9) * 100) / $('#pannel-wrapper').outerWidth()) + '%'
               $("#rp-wrapper").css({
                     'width' : por
               });
