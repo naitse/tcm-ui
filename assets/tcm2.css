@@ -856,4 +856,12 @@ background: url("images/bug.png");
 background-repeat: no-repeat;
 background-size: 100% 100%;
 }
+
+#rp-wrapper .modal-header{
+	height: 15 !important;
+padding-top: 0px !important;
+}
+.rp-title{
+	margin-top: 4px !important;
+}
 /**************************/

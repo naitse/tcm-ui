@@ -184,6 +184,7 @@ define(['jquery', 'chosen', 'bootstrap', 'jqueryui', 'blockui'], function ($, ch
             e.stopPropagation();
             colapseExpandRightPanel('block')
             clearTCModal();
+            $('.rp-title').text('New Test Case')
             
           }
         });
@@ -601,7 +602,8 @@ function clearTCs(){
 }
 
 function clearTCModal(){
-
+            $('.rp-title').text('')
+            $('#rp-wrapper .save').text('Add')
             $('.new-tc-title').val('').removeClass('title-error');
             $('.new-tc-desc').val('');
             $('#rp-wrapper .modal-body').data('flag',0);
@@ -701,6 +703,8 @@ function editTc(tcObject){
   colapseExpandRightPanel('block')
   clearTCModal();
 
+  $('.rp-title').text('Update Test Case')
+  $('#rp-wrapper .save').text('Update')
   $('.new-tc-title').val(tcObject.name);
   $('.new-tc-desc').val(tcObject.description);
 
