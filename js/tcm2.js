@@ -224,11 +224,13 @@ define(['jquery', 'chosen', 'bootstrap', 'jqueryui', 'blockui'], function ($, ch
             e.stopPropagation();
               $(this).find('.edit-tc').show();
               $(this).find('.del-tc').show();
+              $(this).find('.bug-tc').show();
           },
           mouseleave: function(e){
             e.stopPropagation();
               $(this).find('.edit-tc').hide();
               $(this).find('.del-tc').hide();
+              $(this).find('.bug-tc').hide();
           }
         });
 
@@ -252,6 +254,13 @@ define(['jquery', 'chosen', 'bootstrap', 'jqueryui', 'blockui'], function ($, ch
             $(this).find('.detailsIcon').click();
             $('.tc .wrapper').removeClass('active');
             $(this).find('.wrapper').addClass('active');
+          }
+        });
+
+        $('.bug-tc').live({
+          click: function(e){
+            e.stopPropagation();
+            window.open('http://www.mulesoft.org/jira/secure/CreateIssue.jspa?pid=10462&issuetype=1','_blank');
           }
         });
       
@@ -455,15 +464,15 @@ function loadFeatureDesc(desc){
 //######################################### TC ops
 
 function getTC(feature_id){
-  var noresult = $('<div>').addClass('noresult').text('No TCs found')
+  // var noresult = $('<div>').addClass('noresult').text('No TCs found')
   tcmModel.releases.iterations.features.test_cases.fetch(currentSS.releaseId,currentSS.iterationId, feature_id).done(function(data){
-    if(data.length>0){
+    // if(data.length>0){
       prepareTCs(data)
-    } else{
-      $('#tc-container').html('')
-      $('#tc-container').append(noresult)
-      $('#tc-refresh').removeClass('refreshing')
-    }   
+    // } else{
+    //   $('#tc-container').html('')
+    //   $('#tc-container').append(noresult)
+    //   $('#tc-refresh').removeClass('refreshing')
+    // }   
   })
 }   
 function prepareTCs(data){
@@ -527,6 +536,8 @@ function createTcHTML(tcObject){
     proposed_class = ' proposed'
   }
   
+  var bug_btn = $('<button type="button" title="open jira" class="btn btn-mini bug-tc" ><i class="icon-bug"></i></button>');
+
   var tc = $('<div>').addClass('tc').attr('tc-id',tcObject.tcId)
   var wrapper = $('<div>').addClass('wrapper' + proposed_class);
   var edit_btn = $('<button type="button" title="edit" class="btn btn-mini edit-tc" ><i class="icon-pencil"></i></button>');
@@ -546,7 +557,7 @@ function createTcHTML(tcObject){
   var steps = $('<pre>').addClass('tc-steps').text(tcObject.description).css('display','none');
   
   $(list).append(nr,ip,bl,fa,pa)
-  $(status_group).append(delete_btn, edit_btn, prop_btn, toggle, list)
+  $(status_group).append(delete_btn, edit_btn, bug_btn, prop_btn, toggle, list)
   $(stats).append(status_group)
   $(wrapper).append(description,expander, stats );
   $(tc).append(wrapper,steps).data('tcObject',tcObject)
