@@ -7,6 +7,7 @@ define(['jquery', 'chosen', 'bootstrap', 'jqueryui', 'blockui'], function ($, ch
    var backend = 'http://tcm-backend.cloudhub.io/api/';
    var proposed=0;
    var FuckRequireJS = 0;
+    var statCheck;
 
    var currentSS = {
         releaseName:'',
@@ -18,12 +19,115 @@ define(['jquery', 'chosen', 'bootstrap', 'jqueryui', 'blockui'], function ($, ch
         tcId:0
    }
 
+    function statsMonitoring(){
+    console.log(currentSS)
+    $('.feature').each(function(){
+      var feature_id = $(this).attr('feature-id');
+      var feature = this;
+        tcmModel.releases.iterations.features.executedTestCases.fetch(currentSS.releaseId, currentSS.iterationId, feature_id).done(function(data){
+            data = data[0];
+            if(!$(feature).data('tcStats').equals(data)){
+              updateFeatureTestStats(feature, data);
+            }
+        });
+    });
+   }
+
    String.prototype.trunc = function(n,useWordBoundary){
        var toLong = this.length>n,
            s_ = toLong ? this.substr(0,n-1) : this;
        s_ = useWordBoundary && toLong ? s_.substr(0,s_.lastIndexOf(' ')) : s_;
        return  toLong ? s_ + '...' : s_;
     };
+
+Object.defineProperty(Object.prototype, "equals", {
+    enumerable: false,
+    value: function (obj) {
+        var p;
+        if (this === obj) {
+            return true;
+        }
+
+        // some checks for native types first
+
+        // function and sring
+        if (typeof(this) === "function" || typeof(this) === "string" || this instanceof String) { 
+            return this.toString() === obj.toString();
+        }
+
+        // number
+        if (this instanceof Number || typeof(this) === "number") {
+            if (obj instanceof Number || typeof(obj) === "number") {
+                return this.valueOf() === obj.valueOf();
+            }
+            return false;
+        }
+
+        // null.equals(null) and undefined.equals(undefined) do not inherit from the 
+        // Object.prototype so we can return false when they are passed as obj
+        if (typeof(this) !== typeof(obj) || obj === null || typeof(obj) === "undefined") {
+            return false;
+        }
+
+        function sort (o) {
+            var result = {};
+
+            if (typeof o !== "object") {
+                return o;
+            }
+
+            Object.keys(o).sort().forEach(function (key) {
+                result[key] = sort(o[key]);
+            });
+
+            return result;
+        }
+
+        if (typeof(this) === "object") {
+            if (Array.isArray(this)) { // check on arrays
+                return JSON.stringify(this) === JSON.stringify(obj);                
+            } else { // anyway objects
+                for (p in this) {
+                    if (typeof(this[p]) !== typeof(obj[p])) {
+                        return false;
+                    }
+                    if ((this[p] === null) !== (obj[p] === null)) {
+                        return false;
+                    }
+                    switch (typeof(this[p])) {
+                    case 'undefined':
+                        if (typeof(obj[p]) !== 'undefined') {
+                            return false;
+                        }
+                        break;
+                    case 'object':
+                        if (this[p] !== null 
+                                && obj[p] !== null 
+                                && (this[p].constructor.toString() !== obj[p].constructor.toString() 
+                                        || !this[p].equals(obj[p]))) {
+                            return false;
+                        }
+                        break;
+                    case 'function':
+                        if (this[p].toString() !== obj[p].toString()) {
+                            return false;
+                        }
+                        break;
+                    default:
+                        if (this[p] !== obj[p]) {
+                            return false;
+                        }
+                    }
+                };
+
+            }
+        }
+
+        // at least check them with JSON
+        return JSON.stringify(sort(this)) === JSON.stringify(sort(obj));
+    }
+});
+
     
    $('document').ready(function(){
 
@@ -53,7 +157,6 @@ define(['jquery', 'chosen', 'bootstrap', 'jqueryui', 'blockui'], function ($, ch
                }
             currentSS.releaseId = $(this).find('option:selected').parents('optgroup').attr('rel-id');
             currentSS.iterationId = $(this).find('option:selected').val()
-            console.log(currentSS)
               itSelected(currentSS.iterationId)
           }
         });
@@ -322,11 +425,15 @@ function itSelected(iterationId){
       clearData();
       if (data.length > 0){
         prepareFeatures(data)
+        clearInterval(statCheck)
+        statCheck=setInterval(function(){statsMonitoring()},20000);
       }else{
 
         $('#feature-container').append(noresult)
       }
       toggleLoading('#feature-container',false)
+
+
     });
 
 }
@@ -423,20 +530,26 @@ function _updateFeatureTestStats(feature){
   updateFeatureTestStats(feature)
 }
 
-function updateFeatureTestStats(feature){
+function updateFeatureTestStats(feature, singleData){
+
   resetFeatureTestStats(feature)
   $(feature).find('.stats').addClass('loading-small');
+
+if (typeof singleData === 'undefined') {
     var feature_id = $(feature).attr('feature-id');
   tcmModel.releases.iterations.features.executedTestCases.fetch(currentSS.releaseId, currentSS.iterationId, feature_id).done(function(data){
-    // var data = {
-    //   total:10,
-    //   notrun:1,
-    //   blocked:1,
-    //   inprogress:1,
-    //   fail:3,
-    //   pass:4
-    // }
     data = data[0]
+    processStats(feature, data)
+  })
+}
+else {
+    processStats(feature, singleData);
+}
+
+}
+
+function processStats(feature, data){
+
     var cellWidth = 100 / parseInt(data.total);
     var propgressBar = $('<div class="progress" style="width: 40px; height: 12px; border: 1px solid rgb(108, 120, 133);">')
     for(var i=0; i<parseInt(data.pass);i++){
@@ -466,7 +579,6 @@ function updateFeatureTestStats(feature){
     $(feature).data('tcStats',data);
     $(feature).find('.stats').removeClass('loading-small');
 
-  })
 }
 
 function loadFeatureDesc(desc){
@@ -880,20 +992,7 @@ function expandIssueDescription(){
      $('#desc-expander').removeClass('desc-collapser').addClass('desc-expander')
    }
    
-   function statsMonitoring(){
-    $('.feature').each(function(){
-      var feature_id = $(this).attr('feature-id');
-      var feature = this;
-        tcmModel.releases.iterations.features.executedTestCases.fetch(currentSS.releaseId, currentSS.iterationId, feature_id).done(function(data){
-            data = data[0];
-            if($(feature).data('tcStats') == data){
-                console.log('iguales');
-            }else{
-              console.log('distinto')
-            }
-        });
-    });
-   }
+
 
 
 
