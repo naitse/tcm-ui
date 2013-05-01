@@ -25,6 +25,8 @@ define(function(require){
 
         loadIterations: function(){
 
+
+
             tcmModel.releases.fetch().done(function(data){
 
                 $('#plan-release-select').find('optgroup').remove();
@@ -40,20 +42,29 @@ define(function(require){
             });
 
             //$('#plan-release-select').chosen();
+
         },
 
         attachEvents: function(){
 
-            $("#btnGetPlan").on('click', function(){
+                $("#btnGetPlan").on('click', function(){
                 $('#btnGetPlan').button('loading');
-                $('#planGridContainer').hide();
                 $("#alertNoPlanfound").addClass('hide');
+                $("#planContainer").hide();
+                $("#planProgressBar").show()
+                $("#planProgressBar").find(".bar").css("width","10%");
 
                 var iterId =  $("#plan-release-select option:selected").val();
                 var rlsId =  $("#plan-release-select option:selected").parents('optgroup').attr('rel-id');
                 var planGridContainer  = $('#planGridContainer');
+                var planSummaryBody = $("#plan-summary-table-body");
+
+                planGridContainer.empty();
+                planSummaryBody.empty();
 
                 $.when( tcmModel.releases.iterations.plan(rlsId, iterId) ).done( function(coverageData){
+
+                    $("#planProgressBar").find(".bar").css("width","30%");
 
                     if(coverageData.length > 0){
                         var group = $('<div  class="accordion-group"/>');
@@ -76,15 +87,30 @@ define(function(require){
                             });
                             group.append(testsCollapsable);
                         });
-                            planGridContainer.append(group);
-                            planGridContainer.show();
+
+                        $("#planProgressBar").find(".bar").css("width","70%");
+
+                        planGridContainer.append(group);
+
+                        _.each(coverageData, function (ftr) {
+                            var row = $("<tr></tr>");
+
+                            row.append("<td>"+ftr.jiraKey+"</td>");
+                            row.append("<td>"+ftr.name+"</td>");
+                            row.append("<td>"+ftr.testCase.length+"</td>");
+
+                            planSummaryBody.append(row);
+                        });
+
+                        $("#planProgressBar").hide();
+                        $("#planContainer").show();
 
                     }else{
                         $("#alertNoPlanfound").removeClass('hide');
+                        $("#planProgressBar").hide();
                     }
 
-
-
+                    $('#btnGetPlan').button('reset');
 
                  });
 

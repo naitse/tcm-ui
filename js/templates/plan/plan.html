@@ -12,16 +12,31 @@
         </div>
     </div>
 
-
-    <div class="dropdown">
-        <a class="dropdown-toggle" data-toggle="dropdown" href="#">Dropdown trigger</a>
-        <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-            ...
+    <div id="planContainer" style="display:none;">
+        <ul class="nav nav-tabs">
+            <li><a href="#plan-summary" data-toggle="tab">Summary</a></li>
+            <li><a href="#plan-details" data-toggle="tab">Details</a></li>
         </ul>
+
+        <div class="tab-content">
+            <div class="tab-pane active" id="plan-summary" style="width: 80%; margin-left: auto; margin-right: auto;">
+                   <table class="table" style="background: #ffffff;">
+                       <thead>
+                            <tr>
+                                <th>Issue</th>
+                                <th>Summary</th>
+                                <th>Test Cases Count</th>
+                            </tr>
+                       </thead>
+                       <tbody id="plan-summary-table-body" ></tbody>
+                   </table>
+            </div>
+            <div class="tab-pane" id="plan-details" >
+                <div id="planGridContainer"  class="accordion" style=" background: #ffffff;"/>
+            </div>
+        </div>
     </div>
-
-    <div id="planGridContainer" style="display:none;" class="accordion">
-
+    <div class="progress" id="planProgressBar" style="width: 700px; margin-left: 20%; margin-top: 10%; display: none;">
+        <div class="bar" style="width: 0%;"></div>
     </div>
-
 </div>
