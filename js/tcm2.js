@@ -8,7 +8,7 @@ define(['jquery', 'chosen', 'bootstrap', 'jqueryui', 'blockui'], function ($, ch
    var proposed=0;
    var FuckRequireJS = 0;
 
-   var currentSS ={
+   var currentSS = {
         releaseName:'',
         releaseId:0,
         iterationName:'',
@@ -42,8 +42,18 @@ define(['jquery', 'chosen', 'bootstrap', 'jqueryui', 'blockui'], function ($, ch
  
         $('#release-select').live({
           change: function(){
+              currentSS ={
+                    releaseName:'',
+                    releaseId:0,
+                    iterationName:'',
+                    iterationId:0,
+                    featureId:0,
+                    feature:'',
+                    tcId:0
+               }
             currentSS.releaseId = $(this).find('option:selected').parents('optgroup').attr('rel-id');
             currentSS.iterationId = $(this).find('option:selected').val()
+            console.log(currentSS)
               itSelected(currentSS.iterationId)
           }
         });
@@ -51,8 +61,11 @@ define(['jquery', 'chosen', 'bootstrap', 'jqueryui', 'blockui'], function ($, ch
         $('.feature').live({
           click: function(e){
                 e.stopPropagation();
+
                 currentSS.featureId = parseInt($(this).attr('feature-id'));
                 currentSS.feature = $(this);
+
+                console.log(currentSS)
 
                 $('.feature').removeClass('active');
                 $(this).addClass('active');
@@ -77,8 +90,6 @@ define(['jquery', 'chosen', 'bootstrap', 'jqueryui', 'blockui'], function ($, ch
                 if($('.desc-expander').size() == 1){
                   $('#desc-expander').click()  
                 }
-
-//updateFeatureTestStatsTEST($(this))
 
                 displayed = true
             }
@@ -115,11 +126,13 @@ define(['jquery', 'chosen', 'bootstrap', 'jqueryui', 'blockui'], function ($, ch
         $('#tc-refresh').live({
           click: function(e){
             e.stopPropagation();
-            if (currentSS.featureId != 0){
-              $(this).addClass('refreshing');
-              clearTCs()
-              getTC(currentSS.featureId);
-            }
+            console.log(currentSS)
+            statsMonitoring();
+            // if (currentSS.featureId != 0){
+            //   $(this).addClass('refreshing');
+            //   clearTCs()
+            //   getTC(currentSS.featureId);
+            // }
           }
         });
         
@@ -450,6 +463,7 @@ function updateFeatureTestStats(feature){
     var runned = data.pass + data.failed + data.blocked
     $(feature).find('.stats').append(propgressBar)
     $(feature).find('.count').text(runned +'/'+data.total)
+    $(feature).data('tcStats',data);
     $(feature).find('.stats').removeClass('loading-small');
 
   })
@@ -577,16 +591,6 @@ function renderTC(tc){
 }
 
 function clearData(){
-  currentSS ={
-        releaseName:'',
-        releaseId:0,
-        iterationName:'',
-        iterationId:0,
-        featureId:0,
-        feature:'',
-        tcId:0
-   }
-
   $('#feature-container').children().remove()
   $('.add-tc').attr('disabled',true)
   $('#desc-container').children().remove()
@@ -876,6 +880,20 @@ function expandIssueDescription(){
      $('#desc-expander').removeClass('desc-collapser').addClass('desc-expander')
    }
    
+   function statsMonitoring(){
+    $('.feature').each(function(){
+      var feature_id = $(this).attr('feature-id');
+      var feature = this;
+        tcmModel.releases.iterations.features.executedTestCases.fetch(currentSS.releaseId, currentSS.iterationId, feature_id).done(function(data){
+            data = data[0];
+            if($(feature).data('tcStats') == data){
+                console.log('iguales');
+            }else{
+              console.log('distinto')
+            }
+        });
+    });
+   }
 
 
 
