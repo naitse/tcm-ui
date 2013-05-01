@@ -135,12 +135,11 @@ define(['jquery', 'chosen', 'bootstrap', 'jqueryui', 'blockui','extendJS'], func
           click: function(e){
             e.stopPropagation();
             console.log(currentSS)
-            statsMonitoring();
-            // if (currentSS.featureId != 0){
-            //   $(this).addClass('refreshing');
-            //   clearTCs()
-            //   getTC(currentSS.featureId);
-            // }
+            if (currentSS.featureId != 0){
+              $(this).addClass('refreshing');
+              clearTCs()
+              getTC(currentSS.featureId);
+            }
           }
         });
         
