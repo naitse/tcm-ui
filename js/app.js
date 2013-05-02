@@ -9,7 +9,7 @@ define([
     'views/metrics/metrics',
     'views/metrics/release_metrics',
     'tcm2',
-    'routerjs'
+    'backbone'
 
 ], function($, _, TopMenuView, managerView, syncView, planView, MetricsView, RlsMetricsView){
 
@@ -36,10 +36,6 @@ define([
         }
 
     ]
-
-
-
-    var routerjs = new Router();
 
     function loadModule(module){
 
@@ -74,46 +70,46 @@ define([
 
             this.routePaths();
 
-            if(window.location.hash.indexOf("#sync") != -1 ){
-                loadModule(syncView);
-            }else if(window.location.hash.indexOf("#viewer") != -1){
-                loadModule(managerView);
-            }else if(window.location.hash.indexOf("#plan") != -1){
-                loadModule(planView);
-            }else if(window.location.hash.indexOf("#metrics") != -1){
-                loadModule(MetricsView);
-            }else if(window.location.hash.indexOf("#rlsmetrics") != -1){
-                loadModule(RlsMetricsView);
-                RlsMetricsView.generateGraph();
-            }
+
         },
 
         routePaths: function(){
 
-            routerjs.route('/viewer', function(){
+            var AppRouter = Backbone.Router.extend({
+                routes: {
+                    "sync": "sync",
+                    "plan": "plan",
+                    "metrics": "metrics",
+                    "rlsmetrics": "rlsmetrics",
+                    "*actions": "defaultRoute"
+                }
+            });
+            // Initiate the router
+            var app_router = new AppRouter;
+
+            app_router.on('route:defaultRoute', function(actions) {
                 loadModule(managerView);
             });
 
-            routerjs.route('/sync', function(){
+            app_router.on('route:sync', function(actions) {
                 loadModule(syncView);
             });
 
-            routerjs.route('/plan', function(){
+            app_router.on('route:plan', function(actions) {
                 loadModule(planView);
             });
 
-            routerjs.route('/metrics', function(){
+            app_router.on('route:metrics', function(actions) {
                 loadModule(MetricsView);
             });
 
-            routerjs.route('/rlsmetrics', function(){
+            app_router.on('route:rlsmetrics', function(actions) {
                 loadModule(RlsMetricsView);
-                RlsMetricsView.generateGraph();
             });
-           /*
-            routerjs.route('/', function(){
-                loadModule(managerView);
-            });*/
+
+
+            Backbone.history.start();
+
         }
     };
 
