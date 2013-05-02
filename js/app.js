@@ -7,10 +7,11 @@ define([
     'views/sync/sync',
     'views/plan/plan',
     'views/metrics/metrics',
+    'views/metrics/release_metrics',
     'tcm2',
     'routerjs'
 
-], function($, _, TopMenuView, managerView, syncView, planView, MetricsView){
+], function($, _, TopMenuView, managerView, syncView, planView, MetricsView, RlsMetricsView){
 
     var modules = [
         {
@@ -28,7 +29,12 @@ define([
         {
             'id': 'Metrics',
             'divContainer':'#tcMetrics'
+        },
+        {
+            'id': 'RlsMetrics',
+            'divContainer': '#tcRlsMetrics'
         }
+
     ]
 
 
@@ -42,10 +48,10 @@ define([
             if( moduleItem.id == module.moduleId  ){
 
                 $(moduleItem.divContainer).show();
-                console.log("show", moduleItem);
+                //console.log("show", moduleItem);
 
             }else{
-                console.log("hide", moduleItem);
+                //console.log("hide", moduleItem);
                 $(moduleItem.divContainer).hide();
 
             }
@@ -64,6 +70,7 @@ define([
             syncView.render();
             planView.render()
             MetricsView.render();
+            RlsMetricsView.render();
 
             this.routePaths();
 
@@ -75,6 +82,9 @@ define([
                 loadModule(planView);
             }else if(window.location.hash.indexOf("#metrics") != -1){
                 loadModule(MetricsView);
+            }else if(window.location.hash.indexOf("#rlsmetrics") != -1){
+                loadModule(RlsMetricsView);
+                RlsMetricsView.generateGraph();
             }
         },
 
@@ -94,6 +104,11 @@ define([
 
             routerjs.route('/metrics', function(){
                 loadModule(MetricsView);
+            });
+
+            routerjs.route('/rlsmetrics', function(){
+                loadModule(RlsMetricsView);
+                RlsMetricsView.generateGraph();
             });
            /*
             routerjs.route('/', function(){
