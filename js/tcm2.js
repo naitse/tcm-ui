@@ -127,7 +127,7 @@ define(['jquery', 'chosen', 'bootstrap', 'jqueryui', 'blockui','extendJS'], func
             $(this).addClass('refreshing');
             clearData();
             collapsIssueDescription();
-            getReleases();
+            itSelected(currentSS.iterationId);
           }
         });
 
@@ -280,6 +280,12 @@ define(['jquery', 'chosen', 'bootstrap', 'jqueryui', 'blockui','extendJS'], func
           }
         });
 
+        $('.tc .tc-steps').live({
+          click: function(e){
+            e.stopPropagation();
+          }
+        })
+
         $('.bug-tc').live({
           click: function(e){
             e.stopPropagation();
@@ -311,7 +317,6 @@ function getReleases(){
     })
      
     $('#release-select').trigger("liszt:updated")
-    $('#feature-refresh').removeClass('refreshing')
     FuckRequireJS = 1
   });
 } 
@@ -336,7 +341,7 @@ function itSelected(iterationId){
         $('#feature-container').append(noresult)
       }
       toggleLoading('#feature-container',false)
-
+      $('#feature-refresh').removeClass('refreshing')
 
     });
 
