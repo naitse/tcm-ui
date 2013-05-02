@@ -1,6 +1,7 @@
 define(function(){
-    var basePath = "http://tcm-backend.cloudhub.io/api/";
-    //var basePath = "http://localhost:8088/api/";
+    //var basePath = "http://tcm-backend.cloudhub.io/api/";
+    var basePath = "http://localhost:8081/api/";
+    var basePath2 = basePath.replace('api/','');
 
     var tcm_model = {
 
@@ -70,6 +71,22 @@ define(function(){
                         dataType: "json"
                     });
 
+                },
+
+                monitoringExecutedTestCases:{
+
+                    url: basePath2 +'monitoringETC',
+
+                    fetch: function (releaseId, iterationid, data) {
+                        return $.ajax({
+                            type: "POST",
+                            cache:false,
+                            data: JSON.stringify(data),
+                            url:  this.url,
+                            dataType: "json",
+                            contentType : 'application/json'
+                        });
+                    }
                 },
 
                 features: {

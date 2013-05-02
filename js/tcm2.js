@@ -4,10 +4,11 @@ define(['jquery', 'chosen', 'bootstrap', 'jqueryui', 'blockui','extendJS'], func
 
    var prefix = '';
    var displayed = false;
-   var backend = 'http://tcm-backend.cloudhub.io/api/';
+   var backend = 'http://localhost:8081/api/';//'http://tcm-backend.cloudhub.io/api/';
    var proposed=0;
    var FuckRequireJS = 0;
     var statCheck;
+    var monitoring_interval = 15000;
 
    var currentSS = {
         releaseName:'',
@@ -19,20 +20,6 @@ define(['jquery', 'chosen', 'bootstrap', 'jqueryui', 'blockui','extendJS'], func
         tcId:0
    }
 
-  function statsMonitoring(){
-    $('.feature').each(function(){
-      var feature_id = $(this).attr('feature-id');
-      var feature = this;
-        tcmModel.releases.iterations.features.executedTestCases.fetch(currentSS.releaseId, currentSS.iterationId, feature_id).done(function(data){
-            data = data[0];
-            if(!$(feature).data('tcStats').equals(data)){
-              updateFeatureTestStats(feature, data);
-            }
-        });
-    });
-   }
-
-   
     
    $('document').ready(function(){
 
@@ -327,6 +314,7 @@ function getReleases(){
 
 function itSelected(iterationId){
    //console.log($(selected_node).val())
+   currentSS.iterationId = iterationId
     var noresult = $('<div>').addClass('noresult').text('No IONs found')
     $('#feature-container').html('')
     toggleLoading('#feature-container',true, 'big')
@@ -334,8 +322,8 @@ function itSelected(iterationId){
       clearData();
       if (data.length > 0){
         prepareFeatures(data)
-        clearInterval(statCheck)
-        statCheck=setInterval(function(){statsMonitoring()},20000);
+        clearTimeout(statCheck)
+        statCheck=setTimeout(function(){statsMonitoring(iterationId)}, monitoring_interval);
       }else{
 
         $('#feature-container').append(noresult)
@@ -782,7 +770,7 @@ function toggleLoading(container, toggle, size){
 
 }
 
-});
+
 
 function colapseExpandRightPanel(state){
   
@@ -899,7 +887,31 @@ function expandIssueDescription(){
      $('#desc-expander').removeClass('desc-collapser').addClass('desc-expander')
    }
    
+  function statsMonitoring(iterationId){
+      
+      var features_array = [];
+    $('.feature').each(function(){
+      var feature_object = {
+          featureId:$(this).attr('feature-id'),
+          states:$(this).data('tcStats')
+      }
+
+      features_array.push(feature_object);
+    });
+
+        tcmModel.releases.iterations.monitoringExecutedTestCases.fetch(currentSS.releaseId, currentSS.iterationId, features_array).done(function(data){
+            if(data.length > 0){
+              $(data).each(function(){
+                updateFeatureTestStats($('.feature[feature-id='+data[0].featureId+']'), data[0].states);
+              });
+            }
+            statCheck=setTimeout(function(){statsMonitoring(iterationId)}, monitoring_interval);
+        }).fail(function(){
+          statCheck=setTimeout(function(){statsMonitoring(iterationId)}, monitoring_interval);
+        });
+
+   }
 
 
 
-
+});
