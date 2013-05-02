@@ -1,0 +1,33 @@
+<div id="tcMetrics">
+    <div ><h3>Select Iteration:</h3></div>
+
+    <div>
+        <select data-placeholder="Choose an Iteration..." id="metrics-release-select" tabindex="3">
+            <option></option>
+        </select>
+        <button type="button" id="btnGetMetrics" class="btn btn-primary" data-loading-text="Loading...">Pull Metrics</button></div>
+    <div>
+        <div id="alertNoMetrics" class="alert alert-error hide" stlye="width:200px;">
+            There was an error pulling metrics
+        </div>
+    </div>
+
+    <div id="metricsContainer" style="display:none">
+        <ul class="nav nav-tabs">
+            <li><a href="#plan-summary" data-toggle="tab">Plan Execution</a></li>
+            <li><a href="#plan-details" data-toggle="tab">Details</a></li>
+        </ul>
+
+        <div class="tab-content">
+            <div class="tab-pane active" id="plan-summary" style="width: 80%; margin-left: auto; margin-right: auto;">
+
+            </div>
+            <div class="tab-pane" id="plan-details" >
+
+            </div>
+        </div>
+    </div>
+    <div class="progress" id="metricsProgressBar" style="display: none">
+        <div class="bar" style="display: none"></div>
+    </div>
+</div>

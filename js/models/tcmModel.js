@@ -1,6 +1,6 @@
-define(function(require){
-    var basePath = "http://tcm-backend.cloudhub.io/api/";
-
+define(function(){
+    //var basePath = "http://tcm-backend.cloudhub.io/api/";
+    var basePath = "http://localhost:8088/api/";
 
     var tcm_model = {
 
@@ -48,6 +48,19 @@ define(function(require){
 
                 plan: function(releaseId, iterationid){
                     var urlplan =basePath +'releases/{rlsId}/iterations/{iterId}/plan'
+
+
+                    return $.ajax({
+                        type: "GET",
+                        cache:false,
+                        url: urlplan.replace('{rlsId}', releaseId).replace('{iterId}', iterationid),
+                        dataType: "json"
+                    });
+
+                },
+
+                metrics_executed: function(releaseId, iterationid){
+                    var urlplan =basePath +'releases/{rlsId}/iterations/{iterId}/metricExecuted'
 
 
                     return $.ajax({

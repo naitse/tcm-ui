@@ -6,10 +6,11 @@ define([
     'views/manager/manager',
     'views/sync/sync',
     'views/plan/plan',
+    'views/metrics/metrics',
     'tcm2',
     'routerjs'
 
-], function($, _, TopMenuView, managerView, syncView, planView){
+], function($, _, TopMenuView, managerView, syncView, planView, MetricsView){
 
     var modules = [
         {
@@ -23,6 +24,10 @@ define([
         {
             'id': 'Viewer',
             'divContainer':'#tcViewer'
+        },
+        {
+            'id': 'Metrics',
+            'divContainer':'#tcMetrics'
         }
     ]
 
@@ -57,7 +62,8 @@ define([
 
             managerView.render();
             syncView.render();
-            planView.render();
+            planView.render()
+            MetricsView.render();
 
             this.routePaths();
 
@@ -67,6 +73,8 @@ define([
                 loadModule(managerView);
             }else if(window.location.hash.indexOf("#plan") != -1){
                 loadModule(planView);
+            }else if(window.location.hash.indexOf("#metrics") != -1){
+                loadModule(MetricsView);
             }
         },
 
@@ -85,7 +93,7 @@ define([
             });
 
             routerjs.route('/metrics', function(){
-                console.log("soon");
+                loadModule(MetricsView);
             });
            /*
             routerjs.route('/', function(){

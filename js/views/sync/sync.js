@@ -4,8 +4,7 @@ define(function(require){
     syncTemplate = require('text!templates/sync/sync.html'),
     jira = require('jiraModel'),
     tcmModel = require('tcmModel'),
-    _ = require('underscore'),
-    ddReleases = require('ddReleases');
+    _ = require('underscore');
 
 
     var SyncView = {

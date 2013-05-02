@@ -3,9 +3,7 @@ define(function(require){
     var $ = require('jquery'),
         planTemplate = require('text!templates/plan/plan.html'),
         tcmModel = require('tcmModel'),
-        _ = require('underscore'),
-        ddReleases = require('ddReleases');
-
+        _ = require('underscore');
 
     var PlanView = {
         moduleId: "Plan",

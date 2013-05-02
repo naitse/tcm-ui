@@ -10,7 +10,9 @@ require.config({
     jiraModel: 'models/jira',
     tcmModel: 'models/tcmModel',
     blockui: 'libs/blockui/jquery.blockUI',
-    ddReleases: 'widgets/releases_iterations_dd'
+    raphael: 'libs/graphael/raphael-min',
+    graphael: 'libs/graphael/g.raphael-min',
+    pie_min: 'libs/graphael/g.pie-min'
   },
 
   shim: {
@@ -31,6 +33,15 @@ require.config({
     },
     routerjs:{
         deps: ['jquery', 'history']
+    },
+    raphael:{
+        exports: 'Raphael'
+    },
+    graphael:{
+        deps: ['raphael']
+    },
+    pie_min:{
+        deps:['raphael']
     }
   }
 });
