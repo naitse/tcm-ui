@@ -1,6 +1,6 @@
 define(function(){
-    //var basePath = "http://tcm-backend.cloudhub.io/api/";
-    var basePath = "http://localhost:8088/api/";
+    var basePath = "http://tcm-backend.cloudhub.io/api/";
+    //var basePath = "http://localhost:8088/api/";
 
     var tcm_model = {
 
