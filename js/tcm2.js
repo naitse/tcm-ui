@@ -4,7 +4,7 @@ define(['jquery', 'chosen', 'bootstrap', 'jqueryui', 'blockui','extendJS'], func
 
    var prefix = '';
    var displayed = false;
-   var backend = 'http://localhost:8081/api/';//'http://tcm-backend.cloudhub.io/api/';
+   var backend = 'http://tcm-backend.cloudhub.io/api/';
    var proposed=0;
    var FuckRequireJS = 0;
     var statCheck;
