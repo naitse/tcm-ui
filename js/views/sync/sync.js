@@ -103,11 +103,23 @@ define(function(require){
                     $('btnSync').button('toggle');
 
 
+                    tcmModel.releases.fetch().done(function(data){
 
-                    ddReleases.render('#ddcontainer','sync');
+                        $('#sync-release-select').find('optgroup').remove();
+
+                        $(data).each(function(){
+                            var optionG = $('<optgroup>').attr('label', "Release "+this.name).attr('rel-id',this.id)
+                            $(this.iterations).each(function(){
+                                var option = $('<option>').attr('value', this.id).text( this.name);
+                                $(optionG).append(option);
+                            });
+                            $('#sync-release-select').append(optionG)
+                        });
+                    });
+
 
                     $('#sync-wrapper').modal('show')
-                    $('#sync-release-select').chosen();
+                    //$('#sync-release-select').chosen();
 
              });
 
