@@ -73,6 +73,19 @@ define(function(){
 
                 },
 
+                metrics_dailyexecuted: function(releaseId, iterationid){
+                    var urlplan =basePath +'releases/{rlsId}/iterations/{iterId}/metricDailyExecution'
+
+
+                    return $.ajax({
+                        type: "GET",
+                        cache:false,
+                        url: urlplan.replace('{rlsId}', releaseId).replace('{iterId}', iterationid),
+                        dataType: "json"
+                    });
+
+                },
+
                 monitoringExecutedTestCases:{
 
                     url: basePath2 +'monitoringETC',

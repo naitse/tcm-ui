@@ -1,4 +1,37 @@
+<style type="text/css">
+.graph-container {
+    display: table;
+}
+.main-container {
+    display: table-cell;
+    width: 100%;
+    padding:8px;
+}
+.main-container #container{
+    width:100%;
+}
+.graph-previews {
+    display: table-cell;
+    width: 300px;
+    vertical-align: top;
+    padding: 8px;
+}
+
+.graph-previews .graph{
+   width: 320px; 
+   height: 200px; 
+   -webkit-box-shadow:0 0px 12px -3px #000 inset;
+    -moz-box-shadow:0 0px 12px -3px #000 inset;
+    box-shadow:0 0px 12px -3px #000 inset;
+    padding: 6px;
+}
+
+#metricsContainer{
+    margin-top: 30px;
+}
+</style>
 <div id="tcMetrics">
+<div id="metrics-controls">
     <div ><h3>Select Iteration:</h3></div>
 
     <div>
@@ -11,11 +44,17 @@
             There was an error pulling metrics
         </div>
     </div>
-
+</div>
     <div id="metricsContainer" style="display:none; " >
-        <div  class="graph-container">
-           <div id="executionContainer" class="ds" style="margin: 0 auto;"></div>
-           <div id="dailyExecutionContainer" class="ds" style="margin: 0 auto;"></div>
+        <div class="graph-container">
+            <div class="main-container">
+                <div id="container" style="width: 100%">
+                   <div id="executionContainer" class="span9 graph round-corner-all" style="margin: 0 auto;"></div>
+                </div>
+            </div>
+            <div class="graph-previews round-corner-all">
+                <div id="dailyExecutionContainer" class="graph round-corner-all"></div>
+            </div>
         </div>
     </div>
     <div class="progress" id="metricsProgressBar" style="display: none">

@@ -56,6 +56,7 @@ define(function(require){
 
                 $("#metricsProgressBar").show();
                 $("#metricsProgressBar").find(".bar").css("width","10%");
+                console.log('teta')
 
                 $.when( tcmModel.releases.iterations.metrics_executed(rlsId, iterId)).done(function( metrics ){
                     if(metrics.length > 0){
@@ -68,6 +69,8 @@ define(function(require){
 
                         });
 
+                        $('#executionContainer').data('data',chartData);
+
                         renderExecutionPie(chartData);
                     }
 
@@ -75,11 +78,25 @@ define(function(require){
 
                 $("#metricsProgressBar").find(".bar").css("width","50%");
 
+                $.when( tcmModel.releases.iterations.metrics_dailyexecuted(rlsId, iterId)).done(function( metrics ){
+                    if(metrics.length > 0){
+                        var days = new Array();
+                        var testcases = new Array();
 
-                //$.when(
-                    renderDailyExec(['04-30', '05-02'], [17, 24]);
-                    renderIterationsTrend();
-                //);
+
+                        _.each(metrics, function(value, key, list){
+                            days.push(value.day);
+                            testcases.push(value.testcases);
+                        });
+
+                        $('#dailyExecutionContainer').data('data',[days,testcases]);
+                        // $('#dailyExecutionContainer').data('testcases',testcases);
+
+                        renderDailyExec();
+                    }
+
+                });
+
                 $('.carousel').each(function(){
                     $(this).carousel({
                         interval: false
@@ -94,71 +111,22 @@ define(function(require){
 
     };
 
-    function renderIterationsTrend(){
-        $('#iterationsTrendContainer').highcharts({
-            chart: {
-                type: 'column'
-            },
-            title: {
-                text: 'Iterations Test Case Execution Tren'
-            },
-            subtitle: {
-                text: 'by status'
-            },
-            xAxis: {
-                categories: [
-                    'Iter 13',
-                    'Iter 14',
-                    'Iter 15',
-                    'Iter 16'
-                ]
-            },
-            yAxis: {
-                min: 0,
-                title: {
-                    text: 'Test Cases'
-                }
-            },
-            plotOptions: {
-                column: {
-                    pointPadding: 0.2,
-                    borderWidth: 0
-                }
-            },
-            series: [{
-                name: 'Blocked',
-                data: [2, 0, 1, 0]
-
-            }, {
-                name: 'Failed',
-                data: [3,0,6,0]
-
-            }, {
-                name: 'Passed',
-                data: [0,0,19,0]
-
-            }, {
-                name: 'Not Run',
-                data: [1, 0, 59, 0]
-
-            },
-            {
-                name: 'In Progress',
-                data: [3, 0, 0, 0]
-
-            }
-            ]
-        });
-
-    }
-
     function renderExecutionPie(data){
+
+        var data = $('#executionContainer').data('data');
+        var $this = $('#executionContainer');
+        
         $('#executionContainer').highcharts({
             chart: {
                 plotBackgroundColor: null,
                 plotBorderWidth: null,
                 plotShadow: false,
-                margin: [40, 0, 0, 0]
+                margin: [40, 0, 0, 0],
+                events: {
+                    click: function(event) {
+                        toggleChartFocus($this);
+                    }
+                }    
             },
             title: {
                 text: 'Test plan execution'
@@ -183,54 +151,87 @@ define(function(require){
                 data: data
             }]
         });
+        
+        adjustChartHeight()
+
     }
 
-    function renderDailyExec(categories, data){
+    function renderDailyExec(days, tcs){
+
+        var $this = $('#dailyExecutionContainer');
+        var days = $this.data('data')[0];
+        var tcs = $this.data('data')[1];
+
         $('#dailyExecutionContainer').highcharts({
             chart: {
-                type: 'line',
-                margin: [40, 0, 0, 0]
-
+                events: {
+                    click: function(event) {
+                        toggleChartFocus($this);
+                    }
+                }      
             },
-            title: {
+             title: {
                 text: 'Daily Execution',
                 x: -20 //center
             },
-            subtitle: {
-                text: '',
-                x: -20
-            },
             xAxis: {
-                categories: categories
+                categories: days,
+                title: {
+                    text: 'Days'
+                }
             },
             yAxis: {
                 title: {
                     text: 'Test Cases'
-                },
-                plotLines: [{
-                    value: 0,
-                    width: 1,
-                    color: '#808080'
-                }]
-            },
-            tooltip: {
-                valueSuffix: ''
-            },
-            legend: {
-                layout: 'vertical',
-                align: 'right',
-                verticalAlign: 'top',
-                x: -10,
-                y: 100,
-                borderWidth: 0
+                }
             },
             series: [{
-                name: 'Amount',
-                data: data
+                showInLegend: false,
+                data: tcs
             }]
         });
     }
 
+    function toggleChartFocus(chartDiv){
+
+        var main_graph = $('.graph-container').find('#container');
+        var current_graph = $('.graph-container').find('#container').children();
+        var preview_graph = $('.graph-previews').find(chartDiv);
+
+        if( $('.graph-previews').find(chartDiv).size() == 1 ){
+            current_graph.html('').hide();
+            preview_graph.html('').hide;
+            $('.graph-previews').append(current_graph);
+            main_graph.append(preview_graph)
+            $('.graph-previews').children().show();
+            main_graph.children().show;
+            renderDailyExec();
+            renderExecutionPie();
+        }else{
+            //to prevent focused graph to be removed
+        }
+    }
+
+    function adjustChartHeight(){
+
+        $('#tcMetrics').css('height',(($('.tcm-container').height() - 30)*100)/$('.tcm-container').height()+'%')
+
+        var parentWidth = $('#metricsContainer').width();
+        var parentHeight = $('.tcm-container').height()
+        var metrics_controls = $('#metrics-controls').height();
+        var previewsWidth = 420;
+        var currentChartWidth = $('.graph-container').find('#container').children().width();
+        var newChartWidth = parentWidth - previewsWidth;
+        var newChartHeight = parentHeight - metrics_controls -100;
+        $('.graph-container').find('#container').children().highcharts().setSize(newChartWidth, newChartHeight)
+    }
+
+    $(window).resize(function(){
+
+        adjustChartHeight();
+    });
+
     return MetricsView;
 
 });
+
