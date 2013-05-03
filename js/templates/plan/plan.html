@@ -1,17 +1,18 @@
 <div id="tcPlan" style="display:none">
-    <div ><h3>Select Iteration:</h3></div>
+    <div id="plan-controls">
+        <div ><h3>Select Iteration:</h3></div>
 
-    <div>
-        <select data-placeholder="Choose an Iteration..." id="plan-release-select" tabindex="3">
-            <option></option>
-        </select>
-        <button type="button" id="btnGetPlan" class="btn btn-primary" data-loading-text="Loading...">Display Plan</button></div>
-    <div>
-        <div id="alertNoPlanfound" class="alert alert-error hide" stlye="width:200px;">
-            No plan found for given iteration!
+        <div>
+            <select data-placeholder="Choose an Iteration..." id="plan-release-select" tabindex="3">
+                <option></option>
+            </select>
+            <button type="button" id="btnGetPlan" class="btn btn-primary" data-loading-text="Loading...">Display Plan</button></div>
+        <div>
+            <div id="alertNoPlanfound" class="alert alert-error hide" stlye="width:200px;">
+                No plan found for given iteration!
+            </div>
         </div>
     </div>
-
     <div id="planContainer" style="display:none;">
         <ul class="nav nav-tabs">
             <li><a href="#plan-summary" data-toggle="tab">Summary</a></li>

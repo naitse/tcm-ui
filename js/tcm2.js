@@ -20,7 +20,9 @@ define(['jquery', 'chosen', 'bootstrap', 'jqueryui', 'blockui','extendJS'], func
         tcId:0
    }
 
-    
+  function adjustTabHeight(){
+    return null;
+   }
    $('document').ready(function(){
 
         getReleases();
@@ -812,10 +814,11 @@ function panelRightWidth(){
             handles : 'e',
             minWidth : 550,
             resize : function() {
-              var por = ((($('#pannel-wrapper').outerWidth() -$(this).outerWidth() - 9) * 100) / $('#pannel-wrapper').outerWidth()) + '%'
-              $("#rp-wrapper").css({
-                    'width' : por
-              });
+              // var por = ((($('#pannel-wrapper').outerWidth() -$(this).outerWidth() - 9) * 100) / $('#pannel-wrapper').outerWidth()) + '%'
+              // $("#rp-wrapper").css({
+              //       'width' : por
+              // });
+           panelRightWidth();
             }
           });
 
@@ -911,6 +914,7 @@ function expandIssueDescription(){
         });
 
    }
+
 
 
 

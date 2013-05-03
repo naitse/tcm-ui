@@ -93,6 +93,7 @@ define(function(require){
                         // $('#dailyExecutionContainer').data('testcases',testcases);
 
                         renderDailyExec();
+                        renderIterationsTrend(); // JUST A TESSSS
                     }
 
                 });
@@ -119,8 +120,8 @@ define(function(require){
         $('#executionContainer').highcharts({
             chart: {
                 plotBackgroundColor: null,
-                plotBorderWidth: null,
-                plotShadow: false,
+                // plotBorderWidth: null,
+                // plotShadow: false,
                 margin: [40, 0, 0, 0],
                 events: {
                     click: function(event) {
@@ -192,20 +193,88 @@ define(function(require){
         });
     }
 
+    function renderIterationsTrend(){
+
+            var data = {
+                categories: ['Iter 13','Iter 14','Iter 15','Iter 16'],
+                blocked:[2, 0, 1, 0],
+                failed: [3,0,6,0],
+                passed: [0,0,19,0],
+                notrun: [1, 0, 59, 0],
+                inprogress: [3, 0, 0, 0]
+            }
+
+            var $this = $('#iterationsTrendContainer').data('data', data);
+
+            $('#iterationsTrendContainer').highcharts({
+                chart: {
+                    type: 'column',
+                    events: {
+                    click: function(event) {
+                        toggleChartFocus($this);
+                    }
+                }    
+                },
+                title: {
+                    text: 'Iterations Test Case Execution Trend'
+                },
+                subtitle: {
+                    text: 'by status'
+                },
+                xAxis: {
+                    categories: data.categories
+                },
+                yAxis: {
+                    min: 0,
+                    title: {
+                        text: 'Test Cases'
+                    }
+                },
+                plotOptions: {
+                    column: {
+                        pointPadding: 0.2,
+                        borderWidth: 0
+                    }
+                },
+                series: [{
+                    name: 'Blocked',
+                    data: data.blocked
+
+                }, {
+                    name: 'Failed',
+                    data: data.failed
+
+                }, {
+                    name: 'Passed',
+                    data: data.passed
+
+                }, {
+                    name: 'Not Run',
+                    data: data.notrun
+
+                },
+                    {
+                        name: 'In Progress',
+                        data: data.inprogress
+
+                    }
+                ]
+            });
+
+    }
+
     function toggleChartFocus(chartDiv){
 
         var main_graph = $('.graph-container').find('#container');
-        var current_graph = $('.graph-container').find('#container').children();
-        var preview_graph = $('.graph-previews').find(chartDiv);
-
+        var current_graph = main_graph.children();
         if( $('.graph-previews').find(chartDiv).size() == 1 ){
-            current_graph.html('').hide();
-            preview_graph.html('').hide;
-            $('.graph-previews').append(current_graph);
+            var preview_graph = $('.graph-previews').find(chartDiv);
+            current_graph.html('');
+            preview_graph.html('');
             main_graph.append(preview_graph)
-            $('.graph-previews').children().show();
-            main_graph.children().show;
+            $('.graph-previews').prepend(current_graph);
             renderDailyExec();
+            renderIterationsTrend();
             renderExecutionPie();
         }else{
             //to prevent focused graph to be removed
@@ -228,7 +297,18 @@ define(function(require){
 
     $(window).resize(function(){
 
-        adjustChartHeight();
+        try{
+            $('#tcMetrics').css('height',(($('.tcm-container').height() - 30)*100)/$('.tcm-container').height()+'%')
+
+        var parentWidth = $('#metricsContainer').width();
+        var parentHeight = $('.tcm-container').height()
+        var metrics_controls = $('#metrics-controls').height();
+        var previewsWidth = 420;
+        var currentChartWidth = $('.graph-container').find('#container').children().width();
+        var newChartWidth = parentWidth - previewsWidth;
+        var newChartHeight = parentHeight - metrics_controls -100;
+        $('.graph-container').find('#container').children().highcharts().setSize(newChartWidth, newChartHeight)
+    }catch(err){}
     });
 
     return MetricsView;

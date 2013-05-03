@@ -109,7 +109,7 @@ define(function(require){
                     }
 
                     $('#btnGetPlan').button('reset');
-
+                    adjustTabtHeight()
                  });
 
             });
@@ -117,6 +117,18 @@ define(function(require){
         }
 
     };
+
+    function adjustTabtHeight(){
+
+        $('.tab-content').css('height',(($('.tcm-container').height() - $('#plan-controls').height() - $('#tcPlan .nav-tabs').height() - 70)*100)/$('.tcm-container').height()+'%')
+    }
+
+    $(window).resize(function(){
+
+        try{
+$('.tab-content').css('height',(($('.tcm-container').height() - $('#plan-controls').height() - $('#tcPlan .nav-tabs').height() - 70)*100)/$('.tcm-container').height()+'%')
+        }catch(err){}
+    });
 
     return PlanView;
 
