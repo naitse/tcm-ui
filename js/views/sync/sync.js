@@ -40,47 +40,47 @@ define(function(require){
 
             //select button
             $("#btnStep1").on('click', function(){
-                $('#btnStep1').button('loading');
-                $('#issuesContainer').hide();
-                $("#alertNoissuesfound").addClass('hide');
+            $('#btnStep1').button('loading');
+            $('#issuesContainer').hide();
+            $("#alertNoissuesfound").addClass('hide');
 
-                $.when( jira.issues.fetch($("#ddIterations option:selected").val()) ).done( function(jiraItems){
-                        var jirasContainer = $('#jiraItems');
-                        jirasContainer.empty();
+            $.when( jira.issues.fetch($("#ddIterations option:selected").val()) ).done( function(jiraItems){
+                var jirasContainer = $('#jiraItems');
+                jirasContainer.empty();
 
-                        _.each(jiraItems, function (item) {
+                _.each(jiraItems, function (item) {
 
-                            var row = $('<tr class="jiraRow"></tr>');
+                    var row = $('<tr class="jiraRow"></tr>');
 
-                            var checkbox = $('<input type="checkbox" name="' + item["key"] + '" value="">');
+                    var checkbox = $('<input type="checkbox" name="' + item["key"] + '" value="">');
 
-                            checkbox.on('click', function(){
-                                if($("#jiraItems tr input:checked").size() > 0){
-                                    $("#btnSync").removeAttr("disabled");
-                                }else{
-                                    $("#btnSync").attr("disabled", "disabled");
-                                }
-                            })
-
-                            row.append( $('<td></td>').append(checkbox) );
-                            row.append( $('<td>'+item["key"]+'</td>') );
-                            row.append( $('<td>'+item["summary"]+'</td>') );
-
-                            row.data('jiraIssue', item);
-
-                            jirasContainer.append(row);
-
-
-                        });
-
-                        $('#btnStep1').button('reset');
-
-                        if(jiraItems.length > 0){
-                            $('#issuesContainer').show();
+                    checkbox.on('click', function(){
+                        if($("#jiraItems tr input:checked").size() > 0){
+                            $("#btnSync").removeAttr("disabled");
                         }else{
-                            $("#alertNoissuesfound").removeClass('hide');
+                            $("#btnSync").attr("disabled", "disabled");
                         }
-                    });
+                    })
+
+                    row.append( $('<td></td>').append(checkbox) );
+                    row.append( $('<td>'+item["key"]+'</td>') );
+                    row.append( $('<td>'+item["summary"]+'</td>') );
+
+                    row.data('jiraIssue', item);
+
+                    jirasContainer.append(row);
+
+
+                });
+
+                $('#btnStep1').button('reset');
+
+                if(jiraItems.length > 0){
+                    $('#issuesContainer').show();
+                }else{
+                    $("#alertNoissuesfound").removeClass('hide');
+                }
+                });
 
             });
 
@@ -102,24 +102,10 @@ define(function(require){
 
                     $('btnSync').button('toggle');
 
-
-                    tcmModel.releases.fetch().done(function(data){
-
-                        $('#sync-release-select').find('optgroup').remove();
-
-                        $(data).each(function(){
-                            var optionG = $('<optgroup>').attr('label', "Release "+this.name).attr('rel-id',this.id)
-                            $(this.iterations).each(function(){
-                                var option = $('<option>').attr('value', this.id).text( this.name);
-                                $(optionG).append(option);
-                            });
-                            $('#sync-release-select').append(optionG)
-                        });
-                    });
-
+                    $('#sync-release-select').releases_iterations_dd();
 
                     $('#sync-wrapper').modal('show')
-                    //$('#sync-release-select').chosen();
+
 
              });
 
@@ -141,7 +127,7 @@ define(function(require){
             $('#syncSave').on('click', function(){
 
                 var iterationId = ""
-
+                var releaseId = ""
 
                 if($("#checkCreateDestination").is(':checked'))
                 {
@@ -162,12 +148,14 @@ define(function(require){
                 }else{
 
                    iterationId = $('#sync-release-select option:selected').val();
+                    releaseId = $('#sync-release-select option:selected').parents('optgroup').attr('rel-id');
+
                    if(iterationId !=""){
 
                        $("#jiraItems tr input:checked").each(function(){
                            var issue = $(this).parents('.jiraRow').data('jiraIssue');
 
-                           tcmModel.releases.iterations.features.create(iterationId, issue.key, issue.summary, issue.description);
+                           tcmModel.releases.iterations.features.create(releaseId, iterationId, issue.key, issue.summary, issue.description);
                        })
 
                    }else{
@@ -175,12 +163,8 @@ define(function(require){
                    }
                 }
 
-
-
-
-
-                //$('#sync-wrapper').modal('hide')
-                //$('btnSync').button('reset');
+                $('#sync-wrapper').modal('hide')
+                $('btnSync').button('reset');
             });
         }
     };

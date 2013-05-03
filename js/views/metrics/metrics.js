@@ -4,7 +4,7 @@ define(function(require){
         planTemplate = require('text!templates/metrics/metrics.html'),
         tcmModel = require('tcmModel'),
         _ = require('underscore');
-
+    var dd = require('releases_iterations_dd');
     require('highcharts');
     require('exporting');
 
@@ -25,21 +25,7 @@ define(function(require){
 
         loadIterations: function(){
 
-            tcmModel.releases.fetch().done(function(data){
-
-                $('#metrics-release-select').find('optgroup').remove();
-
-                $(data).each(function(){
-                    var optionG = $('<optgroup>').attr('label', "Release "+this.name).attr('rel-id',this.id)
-                    $(this.iterations).each(function(){
-                        var option = $('<option>').attr('value', this.id).text( this.name);
-                        $(optionG).append(option);
-                    });
-                    $('#metrics-release-select').append(optionG)
-                });
-            });
-
-            //$('#metrics-release-select').chosen();
+           $('#metrics-release-select').releases_iterations_dd();
 
         },
 

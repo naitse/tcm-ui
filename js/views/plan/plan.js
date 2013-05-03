@@ -23,24 +23,7 @@ define(function(require){
 
         loadIterations: function(){
 
-
-
-            tcmModel.releases.fetch().done(function(data){
-
-                $('#plan-release-select').find('optgroup').remove();
-
-                $(data).each(function(){
-                    var optionG = $('<optgroup>').attr('label', "Release "+this.name).attr('rel-id',this.id)
-                    $(this.iterations).each(function(){
-                        var option = $('<option>').attr('value', this.id).text( this.name);
-                        $(optionG).append(option);
-                    });
-                    $('#plan-release-select').append(optionG)
-                });
-            });
-
-            //$('#plan-release-select').chosen();
-
+            $('#plan-release-select').releases_iterations_dd();
         },
 
         attachEvents: function(){

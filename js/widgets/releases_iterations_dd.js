@@ -2,45 +2,36 @@ define(function(require){
 
     var $ = require('jquery');
     var tcmModel = require('tcmModel');
-    var objeto;
+    var $ = require('jquery');
+    var chosen = require('chosen');
 
-    var ddReleasesIteration = {
+    $.fn.extend({
+        releases_iterations_dd: function() {
 
+            var $this;
+            $this = $(this);
 
-        render: function(container, prefix){
-
-            $(container).empty();
-
-            objeto = $('<select data-placeholder="Choose an Iteration..." id="'  + prefix + '-release-select" tabindex="3"><<option/>');
-            $(container).append(objeto);
-
-
-            this.load();
-            console.log(objeto);
-            objeto.chosen();
-            console.log(objeto);
-
-
-        },
-
-        load: function(){
+            if (!$this.hasClass("chzn-done")) {
                 tcmModel.releases.fetch().done(function(data){
 
-                objeto.find('optgroup').remove();
+                    $this.find('optgroup').remove();
 
-                $(data).each(function(){
-                    var optionG = $('<optgroup>').attr('label', "Release "+this.name).attr('rel-id',this.id)
-                    $(this.iterations).each(function(){
-                        var option = $('<option>').attr('value', this.id).text( this.name);
-                        $(optionG).append(option);
+                    $(data).each(function(){
+                        var optionG = $('<optgroup>').attr('label', "Release "+this.name).attr('rel-id',this.id);
+
+                        $(this.iterations).each(function(){
+                            var option = $('<option>').attr('value', this.id).text( this.name);
+                            $(optionG).append(option);
+                        });
+                        $this.append(optionG);
+
                     });
-                    objeto.append(optionG)
+
+
+                    $this.chosen();
+
                 });
-
-            });
+            }
         }
-    };
-
-    return ddReleasesIteration;
-
+    });
 });

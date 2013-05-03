@@ -10,7 +10,8 @@ require.config({
     tcmModel: 'models/tcmModel',
     blockui: 'libs/blockui/jquery.blockUI',
     exporting: 'libs/highcharts/exporting',
-    highcharts: 'libs/highcharts/highcharts'
+    highcharts: 'libs/highcharts/highcharts',
+    releases_iterations_dd: 'widgets/releases_iterations_dd'
   },
 
   shim: {
@@ -34,6 +35,9 @@ require.config({
     },
     exporting:{
         deps: ['highcharts']
+    },
+    releases_iterations_dd:{
+        deps: ['chosen']
     }
   }
 });
