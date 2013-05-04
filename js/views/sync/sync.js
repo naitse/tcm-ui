@@ -131,14 +131,21 @@ define(function(require){
 
                 if($("#checkCreateDestination").is(':checked'))
                 {
-                    tcmModel.releases.create( $("#new-rls-title").val() ).done(function(data){
+                    tcmModel.releases.create( $("#new-rls-title").val() ).done(function(data, segundo, tercero){
 
-                        tcmModel.releases.iterations.create($("#new-rls-title").val(), $("#new-iter-title").val() ).done(function(data){
+                    var rlsId = tercero.getResponseHeader('location').toString();
+                        rlsId = rlsId.substring(rlsId.lastIndexOf('/') +1 , rlsId.length);
+
+
+                        tcmModel.releases.iterations.create(rlsId, $("#new-iter-title").val() ).done(function(data, segundo, tercero){
+
+                            var iterId = tercero.getResponseHeader('location').toString();
+                            iterId = iterId.substring(iterId.lastIndexOf('/') +1 , iterId.length);
 
                             $("#jiraItems tr input:checked").each(function(){
                                 var issue = $(this).parents('.jiraRow').data('jiraIssue');
 
-                                tcmModel.releases.iterations.features.create($("#new-iter-title").val(), issue.key, issue.summary, issue.description);
+                                tcmModel.releases.iterations.features.create(0, iterId, issue.key, issue.summary, issue.description);
                             })
 
                         });

@@ -1,6 +1,7 @@
 define(function(){
-    var basePath = "http://tcm-backend.cloudhub.io/api/";
-    //var basePath = "http://localhost:8081/api/";
+    //var basePath = "http://tcm-backend.cloudhub.io/api/";
+    var basePath = "http://tcm-backend-qa.cloudhub.io/api/";
+    //var basePath = "http://localhost:8088/api/";
     var basePath2 = basePath.replace('api/','');
 
     var tcm_model = {
@@ -33,14 +34,14 @@ define(function(){
             iterations: {
                 url: basePath + 'releases/{rlsId}/iterations',
 
-                create: function(rlsName, iterName){
+                create: function(rlsid, iterName){
                     var data ={
                         "name":iterName
                     };
 
                     return $.ajax({
                         type: "POST",
-                        url: this.url.replace("{rlsId}", rlsName),
+                        url: this.url.replace("{rlsId}", rlsid),
                         data: JSON.stringify(data),
                         dataType: "json",
                         contentType : 'application/json'
