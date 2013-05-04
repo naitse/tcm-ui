@@ -10,7 +10,7 @@ pre{white-space:pre-wrap;white-space:-moz-pre-wrap;white-space:-pre-wrap;white-s
 .desc-header{height:28px;border-bottom:1px solid #ccc;background:#f7f7f7;font-weight:bold;overflow:hidden}
 .desc-expander{background:url("images/item_open.png");height:14px;width:14px;margin-left:5px;margin-top:7px}
 .desc-collapser{background:url("images/item_close.png");height:14px;width:14px;margin-left:5px;margin-top:7px}
-.desc-header-text{font-size:12;top:-2px;position:relative}
+.desc-header-text{font-size:12;top:6px;position:absolute;margin-right:56px;margin-left: 4px;}
 .ds{display:inline-block}
 #desc-wrapper{height:100px}
 #desc-container{overflow-y:auto;box-shadow:0 1px 12px 0 black inset;height:80px;margin:0;clear:both;-webkit-box-shadow:rgba(69,69,69,0.667) 0 0 6px inset;-moz-box-shadow:rgba(69,69,69,0.667) 0 0 6px inset;box-shadow:rgba(69,69,69,0.667) 0 0 6px inset;background:#f7f8f9;padding:10px;font-size:12}
@@ -28,7 +28,7 @@ pre{white-space:pre-wrap;white-space:-moz-pre-wrap;white-space:-pre-wrap;white-s
 .tc-status.pass{background:url("images/check_sm.png") no-repeat;background-color:#e4f5d1;background-position:center}
 .tc-description{width:90%;margin-left:28px;float:left;position:relative;top:1.2em;line-height:0;padding-left:0;font-weight:bold;font-size:.9em}
 .round-corner-all{border-radius:6px}
-.feature{font-size:13;padding:0 5px 0 3px;background-color:white;border-bottom:1px solid #6c7885;height:51px;overflow:hidden;margin-left:2px;padding-left:0;font-weight:bold;margin-bottom:1px}
+.feature{position:relative;font-size:13;padding:0 5px 0 3px;background-color:white;border-bottom:1px solid #6c7885;height:51px;overflow:hidden;margin-left:2px;padding-left:0;font-weight:bold;margin-bottom:1px}
 #release_select_chzn{margin-left:2px;margin-top:1px}
 .refresh-icon{background:url("images/refresh-icon.gif");height:20px;width:20px;display:inline-block;position:relative;top:3px}
 .refreshing{background:url("images/LoadingIcon.gif")}
@@ -46,7 +46,7 @@ pre{white-space:pre-wrap;white-space:-moz-pre-wrap;white-space:-pre-wrap;white-s
 .tc-steps{max-height:200px;overflow-y:auto;box-shadow:0 1px 12px 0 black inset;clear:both;border-top:1px solid #ddd;-webkit-box-shadow:0 5px 3px -3px #e7e7e7 inset;-moz-box-shadow:0 5px 3px -3px #e7e7e7 inset;box-shadow:0 5px 3px -3px #e7e7e7 inset;background:#f7f7f7;padding:10px;font-size:12;margin:1px}
 #lp-wrapper{width:30%;height:100%;float:left;margin-right:5px;padding-right:2px;min-width:218px}
 .ui-resizable-e{height:100%;float:left;width:7px;background:url("images/dots-vertical.png") no-repeat;background-position:center;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;-ms-box-sizing:border-box;-o-box-sizing:border-box;box-sizing:border-box}
-.ui-resizable-s{cursor:s-resize;height:7px;width:100%;bottom:-10px;left:0;background:url("images/dots-horizontal.png") no-repeat;background-position:center;background-color:white;margin-bottom:5px;box-shadow:0 1px 12px 0 black inset;-webkit-box-shadow:rgba(69,69,69,0.667) 0 0 1px inset;-moz-box-shadow:rgba(69,69,69,0.667) 0 0 1px inset;box-shadow:rgba(69,69,69,0.667) 0 0 1px inset}
+.ui-resizable-s{cursor:s-resize;height:7px;width:100%;bottom:-7px;left:0;background:url("images/dots-horizontal.png") no-repeat;background-position:center;background-color:white;margin-bottom:5px;box-shadow:0 1px 12px 0 black inset;-webkit-box-shadow:rgba(69,69,69,0.667) 0 0 1px inset;-moz-box-shadow:rgba(69,69,69,0.667) 0 0 1px inset;box-shadow:rgba(69,69,69,0.667) 0 0 1px inset}
 .left-pannel .ui-resizable-e{right:-50px}
 ::-webkit-scrollbar{-webkit-appearance:none;width:7px}
 ::-webkit-scrollbar-thumb{border-radius:4px;background-color:rgba(0,0,0,.5);-webkit-box-shadow:0 0 1px rgba(255,255,255,.5)}
@@ -93,3 +93,10 @@ pre{white-space:pre-wrap;white-space:-moz-pre-wrap;white-space:-pre-wrap;white-s
 .icon-bug{display:inline-block;width:11px;height:17px;margin-top:1px;line-height:14px;vertical-align:text-top;background:url("images/bug.png");background-repeat:no-repeat;background-size:100% 100%}
 #rp-wrapper .modal-header{height:15!important;padding-top:0!important}
 .rp-title{margin-top:4px!important}
+.close-jira-btn{display:none;float: right;position: absolute;top: 5px;right: 5px;}
+.feature a{color: #454545;text-decoration: underline;}
+.feature a:hover{color: #ccc;}
+.desc-header-text div{height: 20px;overflow: hidden;color: #454545;text-decoration: underline;cursor: pointer;}
+.desc-header-text div:hover{color: #ccc;}
+
+

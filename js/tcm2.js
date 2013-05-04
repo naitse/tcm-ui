@@ -9,6 +9,7 @@ define(['jquery', 'chosen', 'bootstrap', 'jqueryui', 'blockui','extendJS'], func
    var FuckRequireJS = 0;
     var statCheck;
     var monitoring_interval = 15000;
+    var jiraLink = 'http://www.mulesoft.org/jira/browse/';
 
    var currentSS = {
         releaseName:'',
@@ -62,8 +63,10 @@ define(['jquery', 'chosen', 'bootstrap', 'jqueryui', 'blockui','extendJS'], func
                 currentSS.featureId = parseInt($(this).attr('feature-id'));
                 currentSS.feature = $(this);
 
-                console.log(currentSS)
-
+                var jiraKey = $(this).find('.jira-key').data('jiraKey');
+                var issueTitle = $('<div>').addClass('jira-key').attr('href', jiraLink + jiraKey).text(jiraKey+' - '+$(this).data('summary'))
+                $('.desc-header-text').html('').append(issueTitle)
+    
                 $('.feature').removeClass('active');
                 $(this).addClass('active');
                 loadFeatureDesc($(this).data('desc'))
@@ -95,7 +98,7 @@ define(['jquery', 'chosen', 'bootstrap', 'jqueryui', 'blockui','extendJS'], func
         $('.desc-expander').live({
           click: function(e){
             e.stopPropagation();
-            if($('.feature').size() != 0){
+            if($('.feature.active').size() != 0){
               $(this).addClass('detailsOpen')
                 expandIssueDescription();
             }
@@ -281,6 +284,22 @@ define(['jquery', 'chosen', 'bootstrap', 'jqueryui', 'blockui','extendJS'], func
             window.open('http://www.mulesoft.org/jira/secure/CreateIssue.jspa?pid=10462&issuetype=1','_blank');
           }
         });
+
+        $('.close-jira-btn').live({
+          click: function(e){
+            e.stopPropagation();
+            var $feature = $(this).parents('.feature');
+            closeJira($feature);
+          }
+        });
+
+        $('.desc-header-text .jira-key').live({
+          click: function(e){
+            e.stopPropagation();
+            window.open($(this).attr('href'),'_blank');
+          }
+        });
+
       
    });
  
@@ -343,20 +362,27 @@ function itSelected(iterationId){
 
 function prepareFeatures(data){ 
     $(data).each(function(){
-    
       //[{"jiraKey":"ION-2333","featureName":"Enable global deployment","featureDescription":"hay que hacer muchas cosas locas","featureId":1}]
-      
-      var feature = $('<div>').addClass('feature').attr('feature-id',this.featureId).data('desc', this.featureDescription)
+      var feature = $('<div>').addClass('feature').attr('feature-id',this.featureId).data('desc', this.featureDescription).data('summary',this.featureName)
       var title_bar = $('<div>').addClass('title-bar')
-      var jiraKey = $('<div>').addClass('jira-key').text(this.jiraKey)
-      var summary = $('<div>').addClass('summary').text(this.featureName)
+      var jiraKey = $('<a target="_blank">').addClass('jira-key').attr('href', jiraLink + this.jiraKey).text(this.jiraKey).data('jiraKey',this.jiraKey)
+      var summary = $('<div>').addClass('summary').text(this.featureName).attr('title',this.featureName)
       var stats = $('<div>').addClass('stats')
       var count = $('<div>').addClass('count')
       var bar = $('<div>').addClass('bar')
+      var display = '';
+
+      if(this.state == 2){
+        var close_jira_icon = 'icon-ok-circle';
+      }else{
+        var close_jira_icon = 'icon-thumbs-up closed';
+      }
+
+      var close_jira = $('<button type="button" class="btn btn-mini close-jira-btn "><i class="'+close_jira_icon+'"></i></button>')//icon-thumbs-up
       
       $(stats).append(count)
       $(title_bar).append(jiraKey,stats);
-      $(feature).append(title_bar,summary);
+      $(feature).append(title_bar,summary,close_jira);
       
       renderFeature(feature)
       
@@ -422,13 +448,6 @@ function resetFeatureTestStats(feature){
 }
 
 
-function _updateFeatureTestStats(feature){
-  $(feature).find('.bar').remove()
-  resetFeatureTestStats(feature)
-  $(feature).find('.stats').addClass('loading-small');
-  updateFeatureTestStats(feature)
-}
-
 function updateFeatureTestStats(feature, singleData){
 
   resetFeatureTestStats(feature)
@@ -448,7 +467,6 @@ else {
 }
 
 function processStats(feature, data){
-
     var cellWidth = 100 / parseInt(data.total);
     var propgressBar = $('<div class="progress" style="width: 40px; height: 12px; border: 1px solid rgb(108, 120, 133);">')
     for(var i=0; i<parseInt(data.pass);i++){
@@ -470,6 +488,17 @@ function processStats(feature, data){
     for(var i=0; i<parseInt(data.notrun);i++){
       var node = $('<div class="bar bar-notrun" style="width: '+cellWidth+'%;"></div>')
       $(propgressBar).append(node)
+    }
+
+    if(data.total != 0 && data.total == data.pass){
+      $(feature).find('.close-jira-btn').show();
+      $(feature).find('.summary').css('margin-right','30px');
+      if(data.state !=2 && $(feature).hasClass('active')){
+          updateFeatureState(feature);
+      }
+    }else{
+      $(feature).find('.close-jira-btn').hide();
+      $(feature).find('.summary').css('margin-right','0px');
     }
 
     var runned = data.pass + data.failed + data.blocked
@@ -496,7 +525,7 @@ function getTC(feature_id){
   // var noresult = $('<div>').addClass('noresult').text('No TCs found')
   tcmModel.releases.iterations.features.test_cases.fetch(currentSS.releaseId,currentSS.iterationId, feature_id).done(function(data){
     // if(data.length>0){
-      prepareTCs(data)
+      prepareTCs(data,feature_id)
     // } else{
     //   $('#tc-container').html('')
     //   $('#tc-container').append(noresult)
@@ -504,7 +533,7 @@ function getTC(feature_id){
     // }   
   })
 }   
-function prepareTCs(data){
+function prepareTCs(data,feature_id){
   $('#tc-container').children().remove();
   if($(data).size() >0){
     $('.del-tc-trigger').attr('disabled',false)
@@ -519,7 +548,7 @@ function prepareTCs(data){
 //            "lastRun": null,
 //            "proposed": false
 //        },
-    createTcHTML(this)
+    createTcHTML(this,feature_id)
 
       
     })
@@ -528,7 +557,7 @@ function prepareTCs(data){
   
 }   
 
-function createTcHTML(tcObject){
+function createTcHTML(tcObject,feature_id){
   
   switch(tcObject.statusId)
   {
@@ -582,11 +611,14 @@ function createTcHTML(tcObject){
     var bl = $('<li class="ddm-block"><i class="icon-exclamation-sign"></i> Blocked </li>').data('statusId', 2)
     var fa = $('<li class="ddm-failed"><i class="icon-thumbs-down"></i> Fail </li>').data('statusId',3)
     var pa = $('<li class="ddm-pass"><i class="icon-thumbs-up"></i> Pass </li>').data('statusId',4)
-//  var status = $('<div>').addClass('tc-status '+ statusClass).attr('status', this.statusId).attr('title', this.statusName)
   var steps = $('<pre>').addClass('tc-steps').text(tcObject.description).css('display','none');
   
+  var feature_closed = $('.feature[feature-id='+feature_id+']').find('.close-jira-btn').find('.closed').size();
+
   $(list).append(nr,ip,bl,fa,pa)
-  $(status_group).append(delete_btn, edit_btn, bug_btn, prop_btn, toggle, list)
+  if(feature_closed < 1){
+    $(status_group).append(delete_btn, edit_btn, bug_btn, prop_btn, toggle, list)
+  }
   $(stats).append(status_group)
   $(wrapper).append(description,expander, stats );
   $(tc).append(wrapper,steps).data('tcObject',tcObject)
@@ -607,6 +639,7 @@ function clearData(){
   $('#desc-container').children().remove()
   $('#desc-container').text('');
   $('#desc-wrapper').hide()
+  $('.desc-header-text').html('')
   $('#desc-expander').removeClass('desc-collapser').addClass('desc-expander')
   clearTCs()
 }
@@ -814,11 +847,7 @@ function panelRightWidth(){
             handles : 'e',
             minWidth : 550,
             resize : function() {
-              // var por = ((($('#pannel-wrapper').outerWidth() -$(this).outerWidth() - 9) * 100) / $('#pannel-wrapper').outerWidth()) + '%'
-              // $("#rp-wrapper").css({
-              //       'width' : por
-              // });
-           panelRightWidth();
+               panelRightWidth();
             }
           });
 
@@ -915,7 +944,28 @@ function expandIssueDescription(){
 
    }
 
+   function closeJira(feature){
 
+      var jiraKey = $(feature).find('.jira-key').data('jiraKey').trim();
+      var featureId = $(feature).attr('feature-id');
+      console.log(jiraKey, featureId);
 
+      //call to service
+        data=true
+      //
+
+      if(data == true){
+        updateFeatureState(feature);
+      }
+    }
+
+    function updateFeatureState(feature){
+        $(feature).find('.close-jira-btn > i').removeClass('icon-ok-circle').addClass('icon-thumbs-up closed');
+          if($(feature).hasClass('active')){
+            $('#tc-container').children('.tc').each(function(){
+                $(this).find('.btn-group').remove();
+            })
+          }
+    }
 
 });
