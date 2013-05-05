@@ -11,7 +11,8 @@ require.config({
     blockui: 'libs/blockui/jquery.blockUI',
     exporting: 'libs/highcharts/exporting',
     highcharts: 'libs/highcharts/highcharts',
-    releases_iterations_dd: 'widgets/releases_iterations_dd'
+    releases_iterations_dd: 'widgets/releases_iterations_dd',
+    'jquery.cookie': 'libs/jquerycookie/jquery.cookie'
   },
 
   shim: {
@@ -38,6 +39,9 @@ require.config({
     },
     releases_iterations_dd:{
         deps: ['chosen']
+    },
+    'jquery.cookie':{
+        deps: ['jquery']
     }
   }
 });
