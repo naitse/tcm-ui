@@ -28,7 +28,7 @@ require(['jquery', 'jquery.cookie'],
         $('#login-button').on('click', function(){
             $.cookie('loggedIn', true, { path: '/' });
 
-            window.location.href = "/" + window.location.hash;
+            window.location.href = window.location.href.replace('login.html','');
         });
 
         $("body").append("<div id='loaded'></div>");
