@@ -216,7 +216,7 @@ define(['jquery', 'chosen', 'bootstrap', 'jqueryui', 'blockui','extendJS'], func
             $(this).removeClass('del-tc-trigger')
           }
         });
-        
+
         $('.del-tc').live({
           click: function(e){
             e.stopPropagation();
@@ -288,9 +288,16 @@ define(['jquery', 'chosen', 'bootstrap', 'jqueryui', 'blockui','extendJS'], func
         $('.close-jira-btn').live({
           click: function(e){
             e.stopPropagation();
-            var $feature = $(this).parents('.feature');
-            closeJira($feature);
+            deleteFeatureInterceptor($(this).parents('.feature'));
           }
+        });
+
+        $('#close-feature-btn').live({
+            click: function(e){
+              e.stopPropagation();
+              //console.log($(this).parents('#close-feature-alert').data('feature'))
+              closeJira($(this).parents('#close-feature-alert').data('feature'));
+            }
         });
 
         $('.desc-header-text .jira-key').live({
@@ -363,7 +370,8 @@ function itSelected(iterationId){
 function prepareFeatures(data){ 
     $(data).each(function(){
       //[{"jiraKey":"ION-2333","featureName":"Enable global deployment","featureDescription":"hay que hacer muchas cosas locas","featureId":1}]
-      var feature = $('<div>').addClass('feature').attr('feature-id',this.featureId).data('desc', this.featureDescription).data('summary',this.featureName)
+      console.log(this.state);
+      var feature = $('<div>').addClass('feature').attr('feature-id',this.featureId).data('desc', this.featureDescription).data('summary',this.featureName).data('state',this.state);
       var title_bar = $('<div>').addClass('title-bar')
       var jiraKey = $('<a target="_blank">').addClass('jira-key').attr('href', jiraLink + this.jiraKey).text(this.jiraKey).data('jiraKey',this.jiraKey)
       var summary = $('<div>').addClass('summary').text(this.featureName).attr('title',this.featureName)
@@ -493,7 +501,8 @@ function processStats(feature, data){
     if(data.total != 0 && data.total == data.pass){
       $(feature).find('.close-jira-btn').show();
       $(feature).find('.summary').css('margin-right','30px');
-      if(data.state !=2 && $(feature).hasClass('active')){
+      if(data.state !=2){
+          $(feature).data('state',data.state);
           updateFeatureState(feature);
       }
     }else{
@@ -514,6 +523,11 @@ function loadFeatureDesc(desc){
   $('#desc-container').text('');
   $('#desc-container').text(desc);
   
+}
+
+function deleteFeatureInterceptor(feature){
+  $('#close-feature-alert').data('feature',feature);
+  $('#close-feature-alert').modal()
 }
 
 //######################################### feature ops end
@@ -634,6 +648,7 @@ function renderTC(tc){
 }
 
 function clearData(){
+  clearTimeout(statCheck);
   $('#feature-container').children().remove()
   $('.add-tc').attr('disabled',true)
   $('#desc-container').children().remove()
@@ -923,12 +938,19 @@ function expandIssueDescription(){
       
       var features_array = [];
     $('.feature').each(function(){
-      var feature_object = {
-          featureId:$(this).attr('feature-id'),
-          states:$(this).data('tcStats')
-      }
+      try{
+        var states = $(this).data('tcStats')
+        states.state = $(this).data('state')
 
-      features_array.push(feature_object);
+        var feature_object = {
+            featureId:$(this).attr('feature-id'),
+            states:states
+        }
+
+        features_array.push(feature_object);
+      }catch(e){
+
+      }
     });
 
         tcmModel.releases.iterations.monitoringExecutedTestCases.fetch(currentSS.releaseId, currentSS.iterationId, features_array).done(function(data){
@@ -946,21 +968,21 @@ function expandIssueDescription(){
 
    function closeJira(feature){
 
+      $('#close-feature-alert').modal('hide');
       var jiraKey = $(feature).find('.jira-key').data('jiraKey').trim();
       var featureId = $(feature).attr('feature-id');
-      console.log(jiraKey, featureId);
+      $(feature).find('.close-jira-btn > i').removeClass('icon-ok-circle').addClass('icon-time');
+      tcmModel.releases.iterations.features.close(featureId, jiraKey).done(function(data){
+          updateFeatureState(feature);
+//          $(feature).find('.close-jira-btn > i').removeClass('icon-time').addClass('icon-ok-circle');
+      }).fail(function(){
+        $(feature).find('.close-jira-btn > i').removeClass('icon-time').addClass('icon-ok-circle');
+      });
 
-      //call to service
-        data=true
-      //
-
-      if(data == true){
-        updateFeatureState(feature);
-      }
     }
 
     function updateFeatureState(feature){
-        $(feature).find('.close-jira-btn > i').removeClass('icon-ok-circle').addClass('icon-thumbs-up closed');
+        $(feature).find('.close-jira-btn > i').removeClass('icon-time icon-ok-circle').addClass('icon-thumbs-up closed');
           if($(feature).hasClass('active')){
             $('#tc-container').children('.tc').each(function(){
                 $(this).find('.btn-group').remove();
