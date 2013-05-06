@@ -9,9 +9,12 @@ define([
     'views/metrics/metrics',
     'views/metrics/release_metrics',
     'tcm2',
-    'backbone'
+    'backbone',
+    'jquery.cookie'
 
 ], function($, _, TopMenuView, managerView, syncView, planView, MetricsView, RlsMetricsView){
+
+
 
     var modules = [
         {
@@ -35,24 +38,34 @@ define([
             'divContainer': '#tcRlsMetrics'
         }
 
-    ]
+    ];
 
     function loadModule(module){
 
-        _.each(modules, function(moduleItem){
 
-            if( moduleItem.id == module.moduleId  ){
+        if($.cookie('loggedIn') == 'true'){
 
-                $(moduleItem.divContainer).show();
-                //console.log("show", moduleItem);
+            _.each(modules, function(moduleItem){
 
-            }else{
-                //console.log("hide", moduleItem);
-                $(moduleItem.divContainer).hide();
+                if( moduleItem.id == module.moduleId  ){
 
-            }
+                    if(!module.rendered){
+                       module.render();
+                    }
 
-        });
+                    $(moduleItem.divContainer).show();
+
+
+                }else{
+
+                    $(moduleItem.divContainer).hide();
+
+                }
+
+            });
+        }else{
+            window.location = "login.html" + window.location.hash;
+        }
 
     }
 
@@ -63,10 +76,6 @@ define([
             TopMenuView.render();
 
             managerView.render();
-            syncView.render();
-            planView.render()
-            MetricsView.render();
-            RlsMetricsView.render();
 
             this.routePaths();
 
@@ -84,7 +93,7 @@ define([
                     "*actions": "defaultRoute"
                 }
             });
-            // Initiate the router
+
             var app_router = new AppRouter;
 
             app_router.on('route:defaultRoute', function(actions) {
