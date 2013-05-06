@@ -37,7 +37,7 @@ pre{white-space:pre-wrap;white-space:-moz-pre-wrap;white-space:-pre-wrap;white-s
 .feature .summary{margin-top:3px;position:absolute;z-index:0;border-radius:6px;padding-left:10px;font-size:11;display: inline-table;word-wrap: break-word;line-height: 1;}
 .feature .jira-key{width:100px;margin-left:5px;position:relative;top:6px;font-size:12}
 .stats .count{width:40px;text-align:center;position:relative;top:-11px;font-size:11}
-.loading-small{background:url("images/LoadingIcon.gif");height:20px;width:20px;position:relative;top:5px;left:21px;border:0}
+.loading-small{background:url("images/LoadingIcon.gif");height:20px;width:20px;position:relative;top:5px;border:0}
 .tc .wrapper{height:28px;background:white}
 .tc-description{width:90%;margin-left:28px;float:left;position:relative;top:1.2em;line-height:0;padding-left:0;font-weight:bold;font-size:.9em}
 .tc-stats{width:auto;height:auto;float:right;position:relative;top:5px;right:8px}

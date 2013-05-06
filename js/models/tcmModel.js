@@ -136,10 +136,10 @@ define(function(){
                     close: function (featureId, jiraKey) {
 
                             return $.ajax({
-                                type: "POST",
+                                type: "GET",
                                 cache:false,
                                 url:  this.closeurl + '?featureId='+featureId+'&issueKey='+jiraKey,
-                                dataType: "jsonp"
+                                dataType: "json"
                             });
                     },
 

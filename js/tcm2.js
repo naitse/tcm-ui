@@ -978,10 +978,9 @@ function expandIssueDescription(){
       var jiraKey = $(feature).find('.jira-key').data('jiraKey').trim();
       var featureId = $(feature).attr('feature-id');
       $(feature).find('.close-jira-btn > i').removeClass('icon-ok-circle').addClass('icon-time');
-      tcmModel.releases.iterations.features.close(featureId, jiraKey).done(function(data){
+      tcmModel.releases.iterations.features.close(featureId, jiraKey).done(function(data,statusText,response){
           updateFeatureState(feature);
-//          $(feature).find('.close-jira-btn > i').removeClass('icon-time').addClass('icon-ok-circle');
-      }).fail(function(){
+      }).fail(function(data,statusText,response){
         $(feature).find('.close-jira-btn > i').removeClass('icon-time').addClass('icon-ok-circle');
       });
 
