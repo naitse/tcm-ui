@@ -285,14 +285,20 @@ define(['jquery', 'chosen', 'bootstrap', 'jqueryui', 'blockui','extendJS'], func
           }
         });
 
-        $('.close-jira-btn').live({
+        $('.close-jira-btn  .open').live({
           click: function(e){
             e.stopPropagation();
             deleteFeatureInterceptor($(this).parents('.feature'));
           }
         });
 
-        $('#close-feature-btn .icon-ok-circle').live({
+        $('.close-jira-btn').live({
+          click: function(e){
+            e.stopPropagation();
+          }
+        });
+
+        $('#close-feature-btn').live({
             click: function(e){
               e.stopPropagation();
               //console.log($(this).parents('#close-feature-alert').data('feature'))
@@ -381,7 +387,7 @@ function prepareFeatures(data){
       var display = '';
 
       if(this.state == 2){
-        var close_jira_icon = 'icon-ok-circle';
+        var close_jira_icon = 'icon-ok-circle open';
       }else{
         var close_jira_icon = 'icon-thumbs-up closed';
       }
@@ -977,12 +983,12 @@ function expandIssueDescription(){
       $('#close-feature-alert').modal('hide');
       var jiraKey = $(feature).find('.jira-key').data('jiraKey').trim();
       var featureId = $(feature).attr('feature-id');
-      $(feature).find('.close-jira-btn > i').removeClass('icon-ok-circle').addClass('icon-time');
+      $(feature).find('.close-jira-btn > i').removeClass('icon-ok-circle icon-remove-circle open').addClass('icon-time');
       tcmModel.releases.iterations.features.close(featureId, jiraKey).done(function(data,statusText,response){
         $(feature).find('.close-jira-btn > i').removeClass('icon-time').addClass('icon-thumbs-up closed');
           updateFeatureState(feature);
       }).fail(function(data,statusText,response){
-        $(feature).find('.close-jira-btn > i').removeClass('icon-time').addClass('icon-ok-circle');
+        $(feature).find('.close-jira-btn > i').removeClass('icon-time').addClass('icon-remove-circle open');
       });
 
     }
