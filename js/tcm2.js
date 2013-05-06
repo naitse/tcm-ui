@@ -401,7 +401,12 @@ function prepareFeatures(data){
 function renderFeature(feature){
   var feature_id = $(feature).attr('feature-id');
   $('#feature-container').append(feature);
-  // $(feature).find('.summary').css('margin-left',$(feature).find('.title-bar').width() + 2);
+  if ($.browser.mozilla ) {
+    $(feature).find('.summary').css({
+      'margin-left': $(feature).find('.title-bar').width() + 2,
+      'top':'2px'
+  });
+  }
   $(feature).find('.stats').addClass('loading-small');
   updateFeatureTestStats(feature)
 }
