@@ -292,7 +292,7 @@ define(['jquery', 'chosen', 'bootstrap', 'jqueryui', 'blockui','extendJS'], func
           }
         });
 
-        $('#close-feature-btn').live({
+        $('#close-feature-btn .icon-ok-circle').live({
             click: function(e){
               e.stopPropagation();
               //console.log($(this).parents('#close-feature-alert').data('feature'))
@@ -979,6 +979,7 @@ function expandIssueDescription(){
       var featureId = $(feature).attr('feature-id');
       $(feature).find('.close-jira-btn > i').removeClass('icon-ok-circle').addClass('icon-time');
       tcmModel.releases.iterations.features.close(featureId, jiraKey).done(function(data,statusText,response){
+        $(feature).find('.close-jira-btn > i').removeClass('icon-time').addClass('icon-thumbs-up closed');
           updateFeatureState(feature);
       }).fail(function(data,statusText,response){
         $(feature).find('.close-jira-btn > i').removeClass('icon-time').addClass('icon-ok-circle');
@@ -987,7 +988,7 @@ function expandIssueDescription(){
     }
 
     function updateFeatureState(feature){
-        $(feature).find('.close-jira-btn > i').removeClass('icon-time icon-ok-circle').addClass('icon-thumbs-up closed');
+        $(feature).find('.close-jira-btn > i').removeClass('icon-time').addClass('icon-thumbs-up closed');
           if($(feature).hasClass('active')){
             $('#tc-container').children('.tc').each(function(){
                 $(this).find('.btn-group').remove();
