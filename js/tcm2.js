@@ -313,6 +313,13 @@ define(['jquery', 'chosen', 'bootstrap', 'jqueryui', 'blockui','extendJS'], func
           }
         });
 
+        $('#feature-filter').live({
+          keyup:function() {
+            console.log('binder')
+            filterFeatures($(this).val());
+          }
+        });
+
       
    });
  
@@ -902,7 +909,7 @@ function panelRightWidth(){
               
           $("#lp-wrapper").resizable({
               handles : 'e',
-              minWidth : 218,
+              minWidth : 294,
               maxWidth : 430,
               containment : '.left-center-panel',
               stop : function() {
@@ -1001,6 +1008,20 @@ function expandIssueDescription(){
                 $(this).find('.btn-group').remove();
             })
           }
+    }
+
+    function filterFeatures(value){
+      console.log('inside')
+                 $(".feature").each(function() {
+                // If the list item does not contain the text phrase fade it out
+                if ($(this).find('.jira-key').text().search(new RegExp(value, "i")) < 0 && $(this).find('.summary').text().search(new RegExp(value, "i")) < 0) {
+                    // Show the list item if the phrase matches and increase the count by 1
+                    $(this).fadeOut();
+                } 
+                else {
+                    $(this).show();
+                }
+            });
     }
 
 });
