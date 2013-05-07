@@ -993,8 +993,12 @@ function expandIssueDescription(){
       var featureId = $(feature).attr('feature-id');
       $(feature).find('.close-jira-btn > i').removeClass('icon-ok-circle icon-remove-circle open').addClass('icon-time');
       tcmModel.releases.iterations.features.close(featureId, jiraKey).done(function(data,statusText,response){
+        if (data != false){
         $(feature).find('.close-jira-btn > i').removeClass('icon-time').addClass('icon-thumbs-up closed');
           updateFeatureState(feature);
+        }else{
+          $(feature).find('.close-jira-btn > i').removeClass('icon-time').addClass('icon-remove-circle open');  
+        }
       }).fail(function(data,statusText,response){
         $(feature).find('.close-jira-btn > i').removeClass('icon-time').addClass('icon-remove-circle open');
       });
