@@ -410,8 +410,9 @@ function renderFeature(feature){
   if ($.browser.mozilla ) {
     $(feature).find('.summary').css({
       'margin-left': $(feature).find('.title-bar').width() + 2,
+      'margin-right': $(feature).find('.title-bar').width() + 2,
       'top':'2px'
-  });
+    });
   }
   $(feature).find('.stats').addClass('loading-small');
   updateFeatureTestStats(feature)
