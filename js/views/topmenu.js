@@ -9,8 +9,19 @@ define(function(require){
 
             $(".tcm-top-menu-container").empty();
             $(".tcm-top-menu-container").append(menuTemplate);
+            this.attachEvents();
 
-        }
+        },
+       	attachEvents: function(){
+       		$('.tcm-top-menu-container a').live({
+       			click:function(){
+       				if(!$(this).hasClass('dropdown-toggle')){
+	       				$('.tcm-top-menu-container a').removeClass('active');
+    	   				$(this).addClass('active').parents('.dropdown').find('a.dropdown-toggle').addClass('active');
+       				}
+       			}
+       		})
+       	}
     };
 
     return TopMenuView;

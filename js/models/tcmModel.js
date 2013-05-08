@@ -30,7 +30,18 @@ define(function(){
                     contentType : 'application/json'
                 });
             },
+            metrics_iter_trend: function(releaseId){
+                var urlplan  = basePath +'releases/{rlsId}/metricgetIterationsTrend'
 
+
+                return $.ajax({
+                    type: "GET",
+                    cache:false,
+                    url: urlplan.replace('{rlsId}', releaseId),
+                    dataType: "json"
+                });
+
+            },
             iterations: {
                 url: basePath + 'releases/{rlsId}/iterations',
 
