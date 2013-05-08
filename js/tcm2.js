@@ -320,6 +320,14 @@ define(['jquery', 'chosen', 'bootstrap', 'jqueryui', 'blockui','extendJS'], func
           }
         });
 
+        $('#filter-completed-features.enabled').live({
+          click:function(e){
+            e.stopPropagation();
+            $('#filter-completed-features').removeClass('enabled').attr('disabled',true);
+            filterCompletedFeatures();
+          }
+        })
+
       
    });
  
@@ -357,6 +365,7 @@ function itSelected(iterationId){
    //console.log($(selected_node).val())
    currentSS.iterationId = iterationId
     var noresult = $('<div>').addClass('noresult').text('No IONs found')
+    $('#filter-completed-features').removeClass('enabled').attr('disabled',true);
     $('#feature-container').html('')
     toggleLoading('#feature-container',true, 'big')
     tcmModel.releases.iterations.features.fetch(currentSS.releaseId, currentSS.iterationId).done(function(data){
@@ -370,6 +379,7 @@ function itSelected(iterationId){
         $('#feature-container').append(noresult)
       }
       toggleLoading('#feature-container',false)
+      $('#filter-completed-features').addClass('enabled').attr("disabled",false);
       $('#feature-refresh').removeClass('refreshing')
 
     });
@@ -383,7 +393,6 @@ function itSelected(iterationId){
 function prepareFeatures(data){ 
     $(data).each(function(){
       //[{"jiraKey":"ION-2333","featureName":"Enable global deployment","featureDescription":"hay que hacer muchas cosas locas","featureId":1}]
-      console.log(this.state);
       var feature = $('<div>').addClass('feature').attr('feature-id',this.featureId).data('desc', this.featureDescription).data('summary',this.featureName).data('state',this.state);
       var title_bar = $('<div>').addClass('title-bar')
       var jiraKey = $('<a target="_blank">').addClass('jira-key').attr('href', jiraLink + this.jiraKey).text(this.jiraKey).data('jiraKey',this.jiraKey)
@@ -668,6 +677,7 @@ function renderTC(tc){
 
 function clearData(){
   clearTimeout(statCheck);
+   $('#filter-completed-features').removeClass('enabled').attr("disabled",true);
   $('#feature-container').children().remove()
   $('.add-tc').attr('disabled',true)
   $('#desc-container').children().remove()
@@ -908,8 +918,8 @@ function panelRightWidth(){
               
           $("#lp-wrapper").resizable({
               handles : 'e',
-              minWidth : 294,
-              maxWidth : 430,
+              // minWidth : 377,
+              maxWidth : 450,
               containment : '.left-center-panel',
               stop : function() {
                 $("#feature-container").css({
@@ -1006,6 +1016,7 @@ function expandIssueDescription(){
 
     function updateFeatureState(feature){
         $(feature).find('.close-jira-btn > i').removeClass('icon-time').addClass('icon-thumbs-up closed');
+        $(feature).addClass('ready');
           if($(feature).hasClass('active')){
             $('#tc-container').children('.tc').each(function(){
                 $(this).find('.btn-group').remove();
@@ -1014,7 +1025,6 @@ function expandIssueDescription(){
     }
 
     function filterFeatures(value){
-      console.log('inside')
                  $(".feature").each(function() {
                 // If the list item does not contain the text phrase fade it out
                 if ($(this).find('.jira-key').text().search(new RegExp(value, "i")) < 0 && $(this).find('.summary').text().search(new RegExp(value, "i")) < 0) {
@@ -1025,6 +1035,13 @@ function expandIssueDescription(){
                     $(this).show();
                 }
             });
+    }
+
+    function filterCompletedFeatures(){
+        $('.feature.ready').toggle('fast',function(){
+          $('#filter-completed-features').addClass('enabled').attr("disabled",false);
+        });
+
     }
 
 });
