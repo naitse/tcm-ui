@@ -21,6 +21,9 @@ define(function(require){
                 this.attachEvents();
                 this.rendered = true;
             }
+            $('.tcm-top-menu-container a').removeClass('active');
+            $('#link-metrics').addClass('active').parents('.dropdown').find('a.dropdown-toggle').addClass('active');
+            $('.brand').removeClass('active')
         },
 
         loadIterations: function(){

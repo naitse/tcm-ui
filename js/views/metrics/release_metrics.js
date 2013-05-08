@@ -20,6 +20,9 @@ define(function(require){
 
                 this.rendered = true;
             }
+            $('.tcm-top-menu-container a').removeClass('active');
+            $('#link-rls-metrics').addClass('active').parents('.dropdown').find('a.dropdown-toggle').addClass('active');
+            $('.brand').removeClass('active')
         },
 
         generateGraph: function(){
