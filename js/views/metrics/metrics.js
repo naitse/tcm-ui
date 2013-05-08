@@ -42,7 +42,7 @@ define(function(require){
 
                 $("#metricsProgressBar").show();
                 $("#metricsProgressBar").find(".bar").css("width","10%");
-                console.log('teta')
+
 
                 $.when( tcmModel.releases.iterations.metrics_executed(rlsId, iterId)).done(function( metrics ){
                     if(metrics.length > 0){
@@ -57,7 +57,7 @@ define(function(require){
 
                         $('#executionContainer').data('data',chartData);
 
-                        renderExecutionPie(chartData);
+                        renderExecutionPie();
                     }
 
                 });
@@ -79,15 +79,32 @@ define(function(require){
                         // $('#dailyExecutionContainer').data('testcases',testcases);
 
                         renderDailyExec();
-                        renderIterationsTrend(); // JUST A TESSSS
                     }
 
                 });
 
-                $('.carousel').each(function(){
-                    $(this).carousel({
-                        interval: false
+                $.when(tcmModel.releases.metrics_iter_trend('4')).done(function(metrics){
+
+                    var data = {
+                        categories: new Array(),
+                        blocked: new Array(),
+                        failed: new Array(),
+                        passed: new Array(),
+                        notrun: new Array(),
+                        inprogress: new Array()
+                    }
+
+                    _.each(metrics, function(value, key, list){
+                        data.categories.push(value.name);
+                        data.blocked.push(value.Blocked);
+                        data.failed.push(value.Failed);
+                        data.passed.push(value.Passed);
+                        data.notrun.push(value.notrun);
+                        data.inprogress.push(value.inprogress);
                     });
+
+                    $('#iterationsTrendContainer').data('data', data);
+                    renderIterationsTrend();
                 });
 
                 $("#metricsProgressBar").hide();
@@ -181,71 +198,63 @@ define(function(require){
 
     function renderIterationsTrend(){
 
-            var data = {
-                categories: ['Iter 13','Iter 14','Iter 15','Iter 16'],
-                blocked:[2, 0, 1, 0],
-                failed: [3,0,6,0],
-                passed: [0,0,19,0],
-                notrun: [1, 0, 59, 0],
-                inprogress: [3, 0, 0, 0]
-            }
+        var $this = $('#iterationsTrendContainer');
+        var data = $this.data('data')
 
-            var $this = $('#iterationsTrendContainer').data('data', data);
-
-            $('#iterationsTrendContainer').highcharts({
-                chart: {
-                    type: 'column',
-                    events: {
-                    click: function(event) {
-                        toggleChartFocus($this);
+        $('#iterationsTrendContainer').highcharts({
+            chart: {
+                type: 'column',
+                events: {
+                click: function(event) {
+                    toggleChartFocus($this);
                     }
-                }    
-                },
+                }
+            },
+            title: {
+                text: 'Iterations Test Case Execution Trend'
+            },
+            subtitle: {
+                text: 'by status'
+            },
+            xAxis: {
+                categories: data.categories
+            },
+            yAxis: {
+                min: 0,
                 title: {
-                    text: 'Iterations Test Case Execution Trend'
-                },
-                subtitle: {
-                    text: 'by status'
-                },
-                xAxis: {
-                    categories: data.categories
-                },
-                yAxis: {
-                    min: 0,
-                    title: {
-                        text: 'Test Cases'
-                    }
-                },
-                plotOptions: {
-                    column: {
-                        pointPadding: 0.2,
-                        borderWidth: 0
-                    }
-                },
-                series: [{
-                    name: 'Blocked',
-                    data: data.blocked
+                    text: 'Test Cases'
+                }
+            },
+            plotOptions: {
+                column: {
+                    pointPadding: 0.2,
+                    borderWidth: 0
+                }
+            },
+            series: [{
+                name: 'Blocked',
+                data: data.blocked
 
-                }, {
-                    name: 'Failed',
-                    data: data.failed
+            }, {
+                name: 'Failed',
+                data: data.failed
 
-                }, {
-                    name: 'Passed',
-                    data: data.passed
+            }, {
+                name: 'Passed',
+                data: data.passed
 
-                }, {
-                    name: 'Not Run',
-                    data: data.notrun
+            }, {
+                name: 'Not Run',
+                data: data.notrun
 
-                },
-                    {
-                        name: 'In Progress',
-                        data: data.inprogress
+            },
+                {
+                    name: 'In Progress',
+                    data: data.inprogress
 
-                    }
-                ]
-            });
+                }
+            ]
+        });
 
     }
 
