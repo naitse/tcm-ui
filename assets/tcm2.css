@@ -98,7 +98,7 @@ pre{white-space:pre-wrap;white-space:-moz-pre-wrap;white-space:-pre-wrap;white-s
 .feature a:hover{color: #ccc;}
 .desc-header-text div{height: 20px;overflow: hidden;color: #454545;text-decoration: underline;cursor: pointer;}
 .desc-header-text div:hover{color: #ccc;}
-#feature-filter{position: relative;float: right;width: 75px;margin-right: 5px;margin-top: 3px;margin-bottom: -3px;}
+#feature-filter{position: absolute;width: 75px;margin-left: 5px;margin-top: 3px;margin-bottom: -3px;}
 #filter-completed-features:{cursor: pointer;}
-
+#release_select_chzn{width:130px !important;}
 

@@ -930,8 +930,8 @@ function panelRightWidth(){
               
           $("#lp-wrapper").resizable({
               handles : 'e',
-              // minWidth : 363,
-              maxWidth : 450,
+              minWidth : 313,
+              maxWidth : 700,
               containment : '.left-center-panel',
               stop : function() {
                 $("#feature-container").css({
@@ -941,7 +941,7 @@ function panelRightWidth(){
                 var porcentage = (($(this).width() * 100) / $('.left-center-panel').width());
                 $(this).css({
                       'height' : '100%',
-                      'width' : porcentage + '%'
+                      'width' : $(this).width()//porcentage + '%'
                 });
               }
           });
