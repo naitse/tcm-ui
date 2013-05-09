@@ -36,6 +36,18 @@ define(['jquery', 'chosen', 'bootstrap', 'jqueryui', 'blockui','extendJS'], func
             });
             panelRightWidth()
 
+             $(".right-pannel").css({
+                  'height' : '100%'
+              });
+
+             $(".lp-wrapper").css({
+                  'height' : '100%'
+              });
+
+             $(".left-center-panel").css({
+                  'height' : '100%'
+              });
+
             $('#tcViewer').css('height',(($('.tcm-container').height() - 20)*100)/$('.tcm-container').height()+'%')
         });
  
@@ -918,7 +930,7 @@ function panelRightWidth(){
               
           $("#lp-wrapper").resizable({
               handles : 'e',
-              // minWidth : 377,
+              // minWidth : 363,
               maxWidth : 450,
               containment : '.left-center-panel',
               stop : function() {
@@ -973,7 +985,8 @@ function expandIssueDescription(){
 
         var feature_object = {
             featureId:$(this).attr('feature-id'),
-            states:states
+            states:states,
+            issueKey:$(this).find('.jira-key').text()
         }
 
         features_array.push(feature_object);
