@@ -3,7 +3,7 @@ require.config({
         jquery: "libs/jquery/jQuery-1.8.3",
         bootstrap: "libs/bootstrap/js/bootstrap.min",
        'jquery.cookie': 'libs/jquerycookie/jquery.cookie',
-       'tcm_model': 'models/tcmmodel',
+       'tcm_model': 'models/tcmModel',
        'jquery.base64': 'libs/jquery.base64/jquery.base64'
     },
 
