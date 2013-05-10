@@ -547,7 +547,7 @@ function processStats(feature, data){
       }
     }else if(data.total != 0 && data.state == 0){
         $(feature).data('conflict', 1);
-        $(feature).find('.close-jira-btn').show();
+        $(feature).find('.close-jira-btn').show().attr('disabled',true);
         $(feature).find('.close-jira-btn > i').removeClass('icon-thumbs-up').addClass('icon-warning-sign closed');
     }else{
       $(feature).find('.close-jira-btn').hide();
@@ -560,7 +560,7 @@ function processStats(feature, data){
     if(data.total == 0 && data.state == 0){
         $(feature).addClass('ready');
         $(feature).find('.progress').addClass('no-tc-feature-done');
-        $(feature).find('.close-jira-btn').show();
+        $(feature).find('.close-jira-btn').show().attr('disabled',true);
         $(feature).find('.close-jira-btn > i').addClass('icon-thumbs-up closed');
     }
 
@@ -1044,6 +1044,7 @@ function expandIssueDescription(){
 
     function updateFeatureState(feature){
         var iconClass = 'icon-thumbs-up closed';
+        $(feature).find('.close-jira-btn').attr('disabled',true);
         $(feature).find('.close-jira-btn > i').removeClass('icon-time').addClass(iconClass);
         $(feature).addClass('ready');
           if($(feature).hasClass('active')){
