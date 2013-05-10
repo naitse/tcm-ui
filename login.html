@@ -24,10 +24,22 @@
                         <label for="password" class="control-label">Password</label>
                         <div class="controls"><input id="password" name="password" type="password"/></div>
                     </div>
+
                     <div class="control-group">
-                        <div class="controls"><input id="login-button" type="button" class="btn btn-primary btn-large" value="Login"/></div>
+                        <div class="controls"><input id="login-button" type="button" class="btn btn-primary btn-large" data-loading-text="Loggin in..." value="Login"/></div>
                     </div>
                 </form>
+
+                <div style="display: none" id="projectsContainer" class="form-horizontal">
+                    <div class="control-group">
+                        <label for="projects" class="control-label">Project</label>
+                        <div class="controls"><select id="projects_dd" /></div>
+                    </div>
+                    <br>
+                    <div class="control-group">
+                        <div class="controls"><input id="project-button" type="button" class="btn btn-primary btn-large" value="Select Project"/></div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
