@@ -681,7 +681,8 @@ function createTcHTML(tcObject,feature_id){
   
   $(list).append(nr,ip,bl,fa,pa)
     var feature_closed = $('.feature[feature-id='+feature_id+']').data('conflict');
-    if(feature_closed == 1){
+    var feature_ready = $('.feature[feature-id='+feature_id+']').hasClass('ready');
+    if(feature_closed == 1 || feature_ready == false){
       $(status_group).append(delete_btn, edit_btn, bug_btn, prop_btn, toggle, list)
     }
 
