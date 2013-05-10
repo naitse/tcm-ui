@@ -36,7 +36,7 @@ require(['jquery', 'tcm_model', 'jquery.cookie', 'jquery.base64','bootstrap'],
 
                 $.cookie('apiKey', data.apiKey, { expires:1, path: '/' });
 
-                $.when(tcm_model.users.projects.fetch('cloudhub-rest')).done(function(projects){
+                $.when(tcm_model.users.projects.fetch($('#username').val())).done(function(projects){
 
                     if(projects.length > 0){
 
