@@ -545,9 +545,8 @@ function processStats(feature, data){
           $(feature).data('state',data.state);
           updateFeatureState(feature);
       }
-    }else if(data.state == 0){
+    }else if(data.total != 0 && data.state == 0){
         $(feature).data('conflict', 1);
-        console.log('conflicto')
         $(feature).find('.close-jira-btn').show();
         $(feature).find('.close-jira-btn > i').removeClass('icon-thumbs-up').addClass('icon-warning-sign closed');
     }else{
@@ -557,6 +556,13 @@ function processStats(feature, data){
 
     var runned = data.pass + data.failed + data.blocked
     $(feature).find('.stats').append(propgressBar)
+
+    if(data.total == 0 && data.state == 0){
+        $(feature).find('.progress').addClass('no-tc-feature-done');
+        $(feature).find('.close-jira-btn').show();
+        $(feature).find('.close-jira-btn > i').addClass('icon-thumbs-up closed');
+    }
+
     $(feature).find('.count').text(runned +'/'+data.total)
     $(feature).data('tcStats',data);
     $(feature).find('.stats').removeClass('loading-small');

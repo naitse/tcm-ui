@@ -101,4 +101,5 @@ pre{white-space:pre-wrap;white-space:-moz-pre-wrap;white-space:-pre-wrap;white-s
 #feature-filter{position: absolute;width: 75px;margin-left: 5px;margin-top: 3px;margin-bottom: -3px;}
 #filter-completed-features:{cursor: pointer;}
 #release_select_chzn{width:130px !important;}
+.no-tc-feature-done{background-color: #5eb95e;background-image: -moz-linear-gradient(top,#62c462,#57a957);background-image: -webkit-gradient(linear,0 0,0 100%,from(#62c462),to(#57a957));background-image: -webkit-linear-gradient(top,#62c462,#57a957);background-image: -o-linear-gradient(top,#62c462,#57a957);background-image: linear-gradient(to bottom,#62c462,#57a957);background-repeat: repeat-x;filter: progid:DXImageTransform.Microsoft.gr}
 
