@@ -405,7 +405,7 @@ function itSelected(iterationId){
 function prepareFeatures(data){ 
     $(data).each(function(){
       //[{"jiraKey":"ION-2333","featureName":"Enable global deployment","featureDescription":"hay que hacer muchas cosas locas","featureId":1}]
-      var feature = $('<div>').addClass('feature').attr('feature-id',this.featureId).data('desc', this.featureDescription).data('summary',this.featureName).data('state',this.state);
+      var feature = $('<div>').addClass('feature').attr('feature-id',this.featureId).data('desc', this.featureDescription).data('summary',this.featureName).data('state',this.state).data('conflict',0);
       var title_bar = $('<div>').addClass('title-bar')
       var jiraKey = $('<a target="_blank">').addClass('jira-key').attr('href', jiraLink + this.jiraKey).text(this.jiraKey).data('jiraKey',this.jiraKey)
       var summary = $('<div>').addClass('summary').text(this.featureName).attr('title',this.featureName)
@@ -545,6 +545,11 @@ function processStats(feature, data){
           $(feature).data('state',data.state);
           updateFeatureState(feature);
       }
+    }else if(data.state == 0){
+        $(feature).data('conflict', 1);
+        console.log('conflicto')
+        $(feature).find('.close-jira-btn').show();
+        $(feature).find('.close-jira-btn > i').removeClass('icon-thumbs-up').addClass('icon-warning-sign closed');
     }else{
       $(feature).find('.close-jira-btn').hide();
       $(feature).find('.summary').css('margin-right','0px');
@@ -667,12 +672,12 @@ function createTcHTML(tcObject,feature_id){
     var pa = $('<li class="ddm-pass"><i class="icon-thumbs-up"></i> Pass </li>').data('statusId',4)
   var steps = $('<pre>').addClass('tc-steps').text(tcObject.description).css('display','none');
   
-  var feature_closed = $('.feature[feature-id='+feature_id+']').find('.close-jira-btn').find('.closed').size();
-
   $(list).append(nr,ip,bl,fa,pa)
-  if(feature_closed < 1){
-    $(status_group).append(delete_btn, edit_btn, bug_btn, prop_btn, toggle, list)
-  }
+    var feature_closed = $('.feature[feature-id='+feature_id+']').data('conflict');
+    if(feature_closed == 1){
+      $(status_group).append(delete_btn, edit_btn, bug_btn, prop_btn, toggle, list)
+    }
+
   $(stats).append(status_group)
   $(wrapper).append(description,expander, stats );
   $(tc).append(wrapper,steps).data('tcObject',tcObject)
@@ -1021,7 +1026,8 @@ function expandIssueDescription(){
         $(feature).find('.close-jira-btn > i').removeClass('icon-time').addClass('icon-thumbs-up closed');
           updateFeatureState(feature);
         }else{
-          $(feature).find('.close-jira-btn > i').removeClass('icon-time').addClass('icon-remove-circle open');  
+          $(feature).find('.close-jira-btn > i').removeClass('icon-time').addClass('icon-remove-circle open');
+          $(feature).data('conflict',0);
         }
       }).fail(function(data,statusText,response){
         $(feature).find('.close-jira-btn > i').removeClass('icon-time').addClass('icon-remove-circle open');
@@ -1030,7 +1036,8 @@ function expandIssueDescription(){
     }
 
     function updateFeatureState(feature){
-        $(feature).find('.close-jira-btn > i').removeClass('icon-time').addClass('icon-thumbs-up closed');
+        var iconClass = 'icon-thumbs-up closed';
+        $(feature).find('.close-jira-btn > i').removeClass('icon-time').addClass(iconClass);
         $(feature).addClass('ready');
           if($(feature).hasClass('active')){
             $('#tc-container').children('.tc').each(function(){
