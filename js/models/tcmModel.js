@@ -17,7 +17,7 @@ define( function(){
                 return $.ajax({
                     type: "GET",
                     beforeSend: function(xhrObj){
-                        console.log(username, password, $.base64.encode(username +':'+password));
+                        // console.log(username, password, $.base64.encode(username +':'+password));
                         xhrObj.setRequestHeader("Authorization", "Basic " + $.base64.encode(username + ':' + password));
                      },
                     url: basePath + 'get_api_key',
