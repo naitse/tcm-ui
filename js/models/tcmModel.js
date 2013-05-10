@@ -1,10 +1,44 @@
-define(function(){
-    var basePath = "http://tcm-backend.cloudhub.io/api/";
+
+define( function(){
+    //var basePath = "http://tcm-backend.cloudhub.io/api/";
     //var basePath = "http://tcm-backend-qa.cloudhub.io/api/";
-    //var basePath = "http://localhost:8088/api/";
+    var basePath = "http://localhost:8088/api/";
     var basePath2 = basePath.replace('api/','');
 
+    $.ajaxSetup({beforeSend: function(xhr) {
+        xhr.setRequestHeader("apiKey", $.cookie("apiKey"));
+        xhr.setRequestHeader("projectId", $.cookie("projectId"));
+    }});
+
     var tcm_model = {
+
+        login: function(username, password){
+
+                return $.ajax({
+                    type: "GET",
+                    beforeSend: function(xhrObj){
+                        console.log(username, password, $.base64.encode(username +':'+password));
+                        xhrObj.setRequestHeader("Authorization", "Basic " + $.base64.encode(username + ':' + password));
+                     },
+                    url: basePath + 'get_api_key',
+                    dataType: "json"
+                });
+
+        },
+
+        users: {
+            projects:{
+                url: basePath + 'users/{userName}/projects',
+
+                fetch: function (username) {
+                    return $.ajax({
+                        type: "GET",
+                        url: this.url.replace("{userName}", username),
+                        dataType: "json"
+                    });
+                }
+            }
+        },
 
         releases: {
             url: basePath + 'releases',

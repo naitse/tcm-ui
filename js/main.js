@@ -12,7 +12,8 @@ require.config({
     exporting: 'libs/highcharts/exporting',
     highcharts: 'libs/highcharts/highcharts',
     releases_iterations_dd: 'widgets/releases_iterations_dd',
-    'jquery.cookie': 'libs/jquerycookie/jquery.cookie'
+    'jquery.cookie': 'libs/jquerycookie/jquery.cookie',
+    'jquery.base64': 'libs/jquery.base64/jquery.base64'
   },
 
   shim: {
@@ -41,6 +42,9 @@ require.config({
         deps: ['chosen']
     },
     'jquery.cookie':{
+        deps: ['jquery']
+    },
+    'jquery.base64':{
         deps: ['jquery']
     }
   }
