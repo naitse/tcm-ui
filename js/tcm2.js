@@ -980,16 +980,18 @@ function expandIssueDescription(){
       var features_array = [];
     $('.feature').each(function(){
       try{
-        var states = $(this).data('tcStats')
-        states.state = $(this).data('state')
+        if(!$(this).hasClass('ready')){
+            var states = $(this).data('tcStats')
+            states.state = $(this).data('state')
 
-        var feature_object = {
-            featureId:$(this).attr('feature-id'),
-            states:states,
-            issueKey:$(this).find('.jira-key').text()
+            var feature_object = {
+                featureId:$(this).attr('feature-id'),
+                states:states,
+                issueKey:$(this).find('.jira-key').text()
+            }
+
+            features_array.push(feature_object);
         }
-
-        features_array.push(feature_object);
       }catch(e){
 
       }
