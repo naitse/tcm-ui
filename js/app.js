@@ -43,7 +43,7 @@ define([
     function loadModule(module){
 
 
-        if($.cookie('loggedIn') == 'true'){
+        if($.cookie('apiKey')){
 
             _.each(modules, function(moduleItem){
 

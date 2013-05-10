@@ -1,7 +1,10 @@
 require.config({
     paths: {
         jquery: "libs/jquery/jQuery-1.8.3",
-       'jquery.cookie': 'libs/jquerycookie/jquery.cookie'
+        bootstrap: "libs/bootstrap/js/bootstrap.min",
+       'jquery.cookie': 'libs/jquerycookie/jquery.cookie',
+       'tcm_model': 'models/tcmModel',
+       'jquery.base64': 'libs/jquery.base64/jquery.base64'
     },
 
     shim: {
@@ -11,8 +14,9 @@ require.config({
     }
 });
 
-require(['jquery', 'jquery.cookie'],
-    function ($) {
+require(['jquery', 'tcm_model', 'jquery.cookie', 'jquery.base64','bootstrap'],
+    function ($, tcm_model) {
+
 
         if ($.cookie('loginfailed') === 'true') {
             console.log("Your username or password was entered incorrectly");
@@ -26,7 +30,40 @@ require(['jquery', 'jquery.cookie'],
         }
 
         $('#login-button').on('click', function(){
-            $.cookie('loggedIn', true, { path: '/' });
+            $("#projects_dd").empty();
+            $('#login-button').button('loading');
+            $.when(tcm_model.login($('#username').val(), $('#password').val())).done(function(data){
+
+                $.cookie('apiKey', data.apiKey, { expires:1, path: '/' });
+
+                $.when(tcm_model.users.projects.fetch($('#username').val())).done(function(projects){
+
+                    if(projects.length > 0){
+
+                     $(projects).each(function(){
+                         $("#projects_dd").append('<option value="' + this.id+ '">' + this.name + '</option>')
+                     });
+
+                     $('#projectsContainer').show();
+                     $('#login-form').hide();
+                    }else{
+                        alert("no projects");
+                    }
+
+                    $('#login-button').button('reset');
+                });
+
+
+            }).fail(function(){
+                console.log("fallo login");
+                $('#login-button').button('reset');
+            });
+
+        });
+
+        $('#project-button').on('click', function(){
+
+            $.cookie('projectId', $('#projects_dd option:selected').val());
 
             window.location.href = window.location.href.replace('login.html','');
         });
