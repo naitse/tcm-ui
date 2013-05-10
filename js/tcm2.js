@@ -558,6 +558,7 @@ function processStats(feature, data){
     $(feature).find('.stats').append(propgressBar)
 
     if(data.total == 0 && data.state == 0){
+        $(feature).addClass('ready');
         $(feature).find('.progress').addClass('no-tc-feature-done');
         $(feature).find('.close-jira-btn').show();
         $(feature).find('.close-jira-btn > i').addClass('icon-thumbs-up closed');
