@@ -885,6 +885,10 @@ function colapseExpandRightPanel(state){
       makeResizable()
       panelRightWidth()
        $("#rp-wrapper").show('fast') 
+      $("#lp-wrapper").css({
+                      'height' : '100%',
+                      'width' : '313px'//porcentage + '%'
+                });
     }else{
       $('.left-center-panel').css({
         'width':'100%'
@@ -917,6 +921,9 @@ function panelRightWidth(){
             minWidth : 550,
             resize : function() {
                panelRightWidth();
+               $("#lp-wrapper").css({
+                  'width': $("#lp-wrapper").data('width')
+               })
             }
           });
 
@@ -956,8 +963,10 @@ function panelRightWidth(){
                       'height' : '100%',
                       'width' : $(this).width()//porcentage + '%'
                 });
+                $(this).data('width',$(this).width())
               }
           });
+
   }  
    
    
