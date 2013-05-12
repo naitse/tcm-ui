@@ -1,4 +1,4 @@
-define(['jquery', 'chosen', 'bootstrap', 'jqueryui', 'blockui','extendJS'], function ($, chosen,bootstrap,jqueryui,blockui) {
+define(['jquery', 'chosen', 'bootstrap', 'jqueryui', 'blockui','extendJS','textext'], function ($, chosen,bootstrap,jqueryui,blockui,extendJS,textext) {
 
   tcmModel = require('tcmModel');
 
@@ -150,7 +150,12 @@ define(['jquery', 'chosen', 'bootstrap', 'jqueryui', 'blockui','extendJS'], func
         $('.tc-expander').live({
           click: function(e){
             e.stopPropagation();
-            $(this).parents('.tc').find('.tc-steps').show('fast');
+            if($(this).parents('.tc').find('.tc-steps').text() == ''){
+              $(this).parents('.tc').find('.tc-steps').hide();
+            }else{
+              $(this).parents('.tc').find('.tc-steps').show();
+            }
+            $(this).parents('.tc').find('.steps-wrapper').show('fast');
             $(this).removeClass('tc-expander').addClass('tc-collapse detailsOpen');
           }
         });
@@ -158,11 +163,18 @@ define(['jquery', 'chosen', 'bootstrap', 'jqueryui', 'blockui','extendJS'], func
         $('.tc-collapse').live({
           click: function(e){
             e.stopPropagation();
-            $(this).parents('.tc').find('.tc-steps').hide('fast');
+            $(this).parents('.tc').find('.steps-wrapper').hide('fast');
             $(this).removeClass('tc-collapse detailsOpen').addClass('tc-expander');
           }
         });
         
+        $('.tc-suites').live({
+          click: function(e){
+            e.stopPropagation();
+          }
+        });
+
+
         $('.tc .dropdown-menu > li').live({
           click: function(e){
             e.stopPropagation();
@@ -339,6 +351,14 @@ define(['jquery', 'chosen', 'bootstrap', 'jqueryui', 'blockui','extendJS'], func
             filterCompletedFeatures();
           }
         })
+
+        $('.text-arrow').live({
+          click:function(e){
+            e.stopPropagation();
+          }
+        })
+
+
 
       
    });
@@ -677,8 +697,8 @@ function createTcHTML(tcObject,feature_id){
     var bl = $('<li class="ddm-block"><i class="icon-exclamation-sign"></i> Blocked </li>').data('statusId', 2)
     var fa = $('<li class="ddm-failed"><i class="icon-thumbs-down"></i> Fail </li>').data('statusId',3)
     var pa = $('<li class="ddm-pass"><i class="icon-thumbs-up"></i> Pass </li>').data('statusId',4)
-  var steps = $('<pre>').addClass('tc-steps').text(tcObject.description).css('display','none');
-  
+  var steps = $('<pre>').addClass('tc-steps').text(tcObject.description)//.css('display','none');
+  var stepsWrapper = $('<div class="steps-wrapper">').css('display','none').append($('<ul class="tc-suites"></ul>)'),steps)
   $(list).append(nr,ip,bl,fa,pa)
     var feature_closed = $('.feature[feature-id='+feature_id+']').data('conflict');
     var feature_ready = $('.feature[feature-id='+feature_id+']').hasClass('ready');
@@ -688,7 +708,7 @@ function createTcHTML(tcObject,feature_id){
 
   $(stats).append(status_group)
   $(wrapper).append(description,expander, stats );
-  $(tc).append(wrapper,steps).data('tcObject',tcObject)
+  $(tc).append(wrapper,stepsWrapper).data('tcObject',tcObject)
   
   renderTC(tc)
   
@@ -697,7 +717,9 @@ function createTcHTML(tcObject,feature_id){
 
 function renderTC(tc){
   $('#tc-container').append(tc);
-  
+  tcmModel.releases.iterations.features.test_cases.suites.fetch($(tc).data('tcObject').tcId).done(function(data){
+    renderTagsContainer($(tc).data('tcObject').tcId,data);
+  })
 }
 
 function clearData(){
@@ -1022,6 +1044,7 @@ function expandIssueDescription(){
         tcmModel.releases.iterations.monitoringExecutedTestCases.fetch(currentSS.releaseId, currentSS.iterationId, features_array).done(function(data){
             if(data.length > 0){
               $(data).each(function(){
+              console.log(this)
                 updateFeatureTestStats($('.feature[feature-id='+data[0].featureId+']'), data[0].states);
               });
             }
@@ -1082,6 +1105,84 @@ function expandIssueDescription(){
           $('#filter-completed-features').addClass('enabled').attr("disabled",false);
         });
 
+    }
+
+    function _renderTagsContainer(tcId,tagsMap){
+
+      var tags =[];
+      try{
+        $(tagsMap).each(function(){
+          tags.push(this.name);
+        });
+      }catch(e){}
+
+        $('.tc[tc-id='+tcId+']').find('.tc-suites').textext({
+            plugins : 'tags prompt autocomplete ajax arrow',
+            tagsItems : tags,
+            prompt : 'Add one...',
+            ajax : {
+                type:'POST',
+                url: "http://localhost:8088/getSuites",
+                dataType: "json",
+                // data:JSON.stringify(request),
+                // success: function( data ) {
+                //   var remoteTags = [];
+                //   $(data).each(function(){
+                //       remoteTags.push(this.name);
+                //   });
+                //   return remoteTags;
+                // },
+                cacheResults : false
+            }
+        });
+    }
+
+    function renderTagsContainer(tcId,tagsMap){
+
+      var tags =[];
+      try{
+        $(tagsMap).each(function(){
+          tags.push({label:this.name,value:tcId});
+        });
+      }catch(e){}
+
+       $('.tc[tc-id='+tcId+']').find('.tc-suites').tagit({
+          initialTags:tags,
+          triggerKeys:['enter', 'comma', 'tab'],
+          tagsChanged:function (label, action,element) {
+            if(action == 'added'){
+              $($('.tc[tc-id='+$(element).parents('.tc').attr('tc-id')+']').find('.tagit').tagit('tags')).each(function(){
+                  this.value = parseInt($(element).parents('.tc').attr('tc-id'));
+              })
+              tcmModel.releases.iterations.features.test_cases.suites.add($(element).parents('.tc').attr('tc-id'),label,$.cookie("projectId")).done(function(data){
+              })
+            }else if(action == 'popped'){
+                tcmModel.releases.iterations.features.test_cases.suites.remove(element.value,element.label).done(function(data){
+                })
+            }
+          },
+          tagSource:function( request, response ) {
+            tcmModel.releases.iterations.features.test_cases.suites.source($.cookie("projectId")).done(function(data){
+                  response( $.map( data, function( item ) {
+                    return {
+                      label: item.name,
+                      value: item.name
+                    }
+                  }));
+            })
+            }
+      });
+
+      $('.tc[tc-id='+tcId+']').find('.tagit-choice').each(function(){
+          $(this).attr('tagvalue',$(this).parents('.tc').attr('tc-id'));
+      })
+
+    }
+
+    function getTags(){
+      var tags = []
+      $('.tc .active').parents('.tc').find('.tc-suites').tagit("tags")
+      return tags;
     }
 
 });

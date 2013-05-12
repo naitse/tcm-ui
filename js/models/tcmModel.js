@@ -1,7 +1,7 @@
 
 define( function(){
-    var basePath = "http://tcm-backend.cloudhub.io/api/";
-    //var basePath = "http://tcm-backend-qa.cloudhub.io/api/";
+    //var basePath = "http://tcm-backend.cloudhub.io/api/";
+    var basePath = "http://tcm-backend-qa.cloudhub.io/api/";
     //var basePath = "http://localhost:8088/api/";
     var basePath2 = basePath.replace('api/','');
 
@@ -262,8 +262,41 @@ define( function(){
                                 contentType: "application/json",
                                 dataType: "json"
                             });
-                        }
+                        },
 
+                        suites:{
+                            fetch:function(tcId){
+                                return   $.ajax({
+                                      type:'GET',
+                                      cache:false,
+                                      url: basePath2 + "getSuitesforTc?tcId="+tcId,
+                                      dataType: "json"
+                                });
+                            },
+                            remove:function(tcId,label){
+                                return   $.ajax({
+                                      type:'DELETE',
+                                      cache:false,
+                                      url: basePath2 + "removeSuitesforTc?tcId="+tcId+"&label="+label,
+                                      dataType: "json"
+                                });
+                            },
+                            add:function(tcId,label,pId){
+                                return   $.ajax({
+                                      type:'POST',
+                                      cache:false,
+                                      url: basePath2 + "insertSuitesforTc?tcId="+tcId+"&label="+label+"&projectId="+pId,
+                                      dataType: "json"
+                                });
+                            },
+                            source:function(projectId){
+                                return $.ajax({
+                                    type:'POST',
+                                    url: basePath2 + "getSuites?projectId="+projectId,
+                                    dataType: "json"
+                                  });
+                            }
+                        }
                     }
                 }
             }
