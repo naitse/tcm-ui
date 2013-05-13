@@ -8,11 +8,12 @@ define([
     'views/plan/plan',
     'views/metrics/metrics',
     'views/metrics/release_metrics',
+    'views/suites/suites',
     'tcm2',
     'backbone',
     'jquery.cookie'
 
-], function($, _, TopMenuView, managerView, syncView, planView, MetricsView, RlsMetricsView){
+], function($, _, TopMenuView, managerView, syncView, planView, MetricsView, RlsMetricsView, SuitesView){
 
 
 
@@ -36,6 +37,10 @@ define([
         {
             'id': 'RlsMetrics',
             'divContainer': '#tcRlsMetrics'
+        },
+                {
+            'id': 'Suites',
+            'divContainer': '#suitesViewer'
         }
 
     ];
@@ -90,6 +95,7 @@ define([
                     "plan": "plan",
                     "metrics": "metrics",
                     "rlsmetrics": "rlsmetrics",
+                    "suites": "suites",
                     "*actions": "defaultRoute"
                 }
             });
@@ -116,6 +122,9 @@ define([
                 loadModule(RlsMetricsView);
             });
 
+            app_router.on('route:suites', function(actions) {
+                loadModule(SuitesView);
+            });
 
             Backbone.history.start();
 

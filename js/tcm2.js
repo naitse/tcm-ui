@@ -1,6 +1,7 @@
-define(['jquery', 'chosen', 'bootstrap', 'jqueryui', 'blockui','extendJS','textext'], function ($, chosen,bootstrap,jqueryui,blockui,extendJS,textext) {
+define(['jquery', 'chosen', 'bootstrap', 'jqueryui', 'blockui','extendJS','textext','panelsManager'], function ($, chosen,bootstrap,jqueryui,blockui,extendJS,textext) {
 
   tcmModel = require('tcmModel');
+  PM = require('panelsManager');
 
    var prefix = '';
    var displayed = false;
@@ -34,17 +35,17 @@ define(['jquery', 'chosen', 'bootstrap', 'jqueryui', 'blockui','extendJS','texte
             $("#desc-container").css({
               'width' : wc + '%'
             });
-            panelRightWidth()
+            PM.panelRightWidth("#tcViewer")
 
-             $(".right-pannel").css({
+             $("#tcViewer .right-pannel").css({
                   'height' : '100%'
               });
 
-             $(".lp-wrapper").css({
+             $("#tcViewer .lp-wrapper").css({
                   'height' : '100%'
               });
 
-             $(".left-center-panel").css({
+             $("#tcViewer .left-center-panel").css({
                   'height' : '100%'
               });
 
@@ -88,7 +89,7 @@ define(['jquery', 'chosen', 'bootstrap', 'jqueryui', 'blockui','extendJS','texte
                 $('#desc-wrapper').css({
                   'height':100
                 });
-                $( ".right-pannel" ).css({
+                $( "#tcViewer .right-pannel" ).css({
                  'padding-bottom':29
                 });
                
@@ -112,7 +113,7 @@ define(['jquery', 'chosen', 'bootstrap', 'jqueryui', 'blockui','extendJS','texte
             e.stopPropagation();
             if($('.feature.active').size() != 0){
               $(this).addClass('detailsOpen')
-                expandIssueDescription();
+                PM.expandIssueDescription("#tcViewer");
             }
           }
         });
@@ -121,7 +122,7 @@ define(['jquery', 'chosen', 'bootstrap', 'jqueryui', 'blockui','extendJS','texte
           click: function(e){
             e.stopPropagation();
             $(this).removeClass('detailsOpen')
-            collapsIssueDescription();
+            PM.collapsIssueDescription("#tcViewer");
           }
         });
 
@@ -130,7 +131,7 @@ define(['jquery', 'chosen', 'bootstrap', 'jqueryui', 'blockui','extendJS','texte
             e.stopPropagation();
             $(this).addClass('refreshing');
             clearData();
-            collapsIssueDescription();
+            PM.collapsIssueDescription("#tcViewer");
             itSelected(currentSS.iterationId);
           }
         });
@@ -198,27 +199,27 @@ define(['jquery', 'chosen', 'bootstrap', 'jqueryui', 'blockui','extendJS','texte
             }
         });
         
-        $('#rp-wrapper .cancel').live({
+        $('#tcViewer #rp-wrapper .cancel').live({
           click: function(e){
             e.stopPropagation();
             
             clearTCModal();
-            colapseExpandRightPanel('none')
+            PM.colapseExpandRightPanel('#tcViewer','none')
 
           }
         });
         
-         $('#rp-wrapper .save').live({
+         $('#tcViewer #rp-wrapper .save').live({
           click: function(e){
             e.stopPropagation();
-            saveTc($(this).parents('#rp-wrapper'), $('#rp-wrapper .modal-body').data('flag'), $('#rp-wrapper .modal-body').data('tcObject'),currentSS.feature)
+            saveTc($(this).parents('#tcViewer #rp-wrapper'), $('#tcViewer #rp-wrapper .modal-body').data('flag'), $('#tcViewer #rp-wrapper .modal-body').data('tcObject'),currentSS.feature)
           }
         });
         
          $('.add-tc').live({
           click: function(e){
             e.stopPropagation();
-            colapseExpandRightPanel('block')
+            PM.colapseExpandRightPanel('#tcViewer','block')
             clearTCModal();
             $('.rp-title').text('New Test Case')
             
@@ -370,8 +371,8 @@ function getReleases(){
     //[{"releaseName":"27","iterationName":"16,18,19,20,21,22"},{"releaseName":"28","iterationName":"23,24,25"}]
     if(FuckRequireJS == 0){
       $('#release-select').chosen()
-      makeResizable();
-    colapseExpandRightPanel('none');
+      PM.makeResizable("#tcViewer",[550,100,313,700]);
+    PM.colapseExpandRightPanel('#tcViewer','none');
     $('#tcViewer').css('height',(($('.tcm-container').height() - 20)*100)/$('.tcm-container').height()+'%')
     }
     $('#release-select').find('optgroup').remove();
@@ -398,8 +399,8 @@ function itSelected(iterationId){
    currentSS.iterationId = iterationId
     var noresult = $('<div>').addClass('noresult').text('No IONs found')
     $('#filter-completed-features').removeClass('enabled').attr('disabled',true);
-    $('#feature-container').html('')
-    toggleLoading('#feature-container',true, 'big')
+    $('#tcViewer #feature-container').html('')
+    PM.toggleLoading('#tcViewer','#feature-container',true, 'big')
     tcmModel.releases.iterations.features.fetch(currentSS.releaseId, currentSS.iterationId).done(function(data){
       clearData();
       if (data.length > 0){
@@ -408,9 +409,9 @@ function itSelected(iterationId){
         statCheck=setTimeout(function(){statsMonitoring(iterationId)}, monitoring_interval);
       }else{
 
-        $('#feature-container').append(noresult)
+        $('#tcViewer #feature-container').append(noresult)
       }
-      toggleLoading('#feature-container',false)
+      PM.toggleLoading('#tcViewer','#feature-container',false)
       $('#filter-completed-features').addClass('enabled').attr("disabled",false);
       $('#feature-refresh').removeClass('refreshing')
 
@@ -454,7 +455,7 @@ function prepareFeatures(data){
 
 function renderFeature(feature){
   var feature_id = $(feature).attr('feature-id');
-  $('#feature-container').append(feature);
+  $('#tcViewer #feature-container').append(feature);
   if ($.browser.mozilla ) {
     $(feature).find('.summary').css({
       'margin-right': $(feature).find('.title-bar').width() + 2,
@@ -613,14 +614,14 @@ function getTC(feature_id){
     // if(data.length>0){
       prepareTCs(data,feature_id)
     // } else{
-    //   $('#tc-container').html('')
-    //   $('#tc-container').append(noresult)
+    //   $('#tcViewer #tc-container').html('')
+    //   $('#tcViewer #tc-container').append(noresult)
     //   $('#tc-refresh').removeClass('refreshing')
     // }   
   })
 }   
 function prepareTCs(data,feature_id){
-  $('#tc-container').children().remove();
+  $('#tcViewer #tc-container').children().remove();
   if($(data).size() >0){
     $('.del-tc-trigger').attr('disabled',false)
   }
@@ -716,7 +717,7 @@ function createTcHTML(tcObject,feature_id){
 
 
 function renderTC(tc){
-  $('#tc-container').append(tc);
+  $('#tcViewer #tc-container').append(tc);
   tcmModel.releases.iterations.features.test_cases.suites.fetch($(tc).data('tcObject').tcId).done(function(data){
     renderTagsContainer($(tc).data('tcObject').tcId,data);
   })
@@ -725,7 +726,7 @@ function renderTC(tc){
 function clearData(){
   clearTimeout(statCheck);
    $('#filter-completed-features').removeClass('enabled').attr("disabled",true);
-  $('#feature-container').children().remove()
+  $('#tcViewer #feature-container').children().remove()
   $('.add-tc').attr('disabled',true)
   $('#desc-container').children().remove()
   $('#desc-container').text('');
@@ -736,17 +737,17 @@ function clearData(){
 }
 
 function clearTCs(){
-  $('#tc-container').children().remove()
+  $('#tcViewer #tc-container').children().remove()
   clearTCModal()
 }
 
 function clearTCModal(){
             $('.rp-title').text('')
-            $('#rp-wrapper .save').text('Add')
+            $('#tcViewer #rp-wrapper .save').text('Add')
             $('.new-tc-title').val('').removeClass('title-error');
             $('.new-tc-desc').val('');
-            $('#rp-wrapper .modal-body').data('flag',0);
-            $('#rp-wrapper .modal-body').data('tcObject','');
+            $('#tcViewer #rp-wrapper .modal-body').data('flag',0);
+            $('#tcViewer #rp-wrapper .modal-body').data('tcObject','');
             $('.proposed').attr('checked',false);
             proposed = 0;
 
@@ -760,7 +761,7 @@ function saveTc(modal, flag, tcObject, featureReference){
   var desc = $(modal).find('.new-tc-desc').val()
   var feature= currentSS.featureId//$('.active').attr('feature-id')
   
-  if (jQuery.trim($('#rp-wrapper').find('.new-tc-title').val()).length <= 0){
+  if (jQuery.trim($('#tcViewer #rp-wrapper').find('.new-tc-title').val()).length <= 0){
     $(modal).find('.new-tc-title').addClass('title-error')
     return false
   }else{
@@ -798,7 +799,7 @@ function saveTc(modal, flag, tcObject, featureReference){
     description:desc,
     proposed:proposed
   }
-    toggleLoading('.tc[tc-id="'+updateReq.tcId+'"]',true)
+    PM.toggleLoading('#tcViewer','.tc[tc-id="'+updateReq.tcId+'"]',true)
 
     tcmModel.releases.iterations.features.test_cases.update(currentSS.releaseId, currentSS.iterationId, currentSS.featureId, updateReq).done(function(){
 
@@ -806,7 +807,7 @@ function saveTc(modal, flag, tcObject, featureReference){
             $('.tc[tc-id="'+updateReq.tcId+'"]').data('tcObject',updateReq);
             $('.tc[tc-id="'+updateReq.tcId+'"]').find('.tc-description').text(updateReq.name);
             $('.tc[tc-id="'+updateReq.tcId+'"]').find('.tc-steps').text(updateReq.description);
-            toggleLoading('.tc[tc-id="'+updateReq.tcId+'"]',false)
+            PM.toggleLoading('#tcViewer','.tc[tc-id="'+updateReq.tcId+'"]',false)
       })
     }).fail(function(){
       $(modal).find('.alert').removeClass('hide')
@@ -839,16 +840,16 @@ function updateTCprop(tcObject){
 
 
 function editTc(tcObject){
-  colapseExpandRightPanel('block')
+  PM.colapseExpandRightPanel('#tcViewer','block')
   clearTCModal();
 
   $('.rp-title').text('Update Test Case')
-  $('#rp-wrapper .save').text('Update')
+  $('#tcViewer #rp-wrapper .save').text('Update')
   $('.new-tc-title').val(tcObject.name);
   $('.new-tc-desc').val(tcObject.description);
 
-  $('#rp-wrapper .modal-body').data('flag',1);
-  $('#rp-wrapper .modal-body').data('tcObject',tcObject);
+  $('#tcViewer #rp-wrapper .modal-body').data('flag',1);
+  $('#tcViewer #rp-wrapper .modal-body').data('tcObject',tcObject);
 
   if(tcObject.proposed == 1){
     $('.proposed').attr('checked','checked')
@@ -863,7 +864,7 @@ function deleteInterceptor(tcId,feature){
 
 function removeTestCase(tcId,feature){
 
-  toggleLoading('.tc[tc-id="'+tcId+'"]', true)
+  PM.toggleLoading('#tcViewer','.tc[tc-id="'+tcId+'"]', true)
   tcmModel.releases.iterations.features.test_cases.del(currentSS.releaseId, currentSS.iterationId, currentSS.featureId, tcId).done(function(){
     $('.tc[tc-id="'+tcId+'"]').remove();
     updateFeatureTestStats(feature)
@@ -874,151 +875,6 @@ function removeTestCase(tcId,feature){
 //######################################### tc ops end
 
 
-//######################################### UI ops
-function toggleLoading(container, toggle, size){
-
-  if (size != 'big'){
-    size = 'small';
-  }
-
-  if (toggle == true){
-    $(container).block({
-      message:'<div class="loading-'+size+'-block"></div>',
-      overlayCSS:  { 
-        backgroundColor: '#000', 
-        opacity:         0.2, 
-        cursor:          'wait' 
-    }
-  })
-  }else{
-    $(container).unblock()
-  }
-
-}
-
-
-
-function colapseExpandRightPanel(state){
-  
-    if(state == 'block'){
-      $('.left-center-panel').css({
-        'width':'65%'
-      })
-      makeResizable()
-      panelRightWidth()
-       $("#rp-wrapper").show('fast') 
-      $("#lp-wrapper").css({
-                      'height' : '100%',
-                      'width' : '313px'//porcentage + '%'
-                });
-    }else{
-      $('.left-center-panel').css({
-        'width':'100%'
-      })
-
-      $("#rp-wrapper").hide('fast')
-     
-    }
-
-
-      $($('.left-center-panel .ui-resizable-e')[1]).css({
-        'display':state
-      })
-
-      
-} 
-
-function panelRightWidth(){
-  
-    $("#rp-wrapper").css({
-        'width' : $('#pannel-wrapper').outerWidth() - $('.left-center-panel').outerWidth() - 9
-    });
-
-};
-
- function makeResizable(){
-
-           $('.left-center-panel').resizable({
-            handles : 'e',
-            minWidth : 550,
-            resize : function() {
-               panelRightWidth();
-               $("#lp-wrapper").css({
-                  'width': $("#lp-wrapper").data('width')
-               })
-            }
-          });
-
-           $('#desc-wrapper').resizable({
-              handles : 's',
-              minHeight : 100,
-              alsoResize : "#desc-container",
-              stop : function() {
-                var wc = 100 - ((($('#desc-wrapper').outerWidth() * 100) / ($('#description').outerWidth() - 20)) - 100)
-                $("#desc-container").css({
-                  'height' : $('#desc-wrapper').height() - 20,
-                  'width' : wc + '%'  //'100%'
-                });
-                $(".right-pannel").css({
-                  'padding-bottom' : $('#desc-wrapper').height() + 29
-                });
-              }
-          });
-
-          $("#desc-container").resizable({
-              ghost : true,
-              handles : 's'
-          });
-              
-          $("#lp-wrapper").resizable({
-              handles : 'e',
-              minWidth : 313,
-              maxWidth : 700,
-              containment : '.left-center-panel',
-              stop : function() {
-                $("#feature-container").css({
-                  'height' : '100%',
-                  'width' : '100%'
-                });
-                var porcentage = (($(this).width() * 100) / $('.left-center-panel').width());
-                $(this).css({
-                      'height' : '100%',
-                      'width' : $(this).width()//porcentage + '%'
-                });
-                $(this).data('width',$(this).width())
-              }
-          });
-
-  }  
-   
-   
-   
-  //var domain = window.location.href
-function expandIssueDescription(){
-  $('#desc-wrapper').show('fast',function(){
-     $( ".right-pannel" ).css({
-         'padding-bottom':$('#desc-wrapper').height()+29
-       })
-       var wc = 100 - ((($('#desc-wrapper').outerWidth() * 100) / ($('#description').outerWidth() - 20)) - 100)
-       
-       $("#desc-container").css({
-         'width' : wc + '%'  //'100%'
-       })
-  })
-  
-  
-     $('#desc-expander').removeClass('desc-expander').addClass('desc-collapser')
-   }
-   
-   function collapsIssueDescription(){
-     $('#desc-wrapper').hide('fast',function(){
-       $( ".right-pannel" ).css({
-           'padding-bottom':29
-         })
-     })
-     $('#desc-expander').removeClass('desc-collapser').addClass('desc-expander')
-   }
-   
   function statsMonitoring(iterationId){
       
       var features_array = [];
@@ -1081,7 +937,7 @@ function expandIssueDescription(){
         $(feature).find('.close-jira-btn > i').removeClass('icon-time').addClass(iconClass);
         $(feature).addClass('ready');
           if($(feature).hasClass('active')){
-            $('#tc-container').children('.tc').each(function(){
+            $('#tcViewer #tc-container').children('.tc').each(function(){
                 $(this).find('.btn-group').remove();
             })
           }
