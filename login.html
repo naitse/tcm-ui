@@ -3,8 +3,8 @@
 <head>
     <title>Test Case Manager</title>
     <link href="js/libs/chosen/chosen.css" rel="stylesheet" />
-    <link href="assets/login.css" rel="stylesheet">
     <link href="js/libs/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="assets/login.css" rel="stylesheet">
     <script data-main="js/login" src="js/libs/require/require.js"></script>
 </head>
 <style>
@@ -27,11 +27,6 @@ position: relative;
 top: 20px;
 }
 
-.control-label {
-    margin-left: -13px;
-margin-right: 12px;
-}
-
 #projects_dd_chzn {
     margin-left: auto;
 margin-right: auto;
@@ -42,6 +37,12 @@ display: table;
 display: table;
 margin-left: auto;
 margin-right: auto;
+}
+
+.login #login-form input[type="text"],
+.login #login-form input[type="password"] {
+    width: 22em;
+    height: 1em;
 }
 </style>
 <body class="val-tooltip login-signup">
@@ -66,7 +67,7 @@ margin-right: auto;
                     <div class="login-alert alert hide">
                     </div>
 
-                    <input id="login-button" type="button" class="btn btn-primary btn-large" data-loading-text="Authenticating..." value="Authenticate"/>
+                    <input id="login-button" type="button" class="btn btn-primary btn-large" data-loading-text="Logging in..." value="Login"/>
                 </form>
 
                 <div style="display: none" id="projectsContainer" class="form-horizontal">
@@ -74,7 +75,7 @@ margin-right: auto;
                     <!-- <br /> -->
                     <select id="projects_dd" />
                     <br />
-                    <input id="project-button" type="button" class="btn btn-primary btn-large" value="Login"/>
+                    <input id="project-button" type="button" class="btn btn-primary btn-large" value="Continue"/>
                 </div>
             </div>
         </div>
