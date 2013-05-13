@@ -51,6 +51,17 @@ define( function(){
                     });
             },
 
+            features_iterations: function(releaseId){
+                var urlplan  = basePath +'releases/{rlsId}/features_iterations'
+
+                return $.ajax({
+                    type: "GET",
+                    cache:false,
+                    url: urlplan.replace('{rlsId}', releaseId),
+                    dataType: "json"
+                });
+            },
+
             create: function(rlsName) {
                 var data ={
                     "name":rlsName
@@ -262,8 +273,41 @@ define( function(){
                                 contentType: "application/json",
                                 dataType: "json"
                             });
-                        }
+                        },
 
+                        suites:{
+                            fetch:function(tcId){
+                                return   $.ajax({
+                                      type:'GET',
+                                      cache:false,
+                                      url: basePath2 + "getSuitesforTc?tcId="+tcId,
+                                      dataType: "json"
+                                });
+                            },
+                            remove:function(tcId,label){
+                                return   $.ajax({
+                                      type:'DELETE',
+                                      cache:false,
+                                      url: basePath2 + "removeSuitesforTc?tcId="+tcId+"&label="+label,
+                                      dataType: "json"
+                                });
+                            },
+                            add:function(tcId,label,pId){
+                                return   $.ajax({
+                                      type:'POST',
+                                      cache:false,
+                                      url: basePath2 + "insertSuitesforTc?tcId="+tcId+"&label="+label+"&projectId="+pId,
+                                      dataType: "json"
+                                });
+                            },
+                            source:function(projectId){
+                                return $.ajax({
+                                    type:'POST',
+                                    url: basePath2 + "getSuites?projectId="+projectId,
+                                    dataType: "json"
+                                  });
+                            }
+                        }
                     }
                 }
             }

@@ -13,7 +13,9 @@ require.config({
     highcharts: 'libs/highcharts/highcharts',
     releases_iterations_dd: 'widgets/releases_iterations_dd',
     'jquery.cookie': 'libs/jquerycookie/jquery.cookie',
-    'jquery.base64': 'libs/jquery.base64/jquery.base64'
+    'jquery.base64': 'libs/jquery.base64/jquery.base64',
+    'textext':'libs/textext/textext.min',
+    'panelsManager':'panelsManager'
   },
 
   shim: {
@@ -46,7 +48,13 @@ require.config({
     },
     'jquery.base64':{
         deps: ['jquery']
-    }
+    },
+    'textext':{
+        deps: ['jquery','jqueryui']
+    },
+    'panelsManager':{
+        deps: ['jquery','jqueryui']
+    }    
   }
 });
 

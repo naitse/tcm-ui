@@ -2,6 +2,7 @@ require.config({
     paths: {
         jquery: "libs/jquery/jQuery-1.8.3",
         bootstrap: "libs/bootstrap/js/bootstrap.min",
+        chosen: "libs/chosen/chosen.jquery.min",
        'jquery.cookie': 'libs/jquerycookie/jquery.cookie',
        'tcm_model': 'models/tcmModel',
        'jquery.base64': 'libs/jquery.base64/jquery.base64'
@@ -10,11 +11,15 @@ require.config({
     shim: {
         'jquery.cookie':{
             deps: ['jquery']
+        },
+        chosen: {
+            deps: ['jquery']
         }
+
     }
 });
 
-require(['jquery', 'tcm_model', 'jquery.cookie', 'jquery.base64','bootstrap'],
+require(['jquery', 'tcm_model', 'jquery.cookie', 'jquery.base64','bootstrap','chosen'],
     function ($, tcm_model) {
 
 
@@ -44,10 +49,13 @@ require(['jquery', 'tcm_model', 'jquery.cookie', 'jquery.base64','bootstrap'],
                          $("#projects_dd").append('<option value="' + this.id+ '">' + this.name + '</option>')
                      });
 
-                     $('#projectsContainer').show();
-                     $('#login-form').hide();
+                     $('#login-form #login-button').hide();
+                     $('#projectsContainer').show('fast');
+                     $("#projects_dd").chosen();
+                     afterLogin('User authenticated, Please select a project','alert-success');
+                     
                     }else{
-                        alert("no projects");
+                        afterLogin('No projects found for ' + $('#username').val(),'alert-warning')
                     }
 
                     $('#login-button').button('reset');
@@ -55,7 +63,7 @@ require(['jquery', 'tcm_model', 'jquery.cookie', 'jquery.base64','bootstrap'],
 
 
             }).fail(function(){
-                console.log("fallo login");
+                afterLogin('Authentication error','alert-danger');
                 $('#login-button').button('reset');
             });
 
@@ -69,4 +77,9 @@ require(['jquery', 'tcm_model', 'jquery.cookie', 'jquery.base64','bootstrap'],
         });
 
         $("body").append("<div id='loaded'></div>");
+
+        function afterLogin(message,alertClass){
+            $('.login-alert').text(message)
+            $('.login-alert').removeClass('hide alert-danger alert-warning alert-success').addClass(alertClass);
+        }
     });
