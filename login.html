@@ -2,10 +2,48 @@
 <html>
 <head>
     <title>Test Case Manager</title>
+    <link href="js/libs/chosen/chosen.css" rel="stylesheet" />
     <link href="assets/login.css" rel="stylesheet">
+    <link href="js/libs/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
     <script data-main="js/login" src="js/libs/require/require.js"></script>
 </head>
+<style>
+.login-alert {
+text-align: center;
+width: 50%;
+margin-left: auto;
+margin-right: auto;
+}
 
+#login-button {
+    display: table;
+margin-left: auto;
+margin-right: auto;
+}
+
+#project-button {
+margin-left: -23px;
+position: relative;
+top: 20px;
+}
+
+.control-label {
+    margin-left: -13px;
+margin-right: 12px;
+}
+
+#projects_dd_chzn {
+    margin-left: auto;
+margin-right: auto;
+display: table;
+}
+
+#project-button {
+display: table;
+margin-left: auto;
+margin-right: auto;
+}
+</style>
 <body class="val-tooltip login-signup">
 <div class="page-container">
     <div class="main-container">
@@ -25,20 +63,18 @@
                         <div class="controls"><input id="password" name="password" type="password"/></div>
                     </div>
 
-                    <div class="control-group">
-                        <div class="controls"><input id="login-button" type="button" class="btn btn-primary btn-large" data-loading-text="Loggin in..." value="Login"/></div>
+                    <div class="login-alert alert hide">
                     </div>
+
+                    <input id="login-button" type="button" class="btn btn-primary btn-large" data-loading-text="Authenticating..." value="Authenticate"/>
                 </form>
 
                 <div style="display: none" id="projectsContainer" class="form-horizontal">
-                    <div class="control-group">
-                        <label for="projects" class="control-label">Project</label>
-                        <div class="controls"><select id="projects_dd" /></div>
-                    </div>
-                    <br>
-                    <div class="control-group">
-                        <div class="controls"><input id="project-button" type="button" class="btn btn-primary btn-large" value="Select Project"/></div>
-                    </div>
+                    <!-- <label for="projects" class="control-label">Project:</label> -->
+                    <!-- <br /> -->
+                    <select id="projects_dd" />
+                    <br />
+                    <input id="project-button" type="button" class="btn btn-primary btn-large" value="Login"/>
                 </div>
             </div>
         </div>
