@@ -51,6 +51,17 @@ define( function(){
                     });
             },
 
+            features_iterations: function(releaseId){
+                var urlplan  = basePath +'releases/{rlsId}/features_iterations'
+
+                return $.ajax({
+                    type: "GET",
+                    cache:false,
+                    url: urlplan.replace('{rlsId}', releaseId),
+                    dataType: "json"
+                });
+            },
+
             create: function(rlsName) {
                 var data ={
                     "name":rlsName
