@@ -9,6 +9,9 @@ define(function(require){
 
             $(".tcm-top-menu-container").empty();
             $(".tcm-top-menu-container").append(menuTemplate);
+
+            $("#username").text($.cookie('usrname'));
+
             this.attachEvents();
 
         },
@@ -20,7 +23,10 @@ define(function(require){
     	   				$(this).addClass('active').parents('.dropdown').find('a.dropdown-toggle').addClass('active');
        				}
        			}
-       		})
+       		});
+
+
+
        	}
     };
 

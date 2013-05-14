@@ -72,6 +72,7 @@ require(['jquery', 'tcm_model', 'jquery.cookie', 'jquery.base64','bootstrap','ch
         $('#project-button').on('click', function(){
 
             $.cookie('projectId', $('#projects_dd option:selected').val());
+            $.cookie('usrname', $('#username').val());
 
             window.location.href = window.location.href.replace('login.html','');
         });
