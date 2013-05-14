@@ -25,8 +25,9 @@ define(['jquery', 'chosen', 'bootstrap', 'jqueryui', 'blockui','extendJS','texte
 			$(parent_container + ' .left-center-panel').css({
 				'width':'65%'
 			})
-				this.makeResizable(parent_container)
+				this.makeResizable(parent_container,[550,100,313,700])
 				this.panelRightWidth(parent_container)
+				console.log($(parent_container + " #rp-wrapper"))
 				$(parent_container + " #rp-wrapper").show('fast') 
 				$(parent_container + " #lp-wrapper").css({
 				'height' : '100%',
