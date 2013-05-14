@@ -1,6 +1,6 @@
 define(function(require){
 
-    var $ = require('jquery'),
+    var $ = require('jquery-plugins'),
         suitesTemplate = require('text!templates/suites/suites.html'),
         tcmModel = require('tcmModel'),
         PM = require('panelsManager'),
@@ -27,6 +27,15 @@ define(function(require){
 
         attachEvents: function(){
 
+        	$('#suitesViewer #tags-select').chosen().change(function(){
+        		console.log($(this).find('option:selected').text());
+        	});
+			$('#suitesViewer #tags_select_chzn').css({
+				'width': '100% !important'
+			}).find('.chzn-choices').css({
+				'min-height': '29px'
+			});
+    
         }
 
     };
