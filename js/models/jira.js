@@ -1,10 +1,10 @@
 define(function(require){
     //var basePath = "http://tcm-backend-qa.cloudhub.io";
-    var basePath = "http://tcm-backend.cloudhub.io";
-    //var basePath = "http://localhost:8088";
+    //var basePath = "http://tcm-backend.cloudhub.io";
+    var basePath = "http://localhost:8088";
 
     $.ajaxSetup({beforeSend: function(xhr) {
-        xhr.setRequestHeader("apiKey", $.cookie("apiKey"));
+        this.url = this.url + "?apiKey=" + $.cookie("apiKey") + "&projectId=" + $.cookie("projectId");
     }});
 
     var jira = {

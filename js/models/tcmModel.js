@@ -1,14 +1,21 @@
 
 define( function(){
-    var basePath = "http://tcm-backend.cloudhub.io/api/";
+    //var basePath = "http://tcm-backend.cloudhub.io/api/";
     //var basePath = "http://tcm-backend-qa.cloudhub.io/api/";
-    //var basePath = "http://localhost:8088/api/";
+    var basePath = "http://localhost:8088/api/";
     var basePath2 = basePath.replace('api/','');
 
-    $.ajaxSetup({beforeSend: function(xhr) {
-        xhr.setRequestHeader("apiKey", $.cookie("apiKey"));
-        xhr.setRequestHeader("projectId", $.cookie("projectId"));
-    }});
+    $.ajaxSetup(
+
+        {beforeSend: function(xhr) {
+            if(this.url.indexOf('?') > -1){
+                this.url = this.url + "&apiKey=" + $.cookie("apiKey") + "&projectId=" + $.cookie("projectId");
+            }else{
+                this.url = this.url + "?apiKey=" + $.cookie("apiKey") + "&projectId=" + $.cookie("projectId");
+            }
+
+        }
+    });
 
     var tcm_model = {
 
@@ -17,7 +24,7 @@ define( function(){
                 return $.ajax({
                     type: "GET",
                     beforeSend: function(xhrObj){
-                        // console.log(username, password, $.base64.encode(username +':'+password));
+                        console.log(username, password, $.base64.encode(username +':'+password));
                         xhrObj.setRequestHeader("Authorization", "Basic " + $.base64.encode(username + ':' + password));
                      },
                     url: basePath + 'get_api_key',

@@ -15,7 +15,8 @@ require.config({
     'jquery.cookie': 'libs/jquerycookie/jquery.cookie',
     'jquery.base64': 'libs/jquery.base64/jquery.base64',
     'textext':'libs/textext/textext.min',
-    'panelsManager':'panelsManager'
+    'panelsManager':'panelsManager',
+    'jquery.grid': 'libs/jquery.grid/jquery.handsontable.full'
   },
 
   shim: {
@@ -54,7 +55,10 @@ require.config({
     },
     'panelsManager':{
         deps: ['jquery','jqueryui']
-    }    
+    },
+    'jquery.grid':{
+        deps: ['jquery']
+    }
   }
 });
 
