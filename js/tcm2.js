@@ -10,6 +10,7 @@ define(['jquery', 'chosen', 'bootstrap', 'jqueryui', 'blockui','extendJS','texte
    var FuckRequireJS = 0;
     var statCheck;
     var monitoring_interval = 15000;
+    var monitoring = true;
     var jiraLink = 'http://www.mulesoft.org/jira/browse/';
 
    var currentSS = {
@@ -401,8 +402,10 @@ function itSelected(iterationId){
       clearData();
       if (data.length > 0){
         prepareFeatures(data)
-        clearTimeout(statCheck)
-        statCheck=setTimeout(function(){statsMonitoring(iterationId)}, monitoring_interval);
+        if (monitoring==true){
+          clearTimeout(statCheck)
+          statCheck=setTimeout(function(){statsMonitoring(iterationId)}, monitoring_interval);
+        }
       }else{
 
         $('#tcViewer #feature-container').append(noresult)
