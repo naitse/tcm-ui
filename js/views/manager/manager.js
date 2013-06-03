@@ -14,7 +14,7 @@ define(function(require){
    var FuckRequireJS = 0;
     var statCheck;
     var monitoring_interval = 15000;
-    var monitoring = false;
+    var monitoring = true;
     var jiraLink = 'http://www.mulesoft.org/jira/browse/';
 
    var currentSS = {
@@ -831,7 +831,7 @@ function saveTc(modal, flag, tcObject, featureReference){
             $('#tcViewer .tc[tc-id="'+updateReq.tcId+'"]').data('tcObject',updateReq);
             $('#tcViewer .tc[tc-id="'+updateReq.tcId+'"]').find('.tc-description').text(updateReq.name);
             $('#tcViewer .tc[tc-id="'+updateReq.tcId+'"]').find('.tc-steps').text(updateReq.description);
-            PM.toggleLoading('#tcViewer','#tcViewer .tc[tc-id="'+updateReq.tcId+'"]',false)
+            PM.toggleLoading('#tcViewer','.tc[tc-id="'+updateReq.tcId+'"]',false)
       })
     }).fail(function(){
       $(modal).find('.alert').removeClass('hide')
