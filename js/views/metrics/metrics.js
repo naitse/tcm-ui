@@ -28,23 +28,23 @@ define(function(require){
 
         loadIterations: function(){
 
-           $('#metrics-release-select').releases_iterations_dd();
+           $('#tcMetrics #metrics-release-select').releases_iterations_dd();
 
         },
 
         attachEvents: function(){
-            var btnGetMetrics = $('#btnGetMetrics');
+            var btnGetMetrics = $('#tcMetrics #btnGetMetrics');
 
             btnGetMetrics.on('click', function(){
-                var iterId =  $("#metrics-release-select option:selected").val();
-                var rlsId =  $("#metrics-release-select option:selected").parents('optgroup').attr('rel-id');
+                var iterId =  $("#tcMetrics #metrics-release-select option:selected").val();
+                var rlsId =  $("#tcMetrics #metrics-release-select option:selected").parents('optgroup').attr('rel-id');
 
                 btnGetMetrics.button('loading');
-                $("#alertNoMetrics").addClass('hide');
-                $("#metricsContainer").hide();
+                $("#tcMetrics #alertNoMetrics").addClass('hide');
+                $("#tcMetrics #metricsContainer").hide();
 
-                $("#metricsProgressBar").show();
-                $("#metricsProgressBar").find(".bar").css("width","10%");
+                $("#tcMetrics #metricsProgressBar").show();
+                $("#tcMetrics #metricsProgressBar").find(".bar").css("width","10%");
 
 
                 $.when( tcmModel.releases.iterations.metrics_executed(rlsId, iterId)).done(function( metrics ){
@@ -65,7 +65,7 @@ define(function(require){
 
                 });
 
-                $("#metricsProgressBar").find(".bar").css("width","50%");
+                $("#tcMetrics #metricsProgressBar").find(".bar").css("width","50%");
 
                 $.when( tcmModel.releases.iterations.metrics_dailyexecuted(rlsId, iterId)).done(function( metrics ){
                     if(metrics.length > 0){
@@ -86,33 +86,10 @@ define(function(require){
 
                 });
 
-                $.when(tcmModel.releases.metrics_iter_trend('4')).done(function(metrics){
 
-                    var data = {
-                        categories: new Array(),
-                        blocked: new Array(),
-                        failed: new Array(),
-                        passed: new Array(),
-                        notrun: new Array(),
-                        inprogress: new Array()
-                    }
-
-                    _.each(metrics, function(value, key, list){
-                        data.categories.push(value.name);
-                        data.blocked.push(value.Blocked);
-                        data.failed.push(value.Failed);
-                        data.passed.push(value.Passed);
-                        data.notrun.push(value.notrun);
-                        data.inprogress.push(value.inprogress);
-                    });
-
-                    $('#iterationsTrendContainer').data('data', data);
-                    renderIterationsTrend();
-                });
-
-                $("#metricsProgressBar").hide();
+                $("#tcMetrics #metricsProgressBar").hide();
                 btnGetMetrics.button('reset');
-                $("#metricsContainer").show();
+                $("#tcMetrics #metricsContainer").show();
                 fixBorder()
             });
         }
@@ -202,81 +179,19 @@ define(function(require){
         });
     }
 
-    function renderIterationsTrend(){
-
-        var $this = $('#iterationsTrendContainer');
-        var data = $this.data('data')
-
-        $('#iterationsTrendContainer').highcharts({
-            chart: {
-                type: 'column',
-                events: {
-                click: function(event) {
-                    toggleChartFocus($this);
-                    }
-                }
-            },
-            title: {
-                text: 'Iterations Test Case Execution Trend'
-            },
-            subtitle: {
-                text: 'by status'
-            },
-            xAxis: {
-                categories: data.categories
-            },
-            yAxis: {
-                min: 0,
-                title: {
-                    text: 'Test Cases'
-                }
-            },
-            plotOptions: {
-                column: {
-                    pointPadding: 0.2,
-                    borderWidth: 0
-                }
-            },
-            series: [{
-                name: 'Blocked',
-                data: data.blocked
-
-            }, {
-                name: 'Failed',
-                data: data.failed
-
-            }, {
-                name: 'Passed',
-                data: data.passed
-
-            }, {
-                name: 'Not Run',
-                data: data.notrun
-
-            },
-                {
-                    name: 'In Progress',
-                    data: data.inprogress
-
-                }
-            ]
-        });
-
-    }
-
     function toggleChartFocus(chartDiv){
 
-        var main_graph = $('.graph-container').find('#container');
+        var main_graph = $('#tcMetrics .graph-container').find('#container');
         var current_graph = main_graph.children();
-        if( $('.graph-previews').find(chartDiv).size() == 1 ){
-            var preview_graph = $('.graph-previews').find(chartDiv);
+        if( $('#tcMetrics .graph-previews').find(chartDiv).size() == 1 ){
+            var preview_graph = $('#tcMetrics .graph-previews').find(chartDiv);
             current_graph.html('');
             preview_graph.html('');
             main_graph.append(preview_graph)
-            $('.graph-previews').prepend(current_graph);
+            $('#tcMetrics .graph-previews').prepend(current_graph);
             renderDailyExec();
-            renderIterationsTrend();
             renderExecutionPie();
+
             fixBorder();
         }else{
             //to prevent focused graph to be removed
@@ -284,11 +199,11 @@ define(function(require){
     }
 
     function fixBorder(){
-        $('.main-container #container').children().css({
+        $('#tcMetrics .main-container #container').children().css({
             'border':'none'
         });
-        $('.graph-previews').children().removeClass('span9');
-        $('.graph-previews .graph').css({
+        $('#tcMetrics .graph-previews').children().removeClass('span9');
+        $('#tcMetrics .graph-previews .graph').css({
             'border':'1px solid #D4D4D4',
             'margin-bottom':'20px'
         });
@@ -296,33 +211,22 @@ define(function(require){
 
     function adjustChartHeight(){
 
-        $('#tcMetrics').css('height',(($('.tcm-container').height() - 30)*100)/$('.tcm-container').height()+'%')
-
-        var parentWidth = $('#metricsContainer').width();
-        var parentHeight = $('.tcm-container').height()
-        var metrics_controls = $('#metrics-controls').height();
-        var previewsWidth = 420;
-        var currentChartWidth = $('.graph-container').find('#container').children().width();
-        var newChartWidth = parentWidth - previewsWidth;
-        var newChartHeight = parentHeight - metrics_controls -100;
-        $('.graph-container').find('#container').children().highcharts().setSize(newChartWidth, newChartHeight)
-    }
-
-    $(window).resize(function(){
-
         try{
             $('#tcMetrics').css('height',(($('.tcm-container').height() - 30)*100)/$('.tcm-container').height()+'%')
 
-        var parentWidth = $('#metricsContainer').width();
-        var parentHeight = $('.tcm-container').height()
-        var metrics_controls = $('#metrics-controls').height();
-        var previewsWidth = 420;
-        var currentChartWidth = $('.graph-container').find('#container').children().width();
-        var newChartWidth = parentWidth - previewsWidth;
-        var newChartHeight = parentHeight - metrics_controls -100;
-        $('.graph-container').find('#container').children().highcharts().setSize(newChartWidth, newChartHeight)
-    }catch(err){}
-    });
+            var parentWidth = $('#tcMetrics #metricsContainer').width();
+            var parentHeight = $('.tcm-container').height()
+            var metrics_controls = $('#tcMetrics #metrics-controls').height();
+            var previewsWidth = 420;
+            var currentChartWidth = $('#tcMetrics .graph-container').find('#container').children().width();
+            var newChartWidth = parentWidth - previewsWidth;
+            var newChartHeight = parentHeight - metrics_controls -100;
+            $('#tcMetrics .graph-container').find('#container').children().highcharts().setSize(newChartWidth, newChartHeight)
+        }catch(err){}
+    }
+
+    $(window).resize(adjustChartHeight);
+
 
     return MetricsView;
 

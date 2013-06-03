@@ -29,30 +29,29 @@
 }
 </style>
 <div id="tcMetrics">
-<div id="metrics-controls">
-    <div ><h3>Select Iteration:</h3></div>
+    <div id="metrics-controls">
+        <div ><h3>Select Iteration:</h3></div>
 
-    <div>
-        <select data-placeholder="Choose an Iteration..." id="metrics-release-select" tabindex="3">
-            <option></option>
-        </select>
-        <button type="button" id="btnGetMetrics" class="btn btn-primary" data-loading-text="Loading...">Pull Metrics</button></div>
-    <div>
-        <div id="alertNoMetrics" class="alert alert-error hide" stlye="width:200px;">
-            There was an error pulling metrics
+        <div>
+            <select data-placeholder="Choose an Iteration..." id="metrics-release-select" tabindex="3">
+                <option></option>
+            </select>
+            <button type="button" id="btnGetMetrics" class="btn btn-primary" data-loading-text="Loading...">Pull Metrics</button></div>
+        <div>
+            <div id="alertNoMetrics" class="alert alert-error hide" stlye="width:200px;">
+                There was an error pulling metrics
+            </div>
         </div>
     </div>
-</div>
     <div id="metricsContainer" style="display:none; " >
         <div class="graph-container">
             <div class="main-container">
                 <div id="container" style="width: 100%">
-                   <div id="executionContainer" class="span9 graph round-corner-all" style="margin: 0 auto;"></div>
+                    <div id="executionContainer" class="graph round-corner-all" style="margin: 0 auto;"></div>
                 </div>
             </div>
             <div class="graph-previews round-corner-all">
                 <div id="dailyExecutionContainer" class="graph round-corner-all"></div>
-                <div id="iterationsTrendContainer" class="graph round-corner-all"></div>
             </div>
         </div>
     </div>

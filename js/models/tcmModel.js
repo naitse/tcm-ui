@@ -97,6 +97,19 @@ define( function(){
                 });
 
             },
+
+            metrics_carried_over: function(releaseId){
+                var urlplan  = basePath +'releases/{rlsId}/metricGetCarriedOverFeatures'
+
+
+                return $.ajax({
+                    type: "GET",
+                    url: urlplan.replace('{rlsId}', releaseId),
+                    dataType: "json"
+                });
+
+            },
+
             iterations: {
                 url: basePath + 'releases/{rlsId}/iterations',
 
