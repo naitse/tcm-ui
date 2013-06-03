@@ -303,14 +303,22 @@ define( function(){
                                 return   $.ajax({
                                       type:'POST',
                                       cache:false,
-                                      url: basePath2 + "insertSuitesforTc?tcId="+tcId+"&label="+label+"&projectId="+pId,
+                                      url: basePath2 + "insertSuitesforTc?tcId="+tcId+"&label="+label,
                                       dataType: "json"
                                 });
                             },
                             source:function(projectId){
                                 return $.ajax({
                                     type:'POST',
-                                    url: basePath2 + "getSuites?projectId="+projectId,
+                                    url: basePath2 + "getSuites",
+                                    dataType: "json"
+                                  });
+                            },
+
+                            getTcsForStuitesByProject: function(label){
+                                return $.ajax({
+                                    type:'GET',
+                                    url: basePath2 + "getTcsForStuitesByProject" + "?label=" + label,
                                     dataType: "json"
                                   });
                             }
