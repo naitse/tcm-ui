@@ -77,7 +77,7 @@ define(function(require){
 		$('#suitesViewer #tags-select').find('option').remove();
 		$(data).each(function(){
 			$(this).each(function(){
-				var option = $('<option>').attr('value', this.name).text(this.name);
+				var option = $('<option>').attr('value', this.name).text(this.name).data('tagId',this.id);
 				$('#suitesViewer #tags-select').append(option)
 			})
 		})
@@ -85,21 +85,44 @@ define(function(require){
 	}
 
     function tagsChanged(args){
-    	if(!args[1].deselected){
-    		var tag = args[1].selected;
-	       	var tcResponseData = ['{"statusName":"Not Run","tcId":181,"lastRun":1368484682000,"statusId":0,"description":"","name":"verify existence and style of tenant select","proposed":0}']//fetchTcForSuite(tag);
-    		//on done ...
-    		console.log('before');
-    		var tcContainer = createTcsContainer(tag);
-	       	$('#suitesViewer #tc-container').append(tcContainer);
-	       	$(tcResponseData).each(function(){
-	       		$('#suitesViewer #tc-container .' + tag.replace(/ /g,'-')).append(createTCHtml(JSON.parse(this))); //REMOVE THE PARSER
-	       	});
 
+    	var req = [];
+
+    	$('#suitesViewer #tags-select').find('option:selected').each(function(){
+    		req.push($(this).data('tagId'));
+    	})
+
+    	if(req.length == 0){
+			$('#suitesViewer #tc-container').children().remove();
     	}else{
-    		var tag = args[1].deselected;
-		   	removeTcForSuite(tag);
+	    	req = req.toString();
+	    	console.log(req);
+
+	    	tcmModel.releases.iterations.features.test_cases.suites.getTcsForStuitesByProject(req).done(function(data){
+	    		console.log(data);
+	    		$('#suitesViewer #tc-container').children().remove();
+		       	$(data).each(function(){
+		       		$('#suitesViewer #tc-container').append(createTCHtml(this)); //REMOVE THE PARSER
+		       	})
+	    	});
     	}
+
+
+    	// if(!args[1].deselected){
+    	// 	var tag = args[1].selected;
+	    //    	var tcResponseData = ['{"statusName":"Not Run","tcId":181,"lastRun":1368484682000,"statusId":0,"description":"","name":"verify existence and style of tenant select","proposed":0}']//fetchTcForSuite(tag);
+    	// 	//on done ...
+    	// 	console.log('before');
+    	// 	var tcContainer = createTcsContainer(tag);
+	    //    	$('#suitesViewer #tc-container').append(tcContainer);
+	    //    	$(tcResponseData).each(function(){
+	    //    		$('#suitesViewer #tc-container .' + tag.replace(/ /g,'-')).append(createTCHtml(JSON.parse(this))); //REMOVE THE PARSER
+	    //    	});
+
+    	// }else{
+    	// 	var tag = args[1].deselected;
+		   // 	removeTcForSuite(tag);
+    	// }
     }
 
     function fetchTcForSuite(tag){
