@@ -5,13 +5,18 @@ define( function(){
     //var basePath = "http://localhost:8088/api/";
     var basePath2 = basePath.replace('api/','');
 
-    $.ajaxSetup(
+    $.ajaxSetup({
+        cache: false,
+        beforeSend: function(xhr) {
+            var params = {
+                apiKey: $.cookie("apiKey"),
+                projectId: $.cookie("projectId")
+            }
 
-        {beforeSend: function(xhr) {
             if(this.url.indexOf('?') > -1){
-                this.url = this.url + "&apiKey=" + $.cookie("apiKey") + "&projectId=" + $.cookie("projectId");
+                this.url += '&' + $.param(params);
             }else{
-                this.url = this.url + "?apiKey=" + $.cookie("apiKey") + "&projectId=" + $.cookie("projectId");
+                this.url += '?' + $.param(params);
             }
 
         }
@@ -63,7 +68,6 @@ define( function(){
 
                 return $.ajax({
                     type: "GET",
-                    cache:false,
                     url: urlplan.replace('{rlsId}', releaseId),
                     dataType: "json"
                 });
@@ -88,7 +92,6 @@ define( function(){
 
                 return $.ajax({
                     type: "GET",
-                    cache:false,
                     url: urlplan.replace('{rlsId}', releaseId),
                     dataType: "json"
                 });
@@ -117,7 +120,6 @@ define( function(){
 
                     return $.ajax({
                         type: "GET",
-                        cache:false,
                         url: urlplan.replace('{rlsId}', releaseId).replace('{iterId}', iterationid),
                         dataType: "json"
                     });
@@ -130,7 +132,6 @@ define( function(){
 
                     return $.ajax({
                         type: "GET",
-                        cache:false,
                         url: urlplan.replace('{rlsId}', releaseId).replace('{iterId}', iterationid),
                         dataType: "json"
                     });
@@ -143,7 +144,7 @@ define( function(){
 
                     return $.ajax({
                         type: "GET",
-                        cache:false,
+                        
                         url: urlplan.replace('{rlsId}', releaseId).replace('{iterId}', iterationid),
                         dataType: "json"
                     });
@@ -157,7 +158,7 @@ define( function(){
                     fetch: function (releaseId, iterationid, data) {
                         return $.ajax({
                             type: "POST",
-                            cache:false,
+                            
                             data: JSON.stringify(data),
                             url:  this.url,
                             dataType: "json",
@@ -173,7 +174,7 @@ define( function(){
                     fetch: function (releaseId, iterationid) {
                         return $.ajax({
                             type: "GET",
-                            cache:false,
+                            
                             url: this.url.replace('{rlsId}', releaseId).replace('{iterId}', iterationid),
                             dataType: "json"
                         });
@@ -200,7 +201,7 @@ define( function(){
 
                             return $.ajax({
                                 type: "GET",
-                                cache:false,
+                                
                                 url:  this.closeurl + '?featureId='+featureId+'&issueKey='+jiraKey,
                                 dataType: "json"
                             });
@@ -212,7 +213,7 @@ define( function(){
                         fetch: function (releaseId, iterationid, featureId) {
                             return $.ajax({
                                 type: "GET",
-                                cache:false,
+                                
                                 url:  this.url.replace('{rlsId}', releaseId).replace('{iterId}', iterationid).replace('{ftrId}',featureId),
                                 dataType: "json"
                             });
@@ -230,7 +231,7 @@ define( function(){
                         fetch: function (releaseId, iterationid, featureId) {
                             return $.ajax({
                                 type: "GET",
-                                cache:false,
+                                
                                 url: this.url.get.replace('{rlsId}', releaseId).replace('{iterId}', iterationid).replace('{ftrId}',featureId),
                                 dataType: "json"
                             });
@@ -238,7 +239,7 @@ define( function(){
                         add: function (releaseId, iterationid, featureId, req) {
                             return $.ajax({
                                 type: "POST",
-                                cache:false,
+                                
                                 url: this.url.add.replace('{rlsId}', releaseId).replace('{iterId}', iterationid).replace('{ftrId}',featureId),
                                 data:JSON.stringify(req),
                                 contentType: "application/json",
@@ -248,7 +249,7 @@ define( function(){
                         del: function (releaseId, iterationid, featureId,tcId) {
                             return $.ajax({
                                 type: "DELETE",
-                                cache:false,
+                                
                                 url: this.url.del.replace('{rlsId}', releaseId).replace('{iterId}', iterationid).replace('{ftrId}',featureId).replace('{tstId}',tcId),
                                 contentType: "application/json",
                                 dataType: "json"
@@ -263,7 +264,7 @@ define( function(){
 
                                 return $.ajax({
                                     type: "PUT",
-                                    cache:false,
+                                    
                                     data:JSON.stringify(newStatus),
                                     url: this.url.replace('{rlsId}', releaseId).replace('{iterId}', iterationid).replace('{ftrId}',featureId).replace('{tstId}',tcId),
                                     contentType: "application/json",
@@ -274,7 +275,7 @@ define( function(){
                         update: function (releaseId, iterationid, featureId,tcObject) {
                             return $.ajax({
                                 type: "PUT",
-                                cache:false,
+                                
                                 data:JSON.stringify(tcObject),
                                 url: this.url.update.replace('{rlsId}', releaseId).replace('{iterId}', iterationid).replace('{ftrId}',featureId).replace('{tstId}',tcObject.tcId),
                                 contentType: "application/json",
@@ -286,7 +287,7 @@ define( function(){
                             fetch:function(tcId){
                                 return   $.ajax({
                                       type:'GET',
-                                      cache:false,
+                                      
                                       url: basePath2 + "getSuitesforTc?tcId="+tcId,
                                       dataType: "json"
                                 });
@@ -294,7 +295,7 @@ define( function(){
                             remove:function(tcId,label){
                                 return   $.ajax({
                                       type:'DELETE',
-                                      cache:false,
+                                      
                                       url: basePath2 + "removeSuitesforTc?tcId="+tcId+"&label="+label,
                                       dataType: "json"
                                 });
@@ -302,7 +303,7 @@ define( function(){
                             add:function(tcId,label,pId){
                                 return   $.ajax({
                                       type:'POST',
-                                      cache:false,
+                                      
                                       url: basePath2 + "insertSuitesforTc?tcId="+tcId+"&label="+label,
                                       dataType: "json"
                                 });
@@ -316,11 +317,16 @@ define( function(){
                             },
 
                             getTcsForStuitesByProject: function(label){
+
+                                var params = {
+                                    label:label
+                                }
+
                                 return $.ajax({
                                     type:'GET',
-                                    url: basePath2 + "getTcsForStuitesByProject" + "?label=" + label,
+                                    url: basePath2 + "getTcsForStuitesByProject?" + $.param(params),
                                     dataType: "json"
-                                  });
+                                });
                             }
                         }
                     }
