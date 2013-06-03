@@ -27,12 +27,25 @@ require(['jquery', 'tcm_model', 'jquery.cookie', 'jquery.base64','bootstrap','ch
             console.log("Your username or password was entered incorrectly");
             $.cookie('loginfailed', null);
         } else if ($.cookie('sessionexpired') === 'true') {
-            console.log("Your session has expired. Please login again.");
+            // console.log("Your session has expired. Please login again.");
             $.cookie('sessionexpired', null);
         } else if ($.cookie('accountdisabled') === 'true') {
             console.log("Your account is disabled. Please contact your organization administrator.");
             $.cookie('accountdisabled', null);
         }
+
+        $("#username").keypress(function(event) {
+          if ( event.which == 13 ) {
+             event.preventDefault();
+             $('#login-button').click();
+           }
+        });
+        $("#password").keypress(function(event) {
+          if ( event.which == 13 ) {
+             event.preventDefault();
+             $('#login-button').click();
+           }
+        });
 
         $('#login-button').on('click', function(){
             $("#projects_dd").empty();
