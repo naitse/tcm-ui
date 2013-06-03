@@ -10,12 +10,11 @@ define([
     'views/metrics/release_metrics',
     'views/suites/suites',
     'views/plugins/plugins-settings',
-    'tcm2',
+    // 'tcm2',
     'backbone',
     'jquery.cookie'
 
 ], function($, _, TopMenuView, managerView, syncView, planView, MetricsView, RlsMetricsView, SuitesView, PluginsSettingsView){
-
 
 
     var modules = [
@@ -85,7 +84,7 @@ define([
 
             TopMenuView.render();
 
-            managerView.render();
+            // managerView.render();
 
             this.routePaths();
 
@@ -96,6 +95,7 @@ define([
 
             var AppRouter = Backbone.Router.extend({
                 routes: {
+                    "viewer": "viewer",
                     "sync": "sync",
                     "plan": "plan",
                     "metrics": "metrics",
@@ -109,6 +109,10 @@ define([
             var app_router = new AppRouter;
 
             app_router.on('route:defaultRoute', function(actions) {
+                loadModule(managerView);
+            });
+
+            app_router.on('route:viewer', function(actions) {
                 loadModule(managerView);
             });
 
