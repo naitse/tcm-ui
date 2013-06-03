@@ -135,6 +135,8 @@ define(function(require){
                     }
                 }    
             },
+            //'[{"Not Run":6,"In Progress":0,"Passed":10,"Failed":0,"Blocked":0}]'
+            colors: ['#c6c6c6','#46ACCA', '#5DB95D', '#CD433D', '#FAA328'],
             title: {
                 text: 'Test plan execution'
             },
