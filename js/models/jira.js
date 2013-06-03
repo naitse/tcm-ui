@@ -3,9 +3,22 @@ define(function(require){
     var basePath = "http://tcm-backend.cloudhub.io";
     //var basePath = "http://localhost:8088";
 
-    $.ajaxSetup({beforeSend: function(xhr) {
-        this.url = this.url + "?apiKey=" + $.cookie("apiKey") + "&projectId=" + $.cookie("projectId");
-    }});
+    $.ajaxSetup({
+        cache: false,
+        beforeSend: function(xhr) {
+            var params = {
+                apiKey: $.cookie("apiKey"),
+                projectId: $.cookie("projectId")
+            }
+
+            if(this.url.indexOf('?') > -1){
+                this.url += '&' + $.param(params);
+            }else{
+                this.url += '?' + $.param(params);
+            }
+
+        }
+    });
 
     var jira = {
 

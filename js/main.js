@@ -7,6 +7,7 @@ require.config({
     underscore: "libs/underscore/underscore-min",
     backbone: "libs/backbone/backbone-min",
     jiraModel: 'models/jira',
+    tcsModule: 'models/tcsModule',
     tcmModel: 'models/tcmModel',
     blockui: 'libs/blockui/jquery.blockUI',
     exporting: 'libs/highcharts/exporting',
