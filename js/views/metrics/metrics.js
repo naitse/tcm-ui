@@ -113,6 +113,7 @@ define(function(require){
                 $("#metricsProgressBar").hide();
                 btnGetMetrics.button('reset');
                 $("#metricsContainer").show();
+                fixBorder()
             });
         }
 
@@ -276,9 +277,21 @@ define(function(require){
             renderDailyExec();
             renderIterationsTrend();
             renderExecutionPie();
+            fixBorder();
         }else{
             //to prevent focused graph to be removed
         }
+    }
+
+    function fixBorder(){
+        $('.main-container #container').children().css({
+            'border':'none'
+        });
+        $('.graph-previews').children().removeClass('span9');
+        $('.graph-previews .graph').css({
+            'border':'1px solid #D4D4D4',
+            'margin-bottom':'20px'
+        });
     }
 
     function adjustChartHeight(){
