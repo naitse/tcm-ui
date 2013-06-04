@@ -1,5 +1,50 @@
+<style type="text/css">
+    .graph-container {
+        display: table;
+    }
+    .main-container {
+        display: table-cell;
+        width: 100%;
+        padding:8px;
+    }
+    .main-container #container{
+        width:100%;
+    }
+    .graph-previews {
+        display: table-cell;
+        width: 300px;
+        vertical-align: top;
+        padding: 8px;
+    }
+
+    .graph-previews .graph{
+        width: 320px;
+        height: 200px;
+        padding: 6px;
+        /*margin-bottom: 20px;*/
+    }
+
+    #metricsContainer{
+        margin-top: 30px;
+    }
+</style>
 <div id="tcRlsMetrics">
 
-   <div id="iterationsTrendContainer" style="width: 100%; margin: 0 auto;"></div>
+
+    <div id="metricsContainer" style="display:none; " >
+        <div class="graph-container">
+            <div class="main-container">
+                <div id="container" style="width: 100%">
+                    <div id="carriedOverContainer" class="graph round-corner-all"></div>
+                </div>
+            </div>
+            <div class="graph-previews round-corner-all">
+                <div id="iterationsTrendContainer" class="graph round-corner-all"></div>
+            </div>
+        </div>
+    </div>
+    <div class="progress" id="metricsProgressBar" style="display: none">
+        <div class="bar" style="display: none"></div>
+    </div>
 
 </div>
