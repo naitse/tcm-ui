@@ -23,7 +23,8 @@ define(function(require){
             }
             $('.tcm-top-menu-container a').removeClass('active');
             $('#link-metrics').addClass('active').parents('.dropdown').find('a.dropdown-toggle').addClass('active');
-            $('.brand').removeClass('active')
+            $('.brand').removeClass('active');
+            adjustChartHeight()
         },
 
         loadIterations: function(){
