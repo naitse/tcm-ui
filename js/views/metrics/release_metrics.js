@@ -22,6 +22,7 @@ define(function(require){
             $('.tcm-top-menu-container a').removeClass('active');
             $('#link-rls-metrics').addClass('active').parents('.dropdown').find('a.dropdown-toggle').addClass('active');
             $('.brand').removeClass('active')
+            adjustChartHeight();
 
         },
         attachEvents: function(){
@@ -208,17 +209,18 @@ define(function(require){
     }
 
     function adjustChartHeight(){
+        try{
+            $('#tcRlsMetrics ').css('height',(($('.tcm-container').height() - 30)*100)/$('.tcm-container').height()+'%')
 
-        $('#tcRlsMetrics ').css('height',(($('.tcm-container').height() - 30)*100)/$('.tcm-container').height()+'%')
-
-        var parentWidth = $('#tcRlsMetrics #metricsContainer').width();
-        var parentHeight = $('.tcm-container').height()
-        var metrics_controls = $('#tcRlsMetrics #metrics-controls').height();
-        var previewsWidth = 420;
-        var currentChartWidth = $('#tcRlsMetrics .graph-container').find('#container').children().width();
-        var newChartWidth = parentWidth - previewsWidth;
-        var newChartHeight = parentHeight - metrics_controls -100;
-        $('#tcRlsMetrics .graph-container').find('#container').children().highcharts().setSize(newChartWidth, newChartHeight)
+            var parentWidth = $('#tcRlsMetrics #metricsContainer').width();
+            var parentHeight = $('.tcm-container').height()
+            var metrics_controls = $('#tcRlsMetrics #metrics-controls').height();
+            var previewsWidth = 420;
+            var currentChartWidth = $('#tcRlsMetrics .graph-container').find('#container').children().width();
+            var newChartWidth = parentWidth - previewsWidth;
+            var newChartHeight = parentHeight - metrics_controls -100;
+            $('#tcRlsMetrics .graph-container').find('#container').children().highcharts().setSize(newChartWidth, newChartHeight)
+        }catch(err){}
     }
 
     $(window).resize(function(){
@@ -244,7 +246,12 @@ define(function(require){
 
         $('#carriedOverContainer').highcharts({
             chart: {
-                type: 'column'
+                type: 'column',
+                 events: {
+                    click: function(event) {
+                        toggleChartFocus($this);
+                    }
+                } 
             },
             title: {
                 text: 'Carried over features'
