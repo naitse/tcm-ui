@@ -129,6 +129,8 @@ define(function(require){
                     }
                 }
             },
+            colors: ['#FAA328','#CD433D','#5DB95D', '#c6c6c6', '#46ACCA' ],
+            // colors: ['#c6c6c6','#46ACCA', '#5DB95D', '#CD433D', '#FAA328'],
             title: {
                 text: 'Iterations Test Case Execution Trend'
             },
