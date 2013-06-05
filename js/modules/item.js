@@ -12,6 +12,18 @@ define(function(require){
     		$(item).attr('item-id', id);
     		$(item).find('.summary').text(name);
     		$(item).find('.count').text(count);
+
+            item.on({
+                mouseenter: function(e){
+                    e.stopPropagation();
+                    $(this).find('#item-remove').css('visibility','visible');
+                },
+                mouseleave: function(e){
+                    e.stopPropagation();
+                    $(this).find('#item-remove').css('visibility','hidden');
+                }
+            });
+
     		return item;
     	},
     	renderItem: function(container,item){

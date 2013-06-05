@@ -4,6 +4,8 @@ define(function(require){
         suitesTemplate = require('text!templates/suites/suites.html'),
         tcmModel = require('tcmModel'),
         PM = require('panelsManager'),
+        pV = '#suitesViewer ',
+        multi=false,
         tcsModule = require('models/tcsModule'),
         itemsModule = require('modules/item'),
         _ = require('underscore');
@@ -21,6 +23,7 @@ define(function(require){
                 PM.makeResizable("#suitesViewer",[550,100,313,700]);
                 PM.colapseExpandRightPanel("#suitesViewer",'none');
                 adjustHeight();
+                attachObjects();
                 this.rendered = true;
             }
             $('.tcm-top-menu-container a').removeClass('active');
@@ -43,16 +46,56 @@ define(function(require){
 			});
 
 			$('#suitesViewer .item').live({
-				click: function(){
+				click: function(e){
+					e.stopPropagation();
+					if(multi===true){
+						if(!$(this).hasClass('selected')){
+							$('#suitesViewer #tags-select').find('option[value="'+$(this).find('.summary').text()+'"]').attr('selected',true);
+						}else{
+							$('#suitesViewer #tags-select').find('option[value="'+$(this).find('.summary').text()+'"]').attr('selected',false);
+						}
+						$(this).toggleClass('selected');
+						$('#suitesViewer #tags-select').trigger("liszt:updated")
+						tagsChanged();
 
-					if(!$(this).hasClass('selected')){
-						$('#suitesViewer #tags-select').find('option[value="'+$(this).find('.summary').text()+'"]').attr('selected',true);
 					}else{
-						$('#suitesViewer #tags-select').find('option[value="'+$(this).find('.summary').text()+'"]').attr('selected',false);
+						if(!$(this).hasClass('selected')){
+							$('#suitesViewer .item').removeClass('selected');
+							$(this).toggleClass('selected');
+							$('#suitesViewer #tags-select').find('option').attr('selected',false);
+							$('#suitesViewer #tags-select').find('option[value="'+$(this).find('.summary').text()+'"]').attr('selected',true);
+						}else{
+							// $('#suitesViewer #tags-select').find('option[value="'+$(this).find('.summary').text()+'"]').attr('selected',false);
+						}
+						$('#suitesViewer #tags-select').trigger("liszt:updated")
+						tagsChanged();
 					}
-					$(this).toggleClass('selected');
-					$('#suitesViewer #tags-select').trigger("liszt:updated")
-					tagsChanged();
+				}
+			});
+
+			$(pV+' #suite-save').live({
+				click:function(){
+					tcmModel.suites.add($(pV+ '#suite-name').val(),$.cookie("projectId")).done(function(data){
+						if(data[0].FALSE == 0){
+							$(pV+ ' #suite-name').parent().addClass('alert-error');
+						} else {
+							$(pV+ ' #suite-close').click();
+							addSuiteToUI(data);
+						}
+					})
+				}
+			})
+
+
+			$(pV+' .item #item-remove').live({
+				click:function(e){
+					 e.stopPropagation();
+					 var self = this;
+					tcmModel.suites.remove($(this).parents('.item').attr('item-id')).done(function(data){
+
+						removeSuiteFromUI($(self).parents('.item'));
+
+					})
 				}
 			})
 
@@ -64,6 +107,35 @@ define(function(require){
         }
 
     };
+
+    function attachObjects(){
+
+		var add_suite = $('<button id="item-add" type="button" class="btn btn-mini" ><i class="icon-plus-sign"></i> Add Suite</button>').click(function(e){
+			
+			$(pV+'#myModal').modal();
+
+		});
+
+		var multi_suite = $('<button id="item-add" type="button" class="btn btn-mini" data-toggle="button"><i class="icon-th-list"></i> Multi-Selec</button>').click(function(e){
+			
+			if(multi===true){
+				multi = false;
+				// $(this).removeClass('active');
+			}else{
+				multi = true;
+				// $(this).addClass('active');
+			}
+
+		});
+
+
+		
+		
+		$(pV + ' .left-pannel .toolbar').append(multi_suite,add_suite);
+
+
+
+    }
 
     function adjustHeight(){
 
@@ -84,7 +156,7 @@ define(function(require){
 
     function fetchTagsForProject(projectId){
 
-		tcmModel.releases.iterations.features.test_cases.suites.source(projectId).done(function(data){
+		tcmModel.suites.source().done(function(data){
 			if(data.length > 0){
 				renderTagsChosen(data);
 			}
@@ -97,7 +169,7 @@ define(function(require){
 			$(this).each(function(){
 				var option = $('<option>').attr('value', this.name).text(this.name).data('tagId',this.id);
 				$('#suitesViewer #tags-select').append(option)
-                itemsModule.renderItem('#suitesViewer  #feature-container',itemsModule.createItem(this.name,this.id));
+                itemsModule.renderItem('#suitesViewer  #feature-container',itemsModule.createItem(this.name,this.id,this.count));
 			})
 		})
 		$('#suitesViewer #tags-select').trigger("liszt:updated")
@@ -126,23 +198,6 @@ define(function(require){
 		       	})
 	    	});
     	}
-
-
-    	// if(!args[1].deselected){
-    	// 	var tag = args[1].selected;
-	    //    	var tcResponseData = ['{"statusName":"Not Run","tcId":181,"lastRun":1368484682000,"statusId":0,"description":"","name":"verify existence and style of tenant select","proposed":0}']//fetchTcForSuite(tag);
-    	// 	//on done ...
-    	// 	console.log('before');
-    	// 	var tcContainer = createTcsContainer(tag);
-	    //    	$('#suitesViewer #tc-container').append(tcContainer);
-	    //    	$(tcResponseData).each(function(){
-	    //    		$('#suitesViewer #tc-container .' + tag.replace(/ /g,'-')).append(createTCHtml(JSON.parse(this))); //REMOVE THE PARSER
-	    //    	});
-
-    	// }else{
-    	// 	var tag = args[1].deselected;
-		   // 	removeTcForSuite(tag);
-    	// }
     }
 
     function fetchTcForSuite(tag){
@@ -157,6 +212,21 @@ define(function(require){
 
     function removeTcForSuite(tag){
     	$('#suitesViewer #tc-container .' + tag.replace(/ /g,'-')).remove();
+    }
+
+    function addSuiteToUI(data){
+    	var data = data[0];
+		itemsModule.renderItem('#suitesViewer  #feature-container',itemsModule.createItem(data.name,data.id));
+		var option = $('<option>').attr('value', data.name).text(data.name).data('tagId',data.id,0);
+		$('#suitesViewer #tags-select').append(option)
+		$('#suitesViewer #tags-select').trigger("liszt:updated")
+    }
+
+    function removeSuiteFromUI(item){
+    	
+		$('<option[value="'+$(item).find('.summary').text()+'"]>').remove();
+		$(item).remove();
+		$('#suitesViewer #tags-select').trigger("liszt:updated")
     }
 
     $(window).resize(function(){

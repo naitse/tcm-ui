@@ -52,6 +52,34 @@ define( function(){
             }
         },
 
+        suites:{
+
+            add:function(label,pId){
+                return   $.ajax({
+                      type:'POST',
+                      
+                      url: basePath2 + "addSuite?label="+label,
+                      dataType: "json"
+                });
+            },
+            remove:function(id){
+                return   $.ajax({
+                      type:'POST',
+                      
+                      url: basePath2 + "removeSuite?suiteId="+id,
+                      dataType: "json"
+                });
+            },
+            source:function(projectId){
+                return $.ajax({
+                    type:'POST',
+                    url: basePath2 + "getSuites",
+                    dataType: "json"
+                  });
+            }
+
+        },
+
         releases: {
             url: basePath + 'releases',
 
