@@ -44,8 +44,13 @@ define(function(require){
 
 			$('#suitesViewer .item').live({
 				click: function(){
-					console.log('click',$(this).find('.summary').text())
-					$('#suitesViewer #tags-select').find('option[value="'+$(this).find('.summary').text()+'"]').attr('selected',true);
+
+					if(!$(this).hasClass('selected')){
+						$('#suitesViewer #tags-select').find('option[value="'+$(this).find('.summary').text()+'"]').attr('selected',true);
+					}else{
+						$('#suitesViewer #tags-select').find('option[value="'+$(this).find('.summary').text()+'"]').attr('selected',false);
+					}
+					$(this).toggleClass('selected');
 					$('#suitesViewer #tags-select').trigger("liszt:updated")
 					tagsChanged();
 				}
