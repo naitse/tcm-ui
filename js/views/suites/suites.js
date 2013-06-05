@@ -5,6 +5,7 @@ define(function(require){
         tcmModel = require('tcmModel'),
         PM = require('panelsManager'),
         tcsModule = require('models/tcsModule'),
+        itemsModule = require('modules/item'),
         _ = require('underscore');
 
     var SuitesView = {
@@ -40,6 +41,15 @@ define(function(require){
 				'border-top': 'none',
 				'border-left': 'none'
 			});
+
+			$('#suitesViewer .item').live({
+				click: function(){
+					console.log('click',$(this).find('.summary').text())
+					$('#suitesViewer #tags-select').find('option[value="'+$(this).find('.summary').text()+'"]').attr('selected',true);
+					$('#suitesViewer #tags-select').trigger("liszt:updated")
+					tagsChanged();
+				}
+			})
 
 			tcsModule.attachEvents('#suitesViewer');
 
@@ -82,6 +92,7 @@ define(function(require){
 			$(this).each(function(){
 				var option = $('<option>').attr('value', this.name).text(this.name).data('tagId',this.id);
 				$('#suitesViewer #tags-select').append(option)
+                itemsModule.renderItem('#suitesViewer  #feature-container',itemsModule.createItem(this.name,this.id));
 			})
 		})
 		$('#suitesViewer #tags-select').trigger("liszt:updated")
