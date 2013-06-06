@@ -7,7 +7,7 @@ define(function(require){
         pV = '#suitesViewer ',
         multi=false,
         tcsModule = require('models/tcsModule'),
-        itemsModule = require('modules/item'),
+        itemsModule = require('modules/item/item'),
         _ = require('underscore');
 
     var SuitesView = {

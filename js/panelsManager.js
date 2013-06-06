@@ -7,7 +7,7 @@ define(['jquery', 'chosen', 'bootstrap', 'jqueryui', 'blockui','extendJS','texte
 				size = 'small';
 			}
 			if (toggle == true){
-				$(container).block({
+				$(parent_container +' '+ container).block({
 					message:'<div class="loading-'+size+'-block"></div>',
 					overlayCSS:  { 
 						backgroundColor: '#000', 
