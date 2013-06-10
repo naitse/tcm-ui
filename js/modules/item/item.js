@@ -24,6 +24,22 @@ define(function(require){
                 }
             });
 
+            $(item).find('.tc-steps').on({
+                click:function(e){
+                  e.stopPropagation();  
+                }
+            })
+            $(item).find('.steps-wrapper').on({
+                click:function(e){
+                  e.stopPropagation();  
+                }
+            })
+            $(item).find('.tc-last-run-results-cont').on({
+                click:function(e){
+                  e.stopPropagation();  
+                }
+            })
+
     		return item;
     	},
     	renderItem: function(container,item){
