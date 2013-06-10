@@ -3,10 +3,11 @@ define(function(require){
     var $ = require('jquery'),
         managerTemplate = require('text!templates/manager/manager.html'),
         tcmModel = require('tcmModel'),
+        tcsModule = require('modules/tc/tc'),
         PM = require('panelsManager'),
         _ = require('underscore');
 
-
+        var view_container = "#tcViewer";
    var prefix = '';
    var displayed = false;
    var backend = 'http://tcm-backend.cloudhub.io/api/';
@@ -47,6 +48,12 @@ define(function(require){
             getReleases();
         },
 
+        expose:{
+          newfeature:function(data){prepareFeatures(data)},
+          expandrightpanel:function(){PM.colapseExpandRightPanel('#tcViewer','block')}
+        },
+
+
         attachEvents: function(){
 
         $(window).resize(function() {
@@ -55,7 +62,7 @@ define(function(require){
             $("#desc-container").css({
               'width' : wc + '%'
             });
-            PM.panelRightWidth("#tcViewer")
+            PM.panelRightWidth(view_container)
 
              
             adjustTabHeight()
@@ -81,7 +88,7 @@ define(function(require){
         $('.feature').live({
           click: function(e){
                 e.stopPropagation();
-
+                PM.colapseExpandRightPanel('#tcViewer','none');
                 currentSS.featureId = parseInt($(this).attr('feature-id'));
                 currentSS.feature = $(this);
 
@@ -93,7 +100,7 @@ define(function(require){
                 $(this).addClass('active');
                 loadFeatureDesc($(this).data('desc'))
                 $('.add-tc').attr('disabled',false)
-                getTC(currentSS.featureId)
+                getTests(currentSS.featureId);
              
                 $('#desc-wrapper').css({
                   'height':100
@@ -184,7 +191,7 @@ define(function(require){
         });
 
 
-        $('#tcViewer .tc .dropdown-menu > li').live({
+        $('#tcViewer .run-tc-modal .dropdown-menu > li').live({
           click: function(e){
             e.stopPropagation();
             $(this).parents('.btn-group').removeClass('open')
@@ -193,9 +200,28 @@ define(function(require){
             var caret = $('<span class="caret"></span>')
             $(this).parents('.btn-group').find('.dropdown-toggle').removeClass(function (index, css) {
                 return (css.match (/\bddm-\S+/g) || []).join(' ')
-            }).addClass($(this).attr('class')).text('').append(newState, caret)
+            }).addClass($(this).attr('class')).text('').append(newState,' '+$(this).text()+' ', caret).attr('status-id',$(this).attr('status-id'))
+          }
+        });
 
-            updateTCstatus($(this).parents('.tc').attr('tc-id'),$(this).data('statusId'),currentSS.feature)
+        $('#tcViewer .tc .dropdown-menu > li').live({
+          click: function(e){
+            e.stopPropagation();
+            $(this).parents('.btn-group').removeClass('open')
+
+            if($(this).hasClass('ddm-failed') ||  $(this).hasClass('ddm-block')){
+              runTC($(this).parents('.tc').data('tcObject'),this);
+            }else{
+
+            var icon_white = ($(this).children('i').attr('class') == 'icon-off')?' icon-white':'';
+            var newState = $('<i class="'+$(this).children('i').attr('class')+icon_white+'" style="margin-top: 2px;"></i>')
+            var caret = $('<span class="caret"></span>')
+            $(this).parents('.btn-group').find('.dropdown-toggle').removeClass(function (index, css) {
+                return (css.match (/\bddm-\S+/g) || []).join(' ')
+            }).addClass($(this).attr('class')).text('').append(newState, caret).attr('status-id',$(this).attr('status-id'))
+
+              updateTCstatus($(this).parents('.tc').attr('tc-id'),$(this).attr('status-id'),currentSS.feature)
+            }
           }
         });
 
@@ -227,6 +253,7 @@ define(function(require){
          $('.add-tc').live({
           click: function(e){
             e.stopPropagation();
+            PM.colapseExpandRightPanel('#tcViewer','none');
             PM.colapseExpandRightPanel('#tcViewer','block')
             clearTCModal();
             $('.rp-title').text('New Test Case')
@@ -282,6 +309,23 @@ define(function(require){
           }
         });
 
+        $('#tcViewer .run-tc').live({
+          click: function(e){
+            e.stopPropagation();
+            PM.colapseExpandRightPanel('#tcViewer','none');
+            $('#tcViewer .tc .wrapper').removeClass('active');
+            $(this).parents('.wrapper').addClass('active');
+            runTC($(this).parents('.tc').data('tcObject'))
+          }    
+        });
+
+        $('#tcViewer .run-status-tc').live({
+          click: function(e){
+            e.stopPropagation();
+          }    
+        });
+        
+
         $('.prop-tc').live({
           click: function(e){
             e.stopPropagation();
@@ -292,13 +336,17 @@ define(function(require){
         $('.edit-tc').live({
           click: function(e){
             e.stopPropagation();
+            PM.colapseExpandRightPanel('#tcViewer','none');
+            $('#tcViewer .tc .wrapper').removeClass('active');
+            $(this).parents('.wrapper').addClass('active');
             editTc($(this).parents('.tc').data('tcObject'))
           }
         });
 
         $('#tcViewer .tc').live({
           click: function(e){
-            e.stopPropagation();  
+            e.stopPropagation();
+            PM.colapseExpandRightPanel('#tcViewer','none');  
             $(this).find('.detailsIcon').click();
             $('#tcViewer .tc .wrapper').removeClass('active');
             $(this).find('.wrapper').addClass('active');
@@ -396,7 +444,7 @@ function getReleases(){
     if(FuckRequireJS == 0){
       $('#release-select').chosen()
       PM.makeResizable("#tcViewer",[550,100,313,700]);
-    PM.colapseExpandRightPanel('#tcViewer','none');
+      PM.colapseExpandRightPanel('#tcViewer','none');
     $('#tcViewer').css('height',(($('#tcViewer .tcm-container').height() - 20)*100)/$('#tcViewer .tcm-container').height()+'%')
     adjustTabHeight()
     }
@@ -420,13 +468,14 @@ function getReleases(){
 //######################################### iteration ops
 
 function itSelected(iterationId){
+    PM.toggleLoading('#tcViewer','#feature-container',true, 'big')
+  PM.colapseExpandRightPanel('#tcViewer','none');
+  clearData();
    currentSS.iterationId = iterationId
     var noresult = $('<div>').addClass('noresult').text('No IONs found')
     $('#filter-completed-features').removeClass('enabled').attr('disabled',true);
     $('#tcViewer #feature-container').html('')
-    PM.toggleLoading('#tcViewer','#feature-container',true, 'big')
     tcmModel.releases.iterations.features.fetch(currentSS.releaseId, currentSS.iterationId).done(function(data){
-      clearData();
       if (data.length > 0){
         prepareFeatures(data)
         if (monitoring==true){
@@ -634,120 +683,42 @@ function deleteFeatureInterceptor(feature){
 
 //######################################### TC ops
 
-function getTC(feature_id){
+function runTC(tcObject,selection){
+
+  var activeTest = $('#tcViewer .tc .wrapper.active').parents('.tc');
+  clearTCModal();
+  $('#tcViewer .run-tc-modal .run-status .stat').remove();
+  $('#tcViewer .proposed').parents('label').hide();
+  $('#tcViewer .tc-fields').hide();
+  $('#tcViewer .run-tc-modal .run-status').append($('<div class="'+$(selection).attr('class')+' stat round-corner-all" status-id="'+$(selection).attr('status-id')+'"><i class="'+$(selection).find('i').attr('class')+'"></i>'+$(selection).text()+'</div>'));
+  PM.colapseExpandRightPanel('#tcViewer','block');
+  $('#tcViewer .run-tc-modal').show()
+  $('#tcViewer .rp-title').text('Run Test Case')
+  $('#tcViewer #rp-wrapper .save').text('Save Run')
+  $('.new-tc-title').val(tcObject.name);
+  $('.new-tc-desc').val(tcObject.description);
+  $('#tcViewer #rp-wrapper .modal-body').data('runId',tcObject.tcId)
+  $('#tcViewer #rp-wrapper .modal-body').data('flag',2);
+  $('#tcViewer #rp-wrapper .modal-body').data('tcObject',tcObject);
+
+}
+
+function getTests(featureId){
+
+
   $('#tcViewer #tc-container').children().remove();
-  // var noresult = $('<div>').addClass('noresult').text('No TCs found')
-  tcmModel.releases.iterations.features.test_cases.fetch(currentSS.releaseId,currentSS.iterationId, feature_id).done(function(data){
-    // if(data.length>0){
-      prepareTCs(data,feature_id)
-    // } else{
-    //   $('#tcViewer #tc-container').html('')
-    //   $('#tcViewer #tc-container').append(noresult)
-    //   $('#tc-refresh').removeClass('refreshing')
-    // }   
-  })
-}   
-function prepareTCs(data,feature_id){
-  if($(data).size() >0){
-    $('.del-tc-trigger').attr('disabled',false)
+
+  console.log('getTests',currentSS.releaseId, currentSS.iterationId,featureId)
+  on_complete = function(data){
+          $(data).each(function(){
+          var tc_html = tcsModule.createTcHTML(this,featureId);
+          tcsModule.renderTC(tc_html, view_container)
+      })
   }
-  $(data).each(function(){
-        
-//      {
-//            "statusName": "Not RUN",
-//            "name": "change regions",
-//            "tcId": 1,
-//            "description": "first deloy to region A then deploy to region",
-//            "lastRun": null,
-//            "proposed": false
-//        },
-    createTcHTML(this,feature_id)
-
-      
-    })
-
-    $('#tc-refresh').removeClass('refreshing')
+  tcsModule.getTC(currentSS.releaseId, currentSS.iterationId,featureId,on_complete);
   
 }   
-
-function createTcHTML(tcObject,feature_id){
-  
-  switch(tcObject.statusId)
-  {
-  case 0:
-    statusClass = 'notrun'
-    statusIcon = 'icon-off icon-white '
-      
-    break;
-  case 1:
-    statusClass = 'inprogress'
-      statusIcon = 'icon-hand-right '
-    break;
-  case 2:
-    statusClass = 'block'
-      statusIcon = 'icon-exclamation-sign '
-    break;
-  case 3:
-    statusClass = 'failed'
-      statusIcon = 'icon-thumbs-down icon-white '
-    break;
-  case 4:
-    statusClass = 'pass'
-      statusIcon = 'icon-thumbs-up icon-white '
-    break;
-  default:
-    statusClass = ''
-      statusIcon = 'icon-hand-right icon-white '
-  }
-  var prop_btn = ''
-
-  var proposed_class = '';
-  if(tcObject.proposed == 1){
-    prop_btn = $('<button type="button" title="accept tc" class="btn btn-mini prop-tc" ><i class="icon-question-sign"></i></button>');
-    proposed_class = ' proposed'
-  }
-  
-  var bug_btn = $('<button type="button" title="open jira" class="btn btn-mini bug-tc" ><i class="icon-bug"></i></button>');
-
-  var tc = $('<div>').addClass('tc').attr('tc-id',tcObject.tcId)
-  var wrapper = $('<div>').addClass('wrapper' + proposed_class);
-  var edit_btn = $('<button type="button" title="edit" class="btn btn-mini edit-tc" ><i class="icon-pencil"></i></button>');
-  var delete_btn = $('<button type="button" title="delete" class="btn btn-mini del-tc" ><i class="icon-trash"></i></button>');
-  var expander = $('<div>').addClass('tc-expander detailsIcon ds')
-  var description = $('<div>').addClass('tc-description ds').text(tcObject.name.trunc(100,false))
-  var stats = $('<div>').addClass('tc-stats ds')
-    var status_group = $('<div class="btn-group">')
-    var toggle = $('<a class="btn dropdown-toggle btn-inverse btn-mini ddm-'+statusClass+'" data-toggle="dropdown" href="#">').append($('<i class="'+statusIcon+'" style="margin-top: 2px;"></i>'),$('<span class="caret"></span>'))
-    var list = $('<ul class="dropdown-menu pull-right">')
-    var nr = $('<li class="ddm-notrun"><i class="icon-off"></i> Not Run </li>').data('statusId', 0)
-    var ip = $('<li class="ddm-inprogress"><i class="icon-hand-right"></i> In Progress </li>').data('statusId',1)
-    var bl = $('<li class="ddm-block"><i class="icon-exclamation-sign"></i> Blocked </li>').data('statusId', 2)
-    var fa = $('<li class="ddm-failed"><i class="icon-thumbs-down"></i> Fail </li>').data('statusId',3)
-    var pa = $('<li class="ddm-pass"><i class="icon-thumbs-up"></i> Pass </li>').data('statusId',4)
-  var steps = $('<pre>').addClass('tc-steps').text(tcObject.description)//.css('display','none');
-  var stepsWrapper = $('<div class="steps-wrapper">').css('display','none').append($('<ul class="tc-suites"></ul>)'),steps)
-  $(list).append(nr,ip,bl,fa,pa)
-    var feature_closed = $('.feature[feature-id='+feature_id+']').data('conflict');
-    var feature_ready = $('.feature[feature-id='+feature_id+']').hasClass('ready');
-    if(feature_closed == 1 || feature_ready == false){
-      $(status_group).append(delete_btn, edit_btn, bug_btn, prop_btn, toggle, list)
-    }
-
-  $(stats).append(status_group)
-  $(wrapper).append(description,expander, stats );
-  $(tc).append(wrapper,stepsWrapper).data('tcObject',tcObject)
-  
-  renderTC(tc)
-  
-}
-
-
-function renderTC(tc){
-  $('#tcViewer #tc-container').append(tc);
-  tcmModel.releases.iterations.features.test_cases.suites.fetch($(tc).data('tcObject').tcId).done(function(data){
-    renderTagsContainer($(tc).data('tcObject').tcId,data);
-  })
-}
+   
 
 function clearData(){
   clearTimeout(statCheck);
@@ -768,13 +739,20 @@ function clearTCs(){
 }
 
 function clearTCModal(){
-            $('.rp-title').text('')
+
+    $('#tcViewer #rp-wrapper').find('.dropdown-toggle').removeClass(function (index, css) {
+        return (css.match (/\bddm-\S+/g) || []).join(' ')
+    }).addClass('ddm-inprogress').text('').append('<i class="icon-hand-right " style="margin-top: 2px;"></i>',' In Progress ', '<span class="caret"></span>').attr('status-id',1);
+
+            $('#tcViewer .proposed').parents('label').show();
+            $('#tcViewer .tc-fields').show();
+            $('#tcViewer .rp-title').text('')
             $('#tcViewer #rp-wrapper .save').text('Add')
-            $('.new-tc-title').val('').removeClass('title-error');
-            $('.new-tc-desc').val('');
+            $('#tcViewer .new-tc-title').val('').removeClass('title-error');
+            $('#tcViewer .new-tc-desc').val('');
             $('#tcViewer #rp-wrapper .modal-body').data('flag',0);
             $('#tcViewer #rp-wrapper .modal-body').data('tcObject','');
-            $('.proposed').attr('checked',false);
+            $('#tcViewer .proposed').attr('checked',false);
             proposed = 0;
 
 }
@@ -806,7 +784,8 @@ function saveTc(modal, flag, tcObject, featureReference){
       tcmModel.releases.iterations.features.test_cases.fetch(currentSS.releaseId, currentSS.iterationId, currentSS.featureId).done(function(data){
         $(data).each(function(){
           if($('#tcViewer .tc[tc-id="'+this.tcId+'"]').size() == 0){
-            createTcHTML(this);
+            var tc_html = tcsModule.createTcHTML(this,currentSS.featureId);
+            tcsModule.renderTC(tc_html, view_container)
           }
         })
         updateFeatureTestStats(featureReference)
@@ -815,7 +794,7 @@ function saveTc(modal, flag, tcObject, featureReference){
     }).fail(function(){
       $(modal).find('.alert').removeClass('hide')
     })
-  }else{
+  }else if (flag == 1){
 
   var updateReq = {
     tcId:tcObject.tcId,
@@ -836,9 +815,38 @@ function saveTc(modal, flag, tcObject, featureReference){
     }).fail(function(){
       $(modal).find('.alert').removeClass('hide')
     })
+  }else if(flag == 2){
+      $(modal).find('.save').button('loading');
+      var statusId = $(modal).find('.stat').attr('status-id');
+      console.log(statusId)
+      updateTCstatusNotPass(tcObject.tcId,statusId,currentSS.feature,modal);
+
   }
   
   
+
+}
+
+function updateTCstatusNotPass(tcId,statusId,feature,modal){
+
+  tcmModel.releases.iterations.features.test_cases.status.updateStatus(currentSS.releaseId, currentSS.iterationId, currentSS.featureId,tcId, statusId).done(function(){
+    //if(statusId >=1){
+      var caret = $('<span class="caret"></span>')
+      var newState = $('<i class="'+$(modal).find('.stat i').attr('class')+'" style="margin-top: 2px;"></i>');
+      
+      $('.tc[tc-id='+tcId+'] .wrapper').find('.btn-group').find('.dropdown-toggle').children().remove();
+
+      $('.tc[tc-id='+tcId+'] .wrapper').find('.btn-group').find('.dropdown-toggle').removeClass(function (index, css) {
+          return (css.match (/\bddm-\S+/g) || []).join(' ')
+      }).addClass($(modal).find('.stat').attr('class')).append(newState, caret)
+
+
+      $('#tcViewer #rp-wrapper').find('.save').button('reset');
+      PM.colapseExpandRightPanel('#tcViewer','none');
+      clearTCModal();
+      updateFeatureTestStats(feature);
+    //}
+  })
 
 }
 

@@ -6,7 +6,7 @@ define(function(require){
         PM = require('panelsManager'),
         pV = '#suitesViewer ',
         multi=false,
-        tcsModule = require('models/tcsModule'),
+        tcsModule = require('modules/tc/tc'),
         itemsModule = require('modules/item/item'),
         _ = require('underscore');
 
@@ -193,7 +193,7 @@ define(function(require){
 	    		console.log(data);
 	    		$('#suitesViewer #tc-container').children().remove();
 		       	$(data).each(function(){
-		       		var tc_html = tcsModule.createTcHTML(this);
+		       		var tc_html = tcsModule.createTcHTML(this,null,false);
 		       		tcsModule.renderTC(tc_html, '#suitesViewer'); //REMOVE THE PARSER
 		       	})
 	    	});
