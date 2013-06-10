@@ -832,10 +832,12 @@ function updateTCstatusNotPass(tcId,statusId,feature,modal){
     //if(statusId >=1){
       var caret = $('<span class="caret"></span>')
       var newState = $('<i class="'+$(modal).find('.stat i').attr('class')+'" style="margin-top: 2px;"></i>');
-      
-      $('.tc[tc-id='+tcId+'] .wrapper').find('.btn-group').find('.dropdown-toggle').children().remove();
+      $('#tcViewer .tc[tc-id='+tcId+']').find('.tc-last-run-results-cont').show();
+      $('#tcViewer .tc[tc-id='+tcId+']').find('.tc-last-run-results').text($(modal).find('.actual-result').val());
 
-      $('.tc[tc-id='+tcId+'] .wrapper').find('.btn-group').find('.dropdown-toggle').removeClass(function (index, css) {
+      $('#tcViewer .tc[tc-id='+tcId+'] .wrapper').find('.btn-group').find('.dropdown-toggle').children().remove();
+
+      $('#tcViewer .tc[tc-id='+tcId+'] .wrapper').find('.btn-group').find('.dropdown-toggle').removeClass(function (index, css) {
           return (css.match (/\bddm-\S+/g) || []).join(' ')
       }).addClass($(modal).find('.stat').attr('class')).append(newState, caret)
 

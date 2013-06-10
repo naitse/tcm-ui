@@ -73,6 +73,8 @@ define(function(require){
 			$(tc).find('.tc-steps').text(tcObject.description);
 			if(tcObject.actualResult != null){
 				$(tc).find('.tc-last-run-results').text(tcObject.actualResult);
+			}else{
+				$(tc).find('.tc-last-run-results-cont').hide();
 			}
 
 
