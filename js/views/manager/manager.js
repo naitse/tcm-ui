@@ -708,7 +708,6 @@ function getTests(featureId){
 
   $('#tcViewer #tc-container').children().remove();
 
-  console.log('getTests',currentSS.releaseId, currentSS.iterationId,featureId)
   on_complete = function(data){
           $(data).each(function(){
           var tc_html = tcsModule.createTcHTML(this,featureId);
@@ -818,7 +817,6 @@ function saveTc(modal, flag, tcObject, featureReference){
   }else if(flag == 2){
       $(modal).find('.save').button('loading');
       var statusId = $(modal).find('.stat').attr('status-id');
-      console.log(statusId)
       updateTCstatusNotPass(tcObject.tcId,statusId,currentSS.feature,modal);
 
   }
@@ -829,7 +827,8 @@ function saveTc(modal, flag, tcObject, featureReference){
 
 function updateTCstatusNotPass(tcId,statusId,feature,modal){
 
-  tcmModel.releases.iterations.features.test_cases.status.updateStatus(currentSS.releaseId, currentSS.iterationId, currentSS.featureId,tcId, statusId).done(function(){
+  var actualResult = $(modal).find('.actual-result').val();
+  tcmModel.releases.iterations.features.test_cases.status.updateStatus(currentSS.releaseId, currentSS.iterationId, currentSS.featureId,tcId, statusId, actualResult).done(function(){
     //if(statusId >=1){
       var caret = $('<span class="caret"></span>')
       var newState = $('<i class="'+$(modal).find('.stat i').attr('class')+'" style="margin-top: 2px;"></i>');
@@ -847,12 +846,11 @@ function updateTCstatusNotPass(tcId,statusId,feature,modal){
       updateFeatureTestStats(feature);
     //}
   })
-
 }
 
 function updateTCstatus(tcId,statusId,feature){
 
-  tcmModel.releases.iterations.features.test_cases.status.updateStatus(currentSS.releaseId, currentSS.iterationId, currentSS.featureId,tcId, statusId).done(function(){
+  tcmModel.releases.iterations.features.test_cases.status.updateStatus(currentSS.releaseId, currentSS.iterationId, currentSS.featureId,tcId, statusId, '').done(function(){
     //if(statusId >=1){
       updateFeatureTestStats(feature);
     //}

@@ -187,10 +187,8 @@ define(function(require){
 			$('#suitesViewer #tc-container').children().remove();
     	}else{
 	    	req = req.toString();
-	    	console.log(req);
 
 	    	tcmModel.releases.iterations.features.test_cases.suites.getTcsForStuitesByProject(req).done(function(data){
-	    		console.log(data);
 	    		$('#suitesViewer #tc-container').children().remove();
 		       	$(data).each(function(){
 		       		var tc_html = tcsModule.createTcHTML(this,null,false);
@@ -205,7 +203,6 @@ define(function(require){
     }
 
     function createTcsContainer(tag){
-    	console.log(tag)
     	var tccontainer = $('<div>').addClass(tag.replace(/ /g,'-'))
     	return tccontainer;
     }

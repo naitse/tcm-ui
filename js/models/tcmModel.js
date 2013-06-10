@@ -298,9 +298,11 @@ define( function(){
                         },
                         status:{
                             url:basePath +'releases/{rlsId}/iterations/{iterId}/features/{ftrId}/testcases/{tstId}/status',
-                            updateStatus: function (releaseId, iterationid, featureId, tcId, statusId) {
+                            updateStatus: function (releaseId, iterationid, featureId, tcId, statusId,actualResult) {
+                                
                                 var newStatus={
-                                   'statusId':statusId
+                                   'statusId':statusId,
+                                   'actualResult':actualResult
                                 };
 
                                 return $.ajax({

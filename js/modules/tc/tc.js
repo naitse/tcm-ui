@@ -71,6 +71,9 @@ define(function(require){
 			$(tc).find('ddm-failed').data('statusId', 3);
 			$(tc).find('ddm-pass').data('statusId', 4);
 			$(tc).find('.tc-steps').text(tcObject.description);
+			if(tcObject.actualResult != null){
+				$(tc).find('.tc-last-run-results').text(tcObject.actualResult);
+			}
 
 
 
