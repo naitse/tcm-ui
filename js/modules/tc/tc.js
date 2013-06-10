@@ -2,18 +2,21 @@ define(function(require){
 
     var $ = require('jquery-plugins'),
         tcmModel = require('tcmModel'),
+        tcTemplate = require('text!templates/modules/tc/tc.html'),
+        styles = require('text!templates/modules/tc/style'),
         PM = require('panelsManager'),
         _ = require('underscore');
 
     var tcsModule = {
 
-		getTC: function(feature_id, parent_container){
-			$(parent_container + ' #tc-container').children().remove();
-			tcmModel.releases.iterations.features.test_cases.fetch(currentSS.releaseId,currentSS.iterationId, feature_id).done(function(data){
-				return data; //this.prepareTCs(data,feature_id, parent_container)
-			})
-		},
+		getTC: function(releaseId, iterationId, feature_id,on_complete){
 
+			tcmModel.releases.iterations.features.test_cases.fetch(releaseId, iterationId, feature_id).done(function(data){
+				on_complete(data);
+			})
+
+		},
+		//Deprecate
 		prepareTCs: function (data,feature_id, parent_container){
 			if($(data).size() >0){
 				$(parent_container + ' .del-tc-trigger').attr('disabled',false)
@@ -32,7 +35,7 @@ define(function(require){
 			{
 				case 0:
 					statusClass = 'notrun'
-					statusIcon = 'icon-off icon-white '
+					statusIcon = 'icon-off'
 					break;
 				case 1:
 					statusClass = 'inprogress'
@@ -54,49 +57,48 @@ define(function(require){
 					statusClass = ''
 					statusIcon = 'icon-hand-right icon-white '
 			}
-			var prop_btn = ''
+			
+			var tc = $(tcTemplate);
 
-			var proposed_class = '';
-			if(tcObject.proposed == 1){
-				prop_btn = $('<button type="button" title="accept tc" class="btn btn-mini prop-tc" ><i class="icon-question-sign"></i></button>');
-				proposed_class = ' proposed'
-			}
+			$(tc).data('tcObject',tcObject)
+			$(tc).attr('tc-id',tcObject.tcId);
+			$(tc).find('.tc-description').text(tcObject.name.trunc(100,false));
+			// $(tc).find('.run-status-tc').addClass('tc-s-' + statusClass).find('i').addClass(statusIcon);
+			$(tc).find('.dropdown-toggle').addClass('ddm-'+statusClass).find('i').addClass(statusIcon);
+			$(tc).find('ddm-notrun').data('statusId', 0);
+			$(tc).find('ddm-inprogress').data('statusId', 1);
+			$(tc).find('ddm-block').data('statusId', 2);
+			$(tc).find('ddm-failed').data('statusId', 3);
+			$(tc).find('ddm-pass').data('statusId', 4);
+			$(tc).find('.tc-steps').text(tcObject.description);
 
-			var bug_btn = $('<button type="button" title="open jira" class="btn btn-mini bug-tc" ><i class="icon-bug"></i></button>');
 
-			var tc = $('<div>').addClass('tc').attr('tc-id',tcObject.tcId)
-			var wrapper = $('<div>').addClass('wrapper' + proposed_class);
-			var edit_btn = $('<button type="button" title="edit" class="btn btn-mini edit-tc" ><i class="icon-pencil"></i></button>');
-			var delete_btn = $('<button type="button" title="delete" class="btn btn-mini del-tc" ><i class="icon-trash"></i></button>');
-			var expander = $('<div>').addClass('tc-expander detailsIcon ds')
-			var description = $('<div>').addClass('tc-description ds').text(tcObject.name.trunc(100,false))
-			var stats = $('<div>').addClass('tc-stats ds')
-			var status_group = $('<div class="btn-group">')
-			var toggle = $('<a class="btn dropdown-toggle btn-inverse btn-mini ddm-'+statusClass+'" data-toggle="dropdown" href="#">').append($('<i class="'+statusIcon+'" style="margin-top: 2px;"></i>'),$('<span class="caret"></span>'))
-			var list = $('<ul class="dropdown-menu pull-right">')
-			var nr = $('<li class="ddm-notrun"><i class="icon-off"></i> Not Run </li>').data('statusId', 0)
-			var ip = $('<li class="ddm-inprogress"><i class="icon-hand-right"></i> In Progress </li>').data('statusId',1)
-			var bl = $('<li class="ddm-block"><i class="icon-exclamation-sign"></i> Blocked </li>').data('statusId', 2)
-			var fa = $('<li class="ddm-failed"><i class="icon-thumbs-down"></i> Fail </li>').data('statusId',3)
-			var pa = $('<li class="ddm-pass"><i class="icon-thumbs-up"></i> Pass </li>').data('statusId',4)
-			var steps = $('<pre>').addClass('tc-steps').text(tcObject.description)//.css('display','none');
-			var stepsWrapper = $('<div class="steps-wrapper">').css('display','none').append($('<ul class="tc-suites"></ul>)'),steps)
-			$(list).append(nr,ip,bl,fa,pa)
+
+			// var prop_btn = ''
+
+			// var proposed_class = '';
+			// if(tcObject.proposed == 1){
+			// 	prop_btn = $('<button type="button" title="accept tc" class="btn btn-mini prop-tc" ><i class="icon-question-sign"></i></button>');
+			// 	proposed_class = ' proposed'
+			// }
+
+
 
 			try{
 				var feature_closed = $('.feature[feature-id='+feature_id+']').data('conflict');
 				var feature_ready = $('.feature[feature-id='+feature_id+']').hasClass('ready');
 				if(feature_closed == 1 || feature_ready == false){
-					$(status_group).append(delete_btn, edit_btn, bug_btn, prop_btn, toggle, list)
-				}
+					//$(status_group).append(delete_btn, edit_btn, bug_btn, prop_btn, toggle, list)
+				}else{$(tc).find('.btn-group').remove();}
 			}catch(e){}
 
 			if (st === true){
-				$(stats).append(status_group)
+				$(tc).find('.btn-group').css('visibility','hidden');
+				//$(stats).append(status_group)
 			}
 
-			$(wrapper).append(description,expander, stats );
-			$(tc).append(wrapper,stepsWrapper).data('tcObject',tcObject)
+			//$(wrapper).append(description,expander, stats );
+			$(tc).data('tcObject',tcObject)
 			return tc;
 
 		},
@@ -224,8 +226,8 @@ define(function(require){
 	        $(view_container + ' .tc').live({
 	          click: function(e){
 	            e.stopPropagation();  
-	            $(this).find('.detailsIcon').click();
 	            $(view_container + ' .tc .wrapper').removeClass('active');
+	            $(this).find('.detailsIcon').click();
 	            $(this).find('.wrapper').addClass('active');
 	          }
 	        });
@@ -248,13 +250,17 @@ define(function(require){
 
     };
 
+	function attachStyles(){
+
+		$('body').append($(styles));
+
+	}
+
+	attachStyles();
+
     return tcsModule;
 
 });
-
-
-
-
 
 
 //######################################### TC ops

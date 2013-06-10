@@ -42,6 +42,10 @@ define(['jquery', 'chosen', 'bootstrap', 'jqueryui', 'blockui','extendJS','texte
 			$($(parent_container + ' .left-center-panel .ui-resizable-e')[1]).css({
 				'display':state
 			})
+			$(parent_container + ' .run-tc-modal').css({
+				'display':'none'
+			})
+			
 		},
 
 		panelRightWidth: function(parent_container){

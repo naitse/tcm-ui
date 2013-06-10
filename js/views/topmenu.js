@@ -25,8 +25,13 @@ define(function(require){
        			}
        		});
 
-
-
+        $('.tcm-top-menu-container #logout').live({
+            click:function(){
+              $.cookie('apiKey', null, { path: '/' });
+              $.cookie('projectId', null, { path: '/' });
+              $.cookie('usrname', null, { path: '/' });
+            }
+          });
        	}
     };
 

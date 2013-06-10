@@ -32,7 +32,7 @@ require(['jquery', 'tcm_model', 'jquery.cookie', 'jquery.base64','bootstrap','ch
         } else if ($.cookie('accountdisabled') === 'true') {
             console.log("Your account is disabled. Please contact your organization administrator.");
             $.cookie('accountdisabled', null);
-        }
+        } 
 
         $("#username").keypress(function(event) {
           if ( event.which == 13 ) {
