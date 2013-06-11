@@ -278,13 +278,26 @@ define(function(require){
           }
         });
 
-        $('.del-tc').live({
+        $('#tcViewer .del-tc').live({
           click: function(e){
             e.stopPropagation();
-            $('#delete-tc-alert').data('tcId',$(this).parents('.tc').attr('tc-id'));
-            $('#delete-tc-alert').data('feature',currentSS.feature);
-            $('#delete-tc-alert').modal()
-            //removeTestCase($(this).parents('.tc').attr('tc-id'),$('.feature.active'));
+            if($(this).hasClass('sec-state')){
+              deleteInterceptor($(this).parents('.tc').attr('tc-id'),currentSS.feature)
+            }else{
+              $(this).addClass('sec-state');
+              $(this).stop(true, true).animate({"width":"+=20"});
+              $(this).find('i').hide();
+              $(this).find('.del-confirm-label').show();
+            }
+          },
+          mouseleave:function(e){
+            e.stopPropagation();
+            if($(this).hasClass('sec-state')){
+              $(this).removeClass('sec-state')
+              $(this).stop(true, true).animate({"width":"-=20"});
+              $(this).find('.del-confirm-label').hide();
+              $(this).find('i').show();
+            }
           }
         });
 
