@@ -392,10 +392,32 @@ define(function(require){
           }
         });
 
-        $('.close-jira-btn  .open').live({
+        $('.close-jira-btn').live({
+          // click: function(e){
+          //   e.stopPropagation();
+          //   deleteFeatureInterceptor($(this).parents('.feature'));
+          // }
           click: function(e){
             e.stopPropagation();
-            deleteFeatureInterceptor($(this).parents('.feature'));
+            if($(this).hasClass('sec-state')){
+              closeJira($(this).parents('.feature'));
+              // deleteInterceptor($(this).parents('.tc').attr('tc-id'),currentSS.feature)
+            }else{
+              $(this).addClass('sec-state');
+              $(this).stop(true, true).animate({"width":"+=20"});
+              $(this).find('i').hide();
+              $(this).append($('<span class="del-feature-confirm-label" style="display:none; position: relative; top: -2; color: red; ">Close?</span>'))
+              $(this).find('.del-feature-confirm-label').show();
+            }
+          },
+          mouseleave:function(e){
+            e.stopPropagation();
+            if($(this).hasClass('sec-state')){
+              $(this).removeClass('sec-state')
+              $(this).stop(true, true).animate({"width":"-=20"});
+              $(this).find('.del-feature-confirm-label').remove();
+              $(this).find('i').show();
+            }
           }
         });
 
@@ -405,12 +427,12 @@ define(function(require){
           }
         });
 
-        $('#close-feature-btn').live({
-            click: function(e){
-              e.stopPropagation();
-              closeJira($(this).parents('#close-feature-alert').data('feature'));
-            }
-        });
+        // $('#close-feature-btn').live({
+        //     click: function(e){
+        //       e.stopPropagation();
+        //       closeJira($(this).parents('#close-feature-alert').data('feature'));
+        //     }
+        // });
 
         $('.desc-header-text .jira-key').live({
           click: function(e){
@@ -971,17 +993,21 @@ function removeTestCase(tcId,feature){
    }
 
    function closeJira(feature){
-
-      $('#close-feature-alert').modal('hide');
+      $(feature).find('.close-jira-btn').removeClass('sec-state')
+      $(feature).find('.close-jira-btn').stop(true, true).animate({"width":"-=20"});
+      $(feature).find('.close-jira-btn').find('.del-feature-confirm-label').remove();
+      $(feature).find('.close-jira-btn').find('i').show();
       var jiraKey = $(feature).find('.jira-key').data('jiraKey').trim();
       var featureId = $(feature).attr('feature-id');
       $(feature).find('.close-jira-btn > i').removeClass('icon-ok-circle icon-remove-circle open').addClass('icon-time');
+      $(feature).find('.close-jira-btn').attr('disabled',true)
       tcmModel.releases.iterations.features.close(featureId, jiraKey).done(function(data,statusText,response){
         if (data != false){
         $(feature).find('.close-jira-btn > i').removeClass('icon-time').addClass('icon-thumbs-up closed');
           updateFeatureState(feature);
         }else{
           $(feature).find('.close-jira-btn > i').removeClass('icon-time').addClass('icon-remove-circle open');
+          $(feature).find('.close-jira-btn').attr('disabled',false)
           $(feature).data('conflict',0);
         }
       }).fail(function(data,statusText,response){
