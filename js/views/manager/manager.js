@@ -210,6 +210,7 @@ define(function(require){
             $(this).parents('.btn-group').removeClass('open')
 
             if($(this).hasClass('ddm-failed') ||  $(this).hasClass('ddm-block')){
+              $(this).parents('.tc').find('.wrapper').addClass('active')
               runTC($(this).parents('.tc').data('tcObject'),this);
             }else{
 
@@ -357,7 +358,19 @@ define(function(require){
           click: function(e){
             e.stopPropagation();
           }
-        })
+        });
+
+          $('#tcViewer .tc .dropdown-menu').live({
+                mouseleave: function(){
+                      $(this).parents('.btn-group').removeClass('open')
+                }
+            });
+
+      $('#tcViewer .tc .steps-wrapper').live({
+        click:function(e){
+          e.stopPropagation();
+        }
+      })
 
         $('.bug-tc').live({
           click: function(e){
@@ -841,7 +854,6 @@ function updateTCstatusNotPass(tcId,statusId,feature,modal){
           return (css.match (/\bddm-\S+/g) || []).join(' ')
       }).addClass($(modal).find('.stat').attr('class')).append(newState, caret)
 
-
       $('#tcViewer #rp-wrapper').find('.save').button('reset');
       PM.colapseExpandRightPanel('#tcViewer','none');
       clearTCModal();
@@ -852,6 +864,9 @@ function updateTCstatusNotPass(tcId,statusId,feature,modal){
 
 function updateTCstatus(tcId,statusId,feature){
 
+              // $('#tcViewer .tc[tc-id='+tcId+']').find('.edit-tc').hide();
+              // $('#tcViewer .tc[tc-id='+tcId+']').find('.del-tc').hide();
+              // $('#tcViewer .tc[tc-id='+tcId+']').find('.bug-tc').hide();
   tcmModel.releases.iterations.features.test_cases.status.updateStatus(currentSS.releaseId, currentSS.iterationId, currentSS.featureId,tcId, statusId, '').done(function(){
     //if(statusId >=1){
       updateFeatureTestStats(feature);

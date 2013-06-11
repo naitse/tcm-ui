@@ -72,7 +72,11 @@ define(function(require){
 			$(tc).find('ddm-pass').data('statusId', 4);
 			$(tc).find('.tc-steps').text(tcObject.description);
 			if(tcObject.actualResult != null){
-				$(tc).find('.tc-last-run-results').text(tcObject.actualResult);
+				if(tcObject.actualResult != ""){
+					$(tc).find('.tc-last-run-results').text(tcObject.actualResult);
+				}else{
+					$(tc).find('.tc-last-run-results-cont').hide();
+				}
 			}else{
 				$(tc).find('.tc-last-run-results-cont').hide();
 			}
@@ -98,7 +102,7 @@ define(function(require){
 			}catch(e){}
 
 			if (st === true){
-				$(tc).find('.btn-group').css('visibility','hidden');
+				$(tc).find('.btn-group').hide();
 				//$(stats).append(status_group)
 			}
 
@@ -156,21 +160,6 @@ define(function(require){
 
 		attachEvents: function(view_container){
 
-			$(view_container + ' .tc').live({
-	          mouseenter: function(e){
-	            e.stopPropagation();
-	              $(this).find('.edit-tc').show();
-	              $(this).find('.del-tc').show();
-	              $(this).find('.bug-tc').show();
-	          },
-	          mouseleave: function(e){
-	            e.stopPropagation();
-	              $(this).find('.edit-tc').hide();
-	              $(this).find('.del-tc').hide();
-	              $(this).find('.bug-tc').hide();
-	          }
-	        });
-
 			$(view_container + ' .tc-expander').live({
 				click: function(e){
 					e.stopPropagation();
@@ -199,34 +188,20 @@ define(function(require){
 			});
 
 
-			$(view_container + ' .tc .dropdown-menu > li').live({
-				click: function(e){
-					e.stopPropagation();
-					$(this).parents('.btn-group').removeClass('open')
-					var icon_white = ($(this).children('i').attr('class') == 'icon-off')?' icon-white':'';
-					var newState = $('<i class="'+$(this).children('i').attr('class')+icon_white+'" style="margin-top: 2px;"></i>')
-					var caret = $('<span class="caret"></span>')
-					$(this).parents('.btn-group').find('.dropdown-toggle').removeClass(function (index, css) {
-						return (css.match (/\bddm-\S+/g) || []).join(' ')
-					}).addClass($(this).attr('class')).text('').append(newState, caret)
+			// $(view_container + ' .tc .dropdown-menu > li').live({
+			// 	click: function(e){
+			// 		e.stopPropagation();
+			// 		$(this).parents('.btn-group').removeClass('open')
+			// 		var icon_white = ($(this).children('i').attr('class') == 'icon-off')?' icon-white':'';
+			// 		var newState = $('<i class="'+$(this).children('i').attr('class')+icon_white+'" style="margin-top: 2px;"></i>')
+			// 		var caret = $('<span class="caret"></span>')
+			// 		$(this).parents('.btn-group').find('.dropdown-toggle').removeClass(function (index, css) {
+			// 			return (css.match (/\bddm-\S+/g) || []).join(' ')
+			// 		}).addClass($(this).attr('class')).text('').append(newState, caret)
 
-					// updateTCstatus($(this).parents('.tc').attr('tc-id'),$(this).data('statusId'),currentSS.feature)
-				}
-			});
-
-	        $(view_container + ' .prop-tc').live({
-	          click: function(e){
-	            e.stopPropagation();
-	            // updateTCprop($(this).parents('.tc').data('tcObject'))
-	          }
-	        });
-
-	        $(view_container + ' .edit-tc').live({
-	          click: function(e){
-	            e.stopPropagation();
-	            // editTc($(this).parents('.tc').data('tcObject'))
-	          }
-	        });
+			// 		// updateTCstatus($(this).parents('.tc').attr('tc-id'),$(this).data('statusId'),currentSS.feature)
+			// 	}
+			// });
 
 	        $(view_container + ' .tc').live({
 	          click: function(e){
@@ -237,20 +212,6 @@ define(function(require){
 	          }
 	        });
 
-	        $(view_container + ' .tc #tcViewer .tc-steps').live({
-	          click: function(e){
-	            e.stopPropagation();
-	          }
-	        })
-
-	        $(view_container + ' .bug-tc').live({
-	          click: function(e){
-	            e.stopPropagation();
-	            window.open('http://www.mulesoft.org/jira/secure/CreateIssue.jspa?pid=10462&issuetype=1','_blank');
-	          }
-	        });
-
-
 		}	   
 
     };
@@ -258,8 +219,10 @@ define(function(require){
 	function attachStyles(){
 
 		$('body').append($(styles));
+        
 
 	}
+
 
 	attachStyles();
 
