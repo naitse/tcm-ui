@@ -14,4 +14,12 @@
 .tc .tc-last-run-results {max-height: 50px;overflow: auto;height: auto;}
 .wrapper.active{border: 1px solid #d2e9fa;box-shadow: #d2e9fa 0 0 25px inset;-moz-box-shadow: #d2e9fa 0 0 25px inset;-webkit-box-shadow: #d2e9fa 0 0 25px inset;}
 .wrapper.active:hover{border: 1px solid #d2e9fa;box-shadow: #d2e9fa 0 0 25px inset;-moz-box-shadow: #d2e9fa 0 0 25px inset;-webkit-box-shadow: #d2e9fa 0 0 25px inset;}
+.tc .teps-wrapper .label {margin-left:16px;}
+.tc .suites-label {margin-left:16px;}
+.tc .label{margin-top: 5px;margin-bottom: -8px;}
+.tc .desc-label {margin-left:16px;}
+.tc .lrr-label {margin-left:16px;}
+.tc .steps-wrapper {background:white;clear:both;border-top:1px solid #ddd;-webkit-box-shadow:0 5px 3px -3px #e7e7e7 inset;-moz-box-shadow:0 5px 3px -3px #e7e7e7 inset;box-shadow:0 5px 3px -3px #e7e7e7 inset;}
+.tc .steps-footer {height:15px;backgroung:white;clear:both;border-top:1px solid #ddd;-webkit-box-shadow:0 -7px 8px -5px #e7e7e7 inset;-moz-box-shadow:0 -7px 8px -5px #e7e7e7 inset;box-shadow:0 -7px 8px -5px #e7e7e7 inset}
+.tc .tc-suites {margin-top: 4px !important;}
 </style>
