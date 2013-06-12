@@ -3,6 +3,8 @@ define(function(require){
     var basePath = "http://tcm-backend.cloudhub.io";
     //var basePath = "http://localhost:8088";
 
+	var $ = require('jquery');
+	
     $.ajaxSetup({
         cache: false,
         beforeSend: function(xhr) {

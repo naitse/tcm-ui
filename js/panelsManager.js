@@ -28,7 +28,7 @@ define(['jquery', 'chosen', 'bootstrap', 'jqueryui', 'blockui','extendJS','texte
 				this.makeResizable(parent_container,[550,100,313,700])
 				this.panelRightWidth(parent_container)
 				console.log($(parent_container + " #rp-wrapper"))
-				$(parent_container + " #rp-wrapper").show('fast') 
+				$(parent_container + " #rp-wrapper").stop(true,true).show('fast') 
 				$(parent_container + " #lp-wrapper").css({
 				'height' : '100%',
 				'width' : '313px'//porcentage + '%'
@@ -37,7 +37,7 @@ define(['jquery', 'chosen', 'bootstrap', 'jqueryui', 'blockui','extendJS','texte
 			$(parent_container + ' .left-center-panel').css({
 				'width':'100%'
 			})
-			$(parent_container + " #rp-wrapper").hide('fast')
+			$(parent_container + " #rp-wrapper").stop(true,true).hide('fast')
 			}
 			$($(parent_container + ' .left-center-panel .ui-resizable-e')[1]).css({
 				'display':state
