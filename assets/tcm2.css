@@ -106,4 +106,5 @@ pre{white-space:pre-wrap;white-space:-moz-pre-wrap;white-space:-pre-wrap;white-s
 .tagit-choice {height: 10px !important;border: 1px solid #eee !important;line-height: 10px !important;}
 .tagit-new{height: 14px !important;}
 .tagit-input {font-size: 11px !important;}
+.plan-tc-td {box-shadow: #000 0px 0px 14px -6px inset;-moz-box-shadow: #000 0px 0px 14px -9px inset;-webkit-box-shadow: #000 0px 0px 14px -6px inset;}
 
