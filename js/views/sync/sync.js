@@ -127,6 +127,7 @@ define(function(require){
                     $('#sync-release-select').releases_iterations_dd();
 
                     $('#sync-wrapper').modal('show')
+                    $('.sync-modal-content').show()
 
 
              });
@@ -156,24 +157,27 @@ define(function(require){
                 if($("#checkCreateDestination").is(':checked'))
                 {
                     tcmModel.releases.create( $("#new-rls-title").val() ).done(function(data, segundo, tercero){
-
                         var rlsId = tercero.getResponseHeader('location').toString();
                         rlsId = rlsId.substring(rlsId.lastIndexOf('/') +1 , rlsId.length);
+                        if (rlsId == "false"){
+                            console.log('Release exists');
+                        }else{
 
 
-                        tcmModel.releases.iterations.create(rlsId, $("#new-iter-title").val() ).done(function(data, segundo, tercero){
+                            tcmModel.releases.iterations.create(rlsId, $("#new-iter-title").val() ).done(function(data, segundo, tercero){
 
-                            var iterId = tercero.getResponseHeader('location').toString();
-                            iterId = iterId.substring(iterId.lastIndexOf('/') +1 , iterId.length);
+                                var iterId = tercero.getResponseHeader('location').toString();
+                                iterId = iterId.substring(iterId.lastIndexOf('/') +1 , iterId.length);
 
-                            $("#jiraItems tr input:checked").each(function(){
-                                var issue = $(this).parents('.jiraRow').data('jiraIssue');
+                                $("#jiraItems tr input:checked").each(function(){
+                                    var issue = $(this).parents('.jiraRow').data('jiraIssue');
 
-                                deferreds.push( tcmModel.releases.iterations.features.create(0, iterId, issue.key, issue.summary, issue.description) );
-                            })
+                                    deferreds.push( tcmModel.releases.iterations.features.create(0, iterId, issue.key, issue.summary, issue.description) );
+                                })
 
-                            $.when.apply($, deferreds).then(syncCompleted);
-                        });
+                                $.when.apply($, deferreds).then(syncCompleted);
+                            });
+                        }
 
                     });
 
@@ -213,7 +217,7 @@ define(function(require){
     function syncCompleted(){
         $('btnSync').button('reset');
         $('#jiraItems').empty();
-
+        $('.sync-modal-content').hide()
         //$("#alertCompleted-Sync").alert();
         $("#alertCompleted-Sync").show();
     }

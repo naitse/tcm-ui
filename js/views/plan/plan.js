@@ -54,36 +54,66 @@ define(function(require){
                         var group = $('<div  class="accordion-group"/>');
 
                         // Feature
+                        // _.each(coverageData, function (ftr) {
+
+                        //     var groupHeader = $('<div class="accordion-heading"></div>')
+                        //     groupHeader.append($('<a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion'+ ftr.jiraKey +'" href="#collapse'+ ftr.jiraKey +'">' + ftr.jiraKey + '</a>'));
+                        //     group.append(groupHeader);
+
+                        //     var testsCollapsable = $('<div id="collapse' + ftr.jiraKey + '" class="accordion-body collapse"><div class="accordion-inner"/></div></div>');
+                        //     // Test cases
+                        //     _.each(ftr.testCase, function(testItem){
+
+
+                        //         testsCollapsable.find(".accordion-inner").append($("<div>" + testItem.name + "</dicv>"));
+
+
+                        //     });
+                        //     group.append(testsCollapsable);
+                        // });
+
+                        // $("#planProgressBar").find(".bar").css("width","70%");
+
+                        // planGridContainer.append(group);
+
                         _.each(coverageData, function (ftr) {
-
-                            var groupHeader = $('<div class="accordion-heading"></div>')
-                            groupHeader.append($('<a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion'+ ftr.jiraKey +'" href="#collapse'+ ftr.jiraKey +'">' + ftr.jiraKey + '</a>'));
-                            group.append(groupHeader);
-
-                            var testsCollapsable = $('<div id="collapse' + ftr.jiraKey + '" class="accordion-body collapse"><div class="accordion-inner"/></div></div>');
-                            // Test cases
-                            _.each(ftr.testCase, function(testItem){
-
-
-                                testsCollapsable.find(".accordion-inner").append($("<div>" + testItem.name + "</dicv>"));
-
-
-                            });
-                            group.append(testsCollapsable);
-                        });
-
-                        $("#planProgressBar").find(".bar").css("width","70%");
-
-                        planGridContainer.append(group);
-
-                        _.each(coverageData, function (ftr) {
-                            var row = $("<tr></tr>");
+                            var row = $('<tr style=" cursor: pointer; "></tr>').attr("feature-id",ftr.jiraKey);
 
                             row.append("<td>"+ftr.jiraKey+"</td>");
                             row.append("<td>"+ftr.name+"</td>");
                             row.append("<td>"+ftr.testCase.length+"</td>");
 
-                            planSummaryBody.append(row);
+                            // Test cases
+                            var tcRow = $('<tr style="display:none; "></tr>').addClass('tc-row').attr("feature-id",ftr.jiraKey);
+                            var tcTd = $('<td colspan="3" style=" padding-left: 30px; " ></td>').addClass('plan-tc-td');
+
+                            _.each(ftr.testCase, function(testItem){
+
+
+                                tcTd.append($("<div>" + testItem.name + "</dicv>"));
+
+
+                            });
+
+                            $(tcRow).append(tcTd);
+
+                            $(row).on({
+                                click:function(e){
+                                    e.stopPropagation();
+                                    if($(this).parents('tbody').find('.tc-row[feature-id='+$(this).attr("feature-id")+']').hasClass('exp')){
+                                        $(this).children().first().removeClass('active');
+                                        $(this).parents('tbody').find('.tc-row[feature-id='+$(this).attr("feature-id")+']').stop(true,true).hide('fast');
+                                        $(this).parents('tbody').find('.tc-row[feature-id='+$(this).attr("feature-id")+']').removeClass('exp')
+
+                                    }else{
+                                        $(this).children().first().addClass('active');
+                                        $(this).parents('tbody').find('.tc-row[feature-id='+$(this).attr("feature-id")+']').addClass('exp');
+                                        $(this).parents('tbody').find('.tc-row[feature-id='+$(this).attr("feature-id")+']').stop(true,true).show('fast');                                        
+                                    }
+                                }
+                            })    
+
+                            planSummaryBody.append(row,tcRow);
                         });
 
                         $("#planProgressBar").hide();
