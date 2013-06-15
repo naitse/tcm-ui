@@ -10,11 +10,12 @@ define([
     'views/metrics/release_metrics',
     'views/suites/suites',
     'views/plugins/plugins-settings',
+    'views/interop/interop',
     // 'tcm2',
     'backbone',
     'jquery.cookie'
 
-], function($, _, TopMenuView, managerView, syncView, planView, MetricsView, RlsMetricsView, SuitesView, PluginsSettingsView){
+], function($, _, TopMenuView, managerView, syncView, planView, MetricsView, RlsMetricsView, SuitesView, PluginsSettingsView, InteropView){
 
 
     var modules = [
@@ -45,6 +46,10 @@ define([
         {
             'id': 'plugins-settings',
             'divContainer': '#plugins-settings'
+        },
+        {
+            'id': 'Interop',
+            'divContainer': '#interOp'
         }
 
     ];
@@ -102,6 +107,7 @@ define([
                     "rlsmetrics": "rlsmetrics",
                     "suites": "suites",
                     "plugins-settings": "plugins-settings",
+                    "interop":"interop",
                     "*actions": "defaultRoute"
                 }
             });
@@ -138,6 +144,10 @@ define([
 
             app_router.on('route:plugins-settings', function(actions) {
                 loadModule(PluginsSettingsView);
+            });
+
+            app_router.on('route:interop', function(actions) {
+                loadModule(InteropView);
             });
 
             Backbone.history.start();

@@ -95,7 +95,48 @@ Object.defineProperty(Object.prototype, "equals", {
     }
 });
 
+Date.daysBetween = function( date1, date2 ) {
+  //Get 1 day in milliseconds
+  var one_day=1000*60*60*24;
 
+  // Convert both dates to milliseconds
+  var date1_ms = date1.getTime();
+  var date2_ms = date2.getTime();
 
+  // Calculate the difference in milliseconds
+  var difference_ms = date2_ms - date1_ms;
+    
+  // Convert back to days and return
+  return Math.round(difference_ms/one_day); 
+}
+
+Date.bizdays= function(d1, d2){
+ 
+    var wd1= d1.getDay();
+    var wd2= d2.getDay();
+ 
+    var interval= Math.abs(d1-d2);
+    var days= Math.floor(interval/8.46e7);
+    var tem= days%7;
+    var weeks= Math.floor(days/7);
+    if(wd1== 6) tem-= 2;
+    else if(wd1== 0) tem-= 1;
+    if(wd2== 0) tem-= 1;
+ 
+    return weeks*5+tem;
+}
+
+String.guidGenerator= function() {
+  var buf = new Uint16Array(8);
+   window.crypto.getRandomValues(buf);
+   var S4 = function(num) {
+     var ret = num.toString(16);
+     while(ret.length < 4){
+       ret = "0"+ret;
+     };
+     return ret;
+   };
+  return (S4(buf[0])+S4(buf[1])+"-"+S4(buf[2])+"-4"+S4(buf[3]).substring(1)+"-y"+S4(buf[4]).substring(1)+"-"+S4(buf[5])+S4(buf[6])+S4(buf[7]));
+}
 
 });
