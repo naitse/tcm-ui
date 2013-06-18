@@ -12,8 +12,17 @@ require.config({
         'jquery.cookie':{
             deps: ['jquery']
         },
+        'jquery.base64':{
+            deps: ['jquery']
+        },
         chosen: {
             deps: ['jquery']
+        },
+        bootstrap: {
+            deps: ['jquery']
+        },
+        'tcm_model': {
+            deps: ['jquery']  
         }
 
     }
