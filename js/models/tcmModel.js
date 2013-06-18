@@ -1,6 +1,7 @@
 
 define( function(require){
-    var basePath = "http://tcm-backend.cloudhub.io/api/";
+    //var basePath = "http://tcm-backend.cloudhub.io/api/";
+    var basePath = "http://tcm-backend.qa2.cloudhub.io/api/";
     //var basePath = "http://54.242.24.131/api/";
     //var basePath = "http://localhost:8088/api/";
     var basePath2 = basePath.replace('api/','');
@@ -37,6 +38,28 @@ define( function(require){
                     dataType: "json"
                 });
 
+        },
+
+        project: {
+            configuration:{
+
+                fetch:function(){
+                    return   $.ajax({
+                          type:'GET',
+                          url: basePath2 + "getProjectConfig",
+                          dataType: "json"
+                    });
+                },
+                add:function(req){
+                    return   $.ajax({
+                        type:'POST',
+                        url: basePath2 + "saveProjectConfig",
+                        data:JSON.stringify(req),
+                        contentType: "application/json",
+                        dataType: "json"
+                    });
+                }
+            }
         },
 
         users: {
@@ -77,6 +100,42 @@ define( function(require){
                     url: basePath2 + "getSuites",
                     dataType: "json"
                   });
+            },
+
+            testcases:{
+
+                fetch: function(label){
+
+                    return $.ajax({
+                        type:'GET',
+                        url: basePath2 + "getTcsForStuitesByProject?label=" + label,
+                        dataType: "json"
+                    });
+                },
+
+                add: function (suiteId, req) {
+                    
+                    var params = {
+                        suiteId:suiteId
+                    }
+
+                    return $.ajax({
+                        type: "POST",
+                        url: basePath2 + "createTestCaseForSuite?" + $.param(params),
+                        data:JSON.stringify(req),
+                        contentType: "application/json",
+                        dataType: "json"
+                    });
+                },
+                del: function (tcId) {
+                    return $.ajax({
+                        type: "DELETE",
+                        url: basePath2 + "deleteTestCaseSuite?tcId=" + tcId,
+                        contentType: "application/json",
+                        dataType: "json"
+                    });
+                }
+
             }
 
         },

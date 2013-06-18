@@ -28,7 +28,12 @@ define(function(require){
 
         loadIterations: function(){
 
-            sprint.render(sprint.create(4,1,{"year":2013,"month":5,"day":10}),'#interOp')//,'90%',120);
+            tcmModel.project.configuration.fetch().done(function(data){
+                if(data.length > 0){
+                    sprint.render(sprint.create(data[0].springIterations,data[0].iterationDuration,{"year":2013,"month":5,"day":10}),'#interOp')//,'90%',120);
+                }
+            });
+
             // sprint.render(sprint.create(2,1,{"year":2013,"month":5,"day":3}),'#interOp')//,'90%',120);
 
         },

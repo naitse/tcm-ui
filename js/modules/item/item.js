@@ -16,10 +16,12 @@ define(function(require){
             item.on({
                 mouseenter: function(e){
                     e.stopPropagation();
+                    $(this).find('#item-add').css('visibility','visible');
                     $(this).find('#item-remove').css('visibility','visible');
                 },
                 mouseleave: function(e){
                     e.stopPropagation();
+                    $(this).find('#item-add').css('visibility','hidden');
                     $(this).find('#item-remove').css('visibility','hidden');
                 }
             });

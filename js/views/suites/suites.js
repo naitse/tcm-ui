@@ -84,6 +84,66 @@ define(function(require){
 						}
 					})
 				}
+			});
+
+			$(pV+' #item-add').live({
+				click:function(e){
+					e.stopPropagation();
+					PM.colapseExpandRightPanel(pV,'block');
+					$(pV + ' #rp-wrapper').data('item-id',$(this).parents('.item').attr('item-id'))
+				}
+			})
+
+			$(pV+' #suite-tc-close').live({
+				click:function(e){
+					e.stopPropagation();
+					PM.clearModal($(pV + ' #rp-wrapper'));
+					PM.colapseExpandRightPanel(pV,'none');
+				}
+			})
+
+			$(pV+' #suite-tc-save').live({
+				click:function(e){
+					e.stopPropagation();
+
+					var modal = $(pV + ' #rp-wrapper');
+
+					  $(modal).find('.alert').addClass('hide')
+					  
+					  var title = $(modal).find('.new-tc-title').val()
+					  var desc = $(modal).find('.new-tc-desc').val()
+					  
+					  if (jQuery.trim($(pV +' #rp-wrapper').find('.new-tc-title').val()).length <= 0){
+					    $(modal).find('.new-tc-title').addClass('title-error')
+					    return false
+					  }else{
+					    $(modal).find('.new-tc-title').removeClass('title-error')
+					  }
+
+
+					  var req = {
+					    name:title,
+					    description:desc,
+					    proposed:0
+					  }
+					 $(this).button('loading');
+					 var self = this;
+					tcmModel.suites.testcases.add($(modal).data('item-id'),req).done(function(data){
+						
+						if(data[0].tcId != ""){
+
+							var suiteId = $(modal).data('item-id');
+
+							var tc_html = tcsModule.createTcHTML(data[0],null,false);
+				       		tcsModule.renderTC(tc_html, '#suitesViewer'); //REMOVE THE PARSER
+
+							$(pV + '.item[item-id='+suiteId+']').find('.count').text(parseInt($(pV + '.item[item-id='+suiteId+']').find('.count').text()) + 1)
+							$(self).button('reset');
+						} else {
+							$(modal).find('.alert').removeClass('hide');
+						}
+					})
+				}
 			})
 
 
@@ -98,6 +158,46 @@ define(function(require){
 					})
 				}
 			})
+
+
+        $(pV + ' .tc').live({
+          mouseenter: function(e){
+            e.stopPropagation();
+              $(this).find('.edit-tc').show();
+              $(this).find('.del-tc').show();
+              $(this).find('.bug-tc').show();
+          },
+          mouseleave: function(e){
+            e.stopPropagation();
+              $(this).find('.edit-tc').hide();
+              $(this).find('.del-tc').hide();
+              $(this).find('.bug-tc').hide();
+          }
+        });
+
+
+        $(pV + ' .del-tc').live({
+          click: function(e){
+            e.stopPropagation();
+            if($(this).hasClass('sec-state')){
+              deleteTcSuite($(this).parents('.tc').attr('tc-id'))
+            }else{
+              $(this).addClass('sec-state');
+              $(this).stop(true, true).animate({"width":"+=20"});
+              $(this).find('i').hide();
+              $(this).find('.del-confirm-label').show();
+            }
+          },
+          mouseleave:function(e){
+            e.stopPropagation();
+            if($(this).hasClass('sec-state')){
+              $(this).removeClass('sec-state')
+              $(this).stop(true, true).animate({"width":"-=20"});
+              $(this).find('.del-confirm-label').hide();
+              $(this).find('i').show();
+            }
+          }
+        });
 
 			tcsModule.attachEvents('#suitesViewer');
 
@@ -209,6 +309,20 @@ define(function(require){
 
     function removeTcForSuite(tag){
     	$('#suitesViewer #tc-container .' + tag.replace(/ /g,'-')).remove();
+    }
+
+    function deleteTcSuite(tcId){
+    	PM.toggleLoading(pV,' .tc[tc-id="'+tcId+'"]', true);
+    	tcmModel.suites.testcases.del(tcId).done(function(data){
+    		var suiteToAlter = $(pV + ' .item .summary').filter(function() {
+			    return $(this).text() == $(pV + ' .tc[tc-id='+tcId+'] .tagit-label').text();
+			});
+
+			$(suiteToAlter).parents('.item').find('.count').text(parseInt($(suiteToAlter).parents('.item').find('.count').text()) - 1)
+    		
+			$(pV + ' .tc[tc-id='+tcId+']').remove();
+    	})
+
     }
 
     function addSuiteToUI(data){

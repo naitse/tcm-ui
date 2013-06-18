@@ -43,16 +43,8 @@ define(function(require){
             var porcentage = (dateDiff != Math.floor(dateDiff))? dateDiff.toString().split('.'):dateDiff;
 
             if(dateDiff < this.iteration_duration){
-
-                porcentage = porcentage[1].substr(0, 2);
-                porcentage = (porcentage>=10)?porcentage:porcentage+"0";
-
             }else if(dateDiff > this.iteration_duration){
-
                 this.active_iteration = Math.ceil(dateDiff / this.iteration_duration)
-                porcentage = (porcentage != Math.floor(porcentage))? porcentage[1].substr(0, 2):100;
-                porcentage = (porcentage>=10)?porcentage:porcentage+"0";
-
             }else{
                 this.active_iteration = Math.ceil(dateDiff / this.iteration_duration)
             }
@@ -60,7 +52,6 @@ define(function(require){
             // console.log(Date.bizdays(startD, today),dateDiff,this.iteration_duration,this.active_iteration)
 
             var section_width = (100 / this.iterations_per_spring)-1;
-            var iteration_progress = porcentage;//100 / this.current_date.day;
 
             var GUID = String.guidGenerator();
             this.GUID = GUID;

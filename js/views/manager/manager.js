@@ -16,7 +16,7 @@ define(function(require){
     var statCheck;
     var monitoring_interval = 15000;
     var monitoring = true;
-    var jiraLink = 'http://www.mulesoft.org/jira/browse/';
+    var jiraLink = 'www.google.com';
 
    var currentSS = {
         releaseName:'',
@@ -44,6 +44,12 @@ define(function(require){
             $('.brand').addClass('active').parents('.dropdown').find('a.dropdown-toggle').addClass('active');
 
             this.attachEvents();
+
+            tcmModel.project.configuration.fetch().done(function(data){
+              if(data.length > 0){
+                jiraLink = data[0].bugurl;
+              }
+            });
 
             getReleases();
         },
@@ -946,7 +952,7 @@ function deleteInterceptor(tcId,feature){
 
 function removeTestCase(tcId,feature){
 
-  PM.toggleLoading('#tcViewer','#tcViewer .tc[tc-id="'+tcId+'"]', true)
+  PM.toggleLoading('#tcViewer',' .tc[tc-id="'+tcId+'"]', true)
   tcmModel.releases.iterations.features.test_cases.del(currentSS.releaseId, currentSS.iterationId, currentSS.featureId, tcId).done(function(){
     $('#tcViewer .tc[tc-id="'+tcId+'"]').remove();
     updateFeatureTestStats(feature)
