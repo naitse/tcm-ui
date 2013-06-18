@@ -23,6 +23,13 @@ require(['jquery', 'tcm_model', 'jquery.cookie', 'jquery.base64','bootstrap','ch
     function ($, tcm_model) {
 
 
+        if (jQuery) {  
+            alert('Please refresh cleaning your cache, some libs were not loaded');
+            // jQuery is loaded  
+        } else {
+            // jQuery is not loaded
+        }
+
         if ($.cookie('loginfailed') === 'true') {
             console.log("Your username or password was entered incorrectly");
             $.cookie('loginfailed', null);

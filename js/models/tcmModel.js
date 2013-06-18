@@ -1,7 +1,7 @@
 
 define( function(require){
-    //var basePath = "http://tcm-backend.cloudhub.io/api/";
-    var basePath = "http://tcm-backend.qa2.cloudhub.io/api/";
+    var basePath = "http://tcm-backend.cloudhub.io/api/";
+    //var basePath = "http://tcm-backend.qa2.cloudhub.io/api/";
     //var basePath = "http://54.242.24.131/api/";
     //var basePath = "http://localhost:8088/api/";
     var basePath2 = basePath.replace('api/','');
@@ -94,10 +94,14 @@ define( function(require){
                       dataType: "json"
                 });
             },
-            source:function(projectId){
+            source:function(interop){
+                var interParam = '?interop=0';
+                if (interop  == 1){
+                    interParam = '?interop=1'
+                }
                 return $.ajax({
                     type:'POST',
-                    url: basePath2 + "getSuites",
+                    url: basePath2 + "getSuites" + interParam,
                     dataType: "json"
                   });
             },
@@ -139,7 +143,17 @@ define( function(require){
             }
 
         },
+        releases_iterations: {
+            url: basePath + 'releases_iterations',
 
+            fetch: function () {
+                    return $.ajax({
+                        type: "GET",
+                        url: this.url,
+                        dataType: "json"
+                    });
+            }
+        },
         releases: {
             url: basePath + 'releases',
 

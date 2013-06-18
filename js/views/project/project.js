@@ -72,7 +72,27 @@ define(function(require){
         				$(self).button('reset');
         			});
         		}
-        	})
+        	});
+
+        $(pV + " .btn-new-release").live({
+                click:function(e){
+                    e.stopPropagation();
+                    $(pV + ' .new-release-config').show();
+                }
+        })
+
+         $(pV + " .btn-save-release").live({
+                click:function(e){
+                    e.stopPropagation();
+                    createRelease();
+                }
+        })
+
+        $(pV + " #datepicker" ).datepicker({
+              showOn: "button",
+              buttonImage: "assets/images/calendar.gif",
+              buttonImageOnly: true
+        });
     
         }
 
@@ -103,7 +123,48 @@ define(function(require){
 
     });
 
+    function createRelease(){
 
+        tcmModel.releases.create( $("#new-release-name").val() ).done(function(data, segundo, tercero){
+            var rlsId = tercero.getResponseHeader('location').toString();
+            rlsId = rlsId.substring(rlsId.lastIndexOf('/') +1 , rlsId.length);
+            if (rlsId == "false"){
+                console.log('Release exists');
+            }else{
+                $("#new-release-name").parents('.config').find('input').attr('disable',true);
+            }
+        });
+    }
+
+    function createIteration(){
+
+                    tcmModel.releases.create( $("#new-rls-title").val() ).done(function(data, segundo, tercero){
+                        var rlsId = tercero.getResponseHeader('location').toString();
+                        rlsId = rlsId.substring(rlsId.lastIndexOf('/') +1 , rlsId.length);
+                        if (rlsId == "false"){
+                            console.log('Release exists');
+                        }else{
+
+
+                            tcmModel.releases.iterations.create(rlsId, $("#new-iter-title").val() ).done(function(data, segundo, tercero){
+
+                                var iterId = tercero.getResponseHeader('location').toString();
+                                iterId = iterId.substring(iterId.lastIndexOf('/') +1 , iterId.length);
+
+                                $("#jiraItems tr input:checked").each(function(){
+                                    var issue = $(this).parents('.jiraRow').data('jiraIssue');
+
+                                    deferreds.push( tcmModel.releases.iterations.features.create(0, iterId, issue.key, issue.summary, issue.description) );
+                                })
+
+                                $.when.apply($, deferreds).then(syncCompleted);
+                            });
+                        }
+
+                    });
+
+        
+    }
 	function attachStyles(){
 
 		$('body').append($(styles));

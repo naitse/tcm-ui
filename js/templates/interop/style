@@ -1,2 +1,4 @@
 <style type="text/css">
+#interOp {position:relative;}
+#interOp #tc-container {width: 50%;position: absolute;right: 20px;top: 20px;}
 </style>

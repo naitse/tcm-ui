@@ -12,7 +12,7 @@ define(function(require){
             $this = $(this);
 
             if (!$this.hasClass("chzn-done")) {
-                tcmModel.releases.fetch().done(function(data){
+                tcmModel.releases_iterations.fetch().done(function(data){
 
                     $this.find('optgroup').remove();
 

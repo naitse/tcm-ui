@@ -16,7 +16,7 @@ define(function(require){
     var statCheck;
     var monitoring_interval = 15000;
     var monitoring = true;
-    var jiraLink = 'www.google.com';
+    var jiraLink = 'www.google.com';//http://www.mulesoft.org/jira/secure/CreateIssue.jspa?pid=10462&issuetype=1
 
    var currentSS = {
         releaseName:'',
@@ -493,7 +493,7 @@ define(function(require){
 //######################################### releases ops
 
 function getReleases(){
-  tcmModel.releases.fetch().done(function(data){
+  tcmModel.releases_iterations.fetch().done(function(data){
     //[{"releaseName":"27","iterationName":"16,18,19,20,21,22"},{"releaseName":"28","iterationName":"23,24,25"}]
     if(FuckRequireJS == 0){
       $('#release-select').chosen()

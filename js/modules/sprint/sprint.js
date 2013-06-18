@@ -162,10 +162,10 @@ define(function(require){
 	            				
             				if(iter_text != ""){
             					$(progress_container).find('.iter-action').text(iter_text);
-	            				$(progress_container).addClass('progress-striped');
+	            				// $(progress_container).addClass('progress-striped');
             				}else{
             					$(progress_container).find('.iter-action').text('');
-            					$(progress_container).removeClass('progress-striped');
+            					// $(progress_container).removeClass('progress-striped');
             				}
             			});
 						$(this).parents('.config-panel').removeClass('visible');
