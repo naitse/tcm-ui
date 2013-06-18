@@ -62,14 +62,14 @@ define([
     function loadModule(module){
 
 
-        if($.cookie('apiKey')){
+        if($.cookie('apiKey') && $.cookie('apiKey') != null && $.cookie('apiKey') != "null"){
 
             _.each(modules, function(moduleItem){
 
                 if( moduleItem.id == module.moduleId  ){
 
                     if(!module.rendered){
-                       module.render();
+                            module.render();
                     }else{
                         try{//in case the function refreshRender does not exist at the module
                             module.refreshRender();
