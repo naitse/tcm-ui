@@ -68,7 +68,16 @@ define([
 
                 if( moduleItem.id == module.moduleId  ){
 
+                    module.checkJQ = function(){
+                        if ($){
+                            // console.log('cargo')
+                        }else{
+                            document.location.reload(true);
+                        }
+                    }
+
                     if(!module.rendered){
+                            module.checkJQ();
                             module.render();
                     }else{
                         try{//in case the function refreshRender does not exist at the module
