@@ -24,9 +24,9 @@ require(['jquery', 'tcm_model', 'jquery.cookie', 'jquery.base64','bootstrap','ch
 
 
         if (jQuery) {  
-            alert('Please refresh cleaning your cache, some libs were not loaded');
             // jQuery is loaded  
         } else {
+            alert('Please refresh cleaning your cache, some libs were not loaded');
             // jQuery is not loaded
         }
 
