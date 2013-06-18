@@ -129,6 +129,13 @@ define(['jquery', 'chosen', 'bootstrap', 'jqueryui', 'blockui','extendJS','texte
 				})
 			})
 			$(parent_container + ' #desc-expander').removeClass(parent_container + ' desc-collapser').addClass(parent_container + ' desc-expander')
+		},
+
+		clearModal: function(modal){
+			$(modal).removeData();
+			$(modal).find('input').val('');
+			$(modal).find('textarea').val('');
+
 		}
 	}
 

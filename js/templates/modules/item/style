@@ -6,4 +6,5 @@
 .item .stats .count{width:40px;text-align:center;position:relative;top:-11px;font-size:11}
 .item.selected {background:#D2E9FA;}
 .item #item-remove {visibility:hidden; float: right;}
+.item #item-add {visibility:hidden; float: right;}
 </style>

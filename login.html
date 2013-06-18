@@ -3,11 +3,28 @@
 <head>
     <title>Test Case Manager</title>
     <link href="js/libs/chosen/chosen.css" rel="stylesheet" />
+    <link href="assets/log.css" rel="stylesheet">
     <link href="js/libs/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
-    <link href="assets/login.css" rel="stylesheet">
     <script data-main="js/login" src="js/libs/require/require.js"></script>
 </head>
 <style>
+
+#login-form input:focus {
+    border-color:inherit !important;
+    box-shadow: inherit !important;
+    -moz-box-shadow: inherit !important;
+    -webkit-box-shadow: inherit !important;
+}
+
+.inputs {
+    position: relative;
+border: 1px solid #ccc;
+width: 70%;
+margin-left: auto;
+margin-right: auto;
+padding-left: 5px;
+}
+
 .login-alert {
 text-align: center;
 width: 50%;
@@ -56,18 +73,23 @@ margin-right: auto;
                 <h2>Login</h2>
                 <form id="login-form" method="post" class="form-horizontal">
                     <div class="control-group">
-                        <label for="username" class="control-label">Username</label>
-                        <div class="controls"><input id="username" name="username" type="text"/></div>
+
+                        <div class="inputs" style="position: relative">
+                            <div class="icon-user icon-dark for-input"></div>
+                            <input id="username" class="ember-view ember-text-field" placeholder="Username" type="text" value="" style="border:none;">
+                        </div>
                     </div>
                     <div class="control-group">
-                        <label for="password" class="control-label">Password</label>
-                        <div class="controls"><input id="password" name="password" type="password"/></div>
+                        <div class="inputs" style="position: relative">
+                            <div class="icon-asterisk icon-dark for-input"></div>
+                            <input id="password" class="ember-view ember-text-field" placeholder="Password" type="password" value="" style="border:none;">
+                        </div>
                     </div>
 
                     <div class="login-alert alert hide">
                     </div>
 
-                    <input id="login-button" type="button" class="btn btn-primary btn-large" data-loading-text="Logging in..." value="Login"/>
+                    <input id="login-button" type="button" class="btn btn-primary " data-loading-text="Logging in..." value="Login"/>
                 </form>
 
                 <div style="display: none" id="projectsContainer" class="form-horizontal">
@@ -75,7 +97,7 @@ margin-right: auto;
                     <!-- <br /> -->
                     <select id="projects_dd" />
                     <br />
-                    <input id="project-button" type="button" class="btn btn-primary btn-large" value="Continue"/>
+                    <input id="project-button" type="button" class="btn btn-primary" value="Continue"/>
                 </div>
             </div>
         </div>

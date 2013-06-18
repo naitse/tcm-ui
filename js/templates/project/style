@@ -1,0 +1,5 @@
+<style type="text/css">
+#projectView .spring-config {width: 400px;}
+#projectView .spring-config span {width: 100%;display: inline-block;}
+#projectView .spring-config span input {float:right;}
+</style>

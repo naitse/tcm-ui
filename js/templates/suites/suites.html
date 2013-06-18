@@ -20,6 +20,34 @@
         </div>
     </div>
     <div id="rp-wrapper" style="display:none;">
+              <div class="modal-header">
+            <h4 class="rp-title"></h4>
+        </div>
+        <div class="modal-body">
+            <div class="suite-tc-fields">
+                <h7>Title:</h7>
+                <input class="new-tc-title" type="text" style=" width: 100%; "></input>
+                <br/>
+                <h7>Description:</h7>
+                <textarea class="new-tc-desc" style=" width: 100%; height:200px; resize: none;"></textarea>
+            </div>
+            <div class="run-tc-modal" style="display:none;">
+                <div class="well well-small run-status">
+                    Run state: 
+                </div>
+                Actual result:
+                <textarea class="actual-result" style=" width: 100%; height:200px; resize: none;"></textarea>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <div class="alert alert-error hide">
+                There was an error, please try again...
+            </div>
+           <!--  <label class="checkbox inline" style="float:left;margin-left:5px;">
+                <input type="checkbox" class="proposed" /> Save as proposed</label> -->
+            <a href="#suites" id="suite-tc-close" class="btn cancel"  >Cancel</a>
+            <a href="#suites" id="suite-tc-save" class="btn btn-primary save" data-loading-text="working...">Add</a>
+        </div>
     </div>
 
 <div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">

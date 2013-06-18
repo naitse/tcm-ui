@@ -11,11 +11,12 @@ define([
     'views/suites/suites',
     'views/plugins/plugins-settings',
     'views/interop/interop',
+    'views/project/project',
     // 'tcm2',
     'backbone',
     'jquery.cookie'
 
-], function($, _, TopMenuView, managerView, syncView, planView, MetricsView, RlsMetricsView, SuitesView, PluginsSettingsView, InteropView){
+], function($, _, TopMenuView, managerView, syncView, planView, MetricsView, RlsMetricsView, SuitesView, PluginsSettingsView, InteropView, ProjectView){
 
 
     var modules = [
@@ -50,6 +51,10 @@ define([
         {
             'id': 'Interop',
             'divContainer': '#interOp'
+        },
+        {
+            'id': 'Project',
+            'divContainer': '#projectView'
         }
 
     ];
@@ -108,6 +113,7 @@ define([
                     "suites": "suites",
                     "plugins-settings": "plugins-settings",
                     "interop":"interop",
+                    "project":"project",
                     "*actions": "defaultRoute"
                 }
             });
@@ -148,6 +154,10 @@ define([
 
             app_router.on('route:interop', function(actions) {
                 loadModule(InteropView);
+            });
+
+            app_router.on('route:project', function(actions) {
+                loadModule(ProjectView);
             });
 
             Backbone.history.start();
