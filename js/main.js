@@ -37,6 +37,7 @@ require.config({
       deps: ['jquery']
     },
     backbone:{
+        deps: ['jquery'],
         exports: 'Backbone'
     },
     exporting:{
