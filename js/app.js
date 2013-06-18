@@ -70,7 +70,12 @@ define([
 
                     if(!module.rendered){
                        module.render();
+                    }else{
+                        try{//in case the function refreshRender does not exist at the module
+                            module.refreshRender();
+                        }catch(e){}
                     }
+
 
                     $(moduleItem.divContainer).show();
 

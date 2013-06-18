@@ -151,12 +151,27 @@ define(function(require){
 				click:function(e){
 					 e.stopPropagation();
 					 var self = this;
-					tcmModel.suites.remove($(this).parents('.item').attr('item-id')).done(function(data){
-
-						removeSuiteFromUI($(self).parents('.item'));
-
-					})
-				}
+		            if($(this).hasClass('sec-state')){
+		  					tcmModel.suites.remove($(this).parents('.item').attr('item-id')).done(function(data){
+								removeSuiteFromUI($(self).parents('.item'));
+							})
+		            }else{
+		              $(this).addClass('sec-state');
+		              $(this).stop(true, true).animate({"width":"+=20"});
+		              $(this).find('i').hide();
+		              $(this).append($('<span class="del-feature-confirm-label" style="display:none; position: relative; top: -2; color: red; ">Del?</span>'))
+		              $(this).find('.del-feature-confirm-label').show();
+		            }
+				},
+				mouseleave:function(e){
+		            e.stopPropagation();
+		            if($(this).hasClass('sec-state')){
+		              $(this).removeClass('sec-state')
+		              $(this).stop(true, true).animate({"width":"-=20"});
+		              $(this).find('.del-feature-confirm-label').remove();
+		              $(this).find('i').show();
+		            }
+		          }
 			})
 
 

@@ -1,5 +1,6 @@
 <style type="text/css">
-#projectView .spring-config {width: 400px;}
-#projectView .spring-config span {width: 100%;display: inline-block;}
-#projectView .spring-config span input {float:right;}
+#projectView .config {width: 550px;}
+#projectView .config span {width: 100%;display: inline-block;}
+#projectView .config span input {float:right;}
+#projectView .ui-datepicker-trigger {float: right;margin-right: 5px;margin-top: 2px;}
 </style>

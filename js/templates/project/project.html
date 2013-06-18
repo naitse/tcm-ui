@@ -1,16 +1,27 @@
 <div id="projectView">
     <div class="project-cofig" project-id="">
         <div class="interop-projects">
-            <div class="well well-small run-status">
+            <div class="well well-small ">
                 <span class="new-bug-url">Bugs URL: <input type="text" disabled="true" class="new-bug-url"/></span>
             </div>
-            <div class="well well-small run-status">
-                <div class="spring-config">
+            <div class="well well-small ">
+                <div class="config">
                     <span class="iter-per-spring">Iterations per Spring: <input type="text" disabled="true" class="iter-per-spring"/></span>
                     <span class="iter-duration">Iteration duration (weeks): <input type="text" disabled="true" class="iter-duration"/></span>
                 </div>
             </div>
+            <button class="btn btn-mini btn-promary projec-config-save" data-loading-text="saving" >Save</button>
         </div>
-        <button class="btn btn-mini btn-promary projec-config-save" data-loading-text="saving" >Save</button>
+
+        <div class="well well-small ">
+            <div class="config">
+                <div class="new-release-config" style="display:none;">
+                    <span >Release Name: (without "Release")<input type="text" disabled="true" id="new-release-name" /></span>
+                    <span >Release start: <input type="text" disabled="true" id="datepicker" /></span>
+                    <button class="btn btn-mini btn-save-release" data-loading-text="saving" >Save New Release</button>
+                </div>
+                <button class="btn btn-mini btn-new-release" data-loading-text="saving" >New Release</button>
+            </div>
+        </div>
     </div>
 </div>
