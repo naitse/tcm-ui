@@ -1,4 +1,9 @@
 <style>
+
+.navbar :focus {
+  outline-color: transparent;
+  outline-style: none;
+}
 .navbar-mule {
     margin-bottom: 0px;
 }
@@ -37,6 +42,30 @@
     -webkit-box-shadow: inherit !important;
     border:none !important;
     border-bottom: 2px solid #d2e9fa !important;
+}
+
+.navbar .time-line {
+    width: 200px;
+height: 40;
+position: absolute;
+top: 9px;
+right: 184px;
+opacity: 0.7;
+box-shadow: inherit;
+-moz-box-shadow: inherit;
+-webkit-box-shadow: inherit;
+}
+
+.navbar .time-line .progress{
+    margin-left: 1px;
+}
+
+.navbar .time-line .active {
+    border: 1px solid #ccc !important;
+}
+.navbar .time-line .toggle-config-panel {
+    display:none;
+}
 }
 
 </style>
@@ -88,5 +117,6 @@
                 </ul>
             </div>
         </div>
+        <div class="spring-progress"></div>
     </div>
 </div>

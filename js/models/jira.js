@@ -19,6 +19,12 @@ define(function(require){
                 this.url += '?' + $.param(params);
             }
 
+        },
+        statusCode: {
+            401: function(){
+                var wl = window.location;
+                wl.href = wl.protocol + '//' + wl.hostname + wl.pathname + 'login.html'
+            }
         }
     });
 

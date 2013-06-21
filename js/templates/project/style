@@ -1,5 +1,7 @@
 <style type="text/css">
 #projectView .config {width: 550px;}
+#projectView #release_select_project_chzn {width: 210px !important; float:right;}
+#projectView #release_select_project_chzn .chzn-results{width: 200px !important;}
 #projectView .config span {width: 100%;display: inline-block;}
 #projectView .config span input {float:right;}
 #projectView .ui-datepicker-trigger {float: right;margin-right: 5px;margin-top: 2px;}

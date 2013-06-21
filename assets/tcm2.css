@@ -4,7 +4,7 @@ pre{white-space:pre-wrap;white-space:-moz-pre-wrap;white-space:-pre-wrap;white-s
 .tcm-container{min-width:1118px;min-height:600px;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;-ms-box-sizing:border-box;-o-box-sizing:border-box;box-sizing:border-box;overflow:hidden;border-top:2px solid #ccc;box-sizing:border-box;width:100%;height:100%;margin-left:auto;margin-right:auto;padding:9px 20px 47px 20px;background:white}
 .left-pannel{min-width: 36px;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;-ms-box-sizing:border-box;-o-box-sizing:border-box;box-sizing:border-box;border:1px solid #ccc;box-shadow:inset 0 0 8px -3px black;-moz-box-shadow:0 0 6px -3px black inset;box-sizing:border-box;height:100%;width:100%;float:left;overflow-y:auto;overflow:hidden;padding-bottom:29px}
 .right-pannel{-webkit-box-sizing:border-box;-moz-box-sizing:border-box;-ms-box-sizing:border-box;-o-box-sizing:border-box;box-sizing:border-box;border:1px solid #ccc;box-shadow:inset 0 0 8px -3px black;-moz-box-shadow:0 0 6px -3px black inset;box-sizing:border-box;height:100%;width:auto;float:none;overflow-y:auto;overflow:hidden;padding-bottom:29px}
-.toolbar{min-width: 363px;background:#f7f7f7;border-bottom:1px solid #ccc;border-radius:6px 6px 0 0;height:28px}
+.toolbar{min-width: 363px;background:#587198;border-bottom:1px solid #ccc;border-radius:6px 6px 0 0;height:23px}
 #release-select{width:180px}
 .hide{display:none}
 .desc-header{height:28px;border-bottom:1px solid #ccc;background:#f7f7f7;font-weight:bold;overflow:hidden}
@@ -16,7 +16,7 @@ pre{white-space:pre-wrap;white-space:-moz-pre-wrap;white-space:-pre-wrap;white-s
 #desc-container{overflow-y:auto;box-shadow:0 1px 12px 0 black inset;height:80px;margin:0;clear:both;-webkit-box-shadow:rgba(69,69,69,0.667) 0 0 6px inset;-moz-box-shadow:rgba(69,69,69,0.667) 0 0 6px inset;box-shadow:rgba(69,69,69,0.667) 0 0 6px inset;background:#f7f8f9;padding:10px;font-size:12}
 .desc-footer{border-radius:6px;height:10px;border-bottom:1px solid black}
 #tc-container{height:100%;overflow:hidden;overflow-y:auto}
-#feature-container{height:100%;overflow:hidden;overflow-y:auto;width: 100%;}
+#feature-container{height:100%;width: 100%;position:relative;}
 .tc{background-color:rgba(232,233,236,0.296);background-image:-webkit-gradient(linear,50% 0,50% 100%,color-stop(0%,rgba(255,255,255,0.667)),color-stop(100%,rgba(153,153,153,0.198)));background-image:-webkit-linear-gradient(top,rgba(255,255,255,0.667),rgba(153,153,153,0.198));background-image:-moz-linear-gradient(top,rgba(255,255,255,0.667),rgba(153,153,153,0.198));background-image:-o-linear-gradient(top,rgba(255,255,255,0.667),rgba(153,153,153,0.198));background-image:-ms-linear-gradient(top,rgba(255,255,255,0.667),rgba(153,153,153,0.198));background-image:linear-gradient(top,rgba(255,255,255,0.667),rgba(153,153,153,0.198));font-size:13;background-color:rgba(232,233,236,0.296);border-bottom:1px solid #ccc}
 .tc-header{height:25px;border-bottom:1px solid black}
 .tc-name{font-size:14;margin:5px 5px 5px 5px}
@@ -33,11 +33,11 @@ pre{white-space:pre-wrap;white-space:-moz-pre-wrap;white-space:-pre-wrap;white-s
 .refreshing{background:url("images/LoadingIcon.gif")}
 .stats{width:44px;height:14px;float:none;position:relative;top:9px;left:3px;margin-left:auto;margin-right:auto;}
 .feature{position:relative;font-size:13;padding:0 5px 0 3px;background-color:white;border-bottom:1px solid #6c7885;height:51px;overflow:hidden;margin-left:2px;padding-left:0;font-weight:bold;margin-bottom:1px}
-.feature .title-bar{background:#f7f7f7;height:100%;z-index:2;position:relative;box-shadow:-4px 0 10px 2px;display: inline-block;padding-right: 6px;}
+.feature .title-bar{background:#f7f7f7;height:100%;position:relative;box-shadow:-4px 0 10px 2px;display: inline-block;padding-right: 6px;}
 .feature .summary{margin-top:3px;position:absolute;z-index:0;border-radius:6px;padding-left:10px;font-size:11;display: inline;word-wrap: break-word;line-height: 1;}
 .feature .jira-key{width:100px;margin-left:5px;position:relative;top:6px;font-size:12}
 .stats .count{width:40px;text-align:center;position:relative;top:-11px;font-size:11}
-.loading-small{background:url("images/LoadingIcon.gif");height:20px;width:20px;position:relative;top:5px;border:0}
+.loading-small{background:url("images/LoadingIcon.gif") no-repeat 10;height:20px;width:20px;position:relative;top:5px;border:0}
 .tc .wrapper{height:28px;background:white}
 .tc-description{width:90%;margin-left:28px;float:left;position:relative;top:1.2em;line-height:0;padding-left:0;font-weight:bold;font-size:.9em}
 .tc-stats{width:auto;height:auto;float:right;position:relative;top:5px;right:8px}
@@ -98,7 +98,7 @@ pre{white-space:pre-wrap;white-space:-moz-pre-wrap;white-space:-pre-wrap;white-s
 .feature a:hover{color: #ccc;}
 .desc-header-text div{height: 20px;overflow: hidden;color: #454545;text-decoration: underline;cursor: pointer;}
 .desc-header-text div:hover{color: #ccc;}
-#feature-filter{position: absolute;width: 75px;margin-left: 5px;margin-top: 3px;margin-bottom: -3px;}
+#feature-filter{width: 75px;margin-left: -5px;margin-top: -5px;margin-bottom: -3px;}
 #filter-completed-features:{cursor: pointer;}
 #release_select_chzn{width:130px !important;}
 .no-tc-feature-done{background-color: #5eb95e;background-image: -moz-linear-gradient(top,#62c462,#57a957);background-image: -webkit-gradient(linear,0 0,0 100%,from(#62c462),to(#57a957));background-image: -webkit-linear-gradient(top,#62c462,#57a957);background-image: -o-linear-gradient(top,#62c462,#57a957);background-image: linear-gradient(to bottom,#62c462,#57a957);background-repeat: repeat-x;filter: progid:DXImageTransform.Microsoft.gr}
@@ -107,4 +107,15 @@ pre{white-space:pre-wrap;white-space:-moz-pre-wrap;white-space:-pre-wrap;white-s
 .tagit-new{height: 14px !important;}
 .tagit-input {font-size: 11px !important;}
 .plan-tc-td {box-shadow: #000 0px 0px 14px -6px inset;-moz-box-shadow: #000 0px 0px 14px -9px inset;-webkit-box-shadow: #000 0px 0px 14px -6px inset;}
+.iteration-holder-name {padding: 3px;padding-left: 20px;background: #03415f;color: white;font-weight: inherit;}
+.feature-actions {padding: 0px;padding-left: 5px;background: #0f5a7f;color: white;font-weight: bold;}
+.feature-buttons {padding: 3px;padding-left: 5px;background: #0f5a7f;color: white;font-weight: bold;}
+#tcViewer .toolbar #holder i{display: inline;float: left;margin-top: 5px;margin-left: 5px;cursor: pointer !important;}
+/*#tcViewer #feature-container {padding-top: 28px;}*/
+#tcViewer .level{display:inline-block;height: 5px; background: grey; width: 13px;margin-right: 2px}
+#tcViewer .levels{height: 11px; width:80px; margin-left: auto; margin-right: auto;}
+#tcViewer .item .item-remove{display:none;}
+#tcViewer .item .item-add{display:none;}
+#tcViewer .theFeatures { position: absolute; bottom: 0; left: 0; top: 27px; right: 0px; overflow: hidden;overflow-y: auto;}
+/*http://jsfiddle.net/sKb84/*/
 

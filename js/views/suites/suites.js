@@ -225,13 +225,13 @@ define(function(require){
 
     function attachObjects(){
 
-		var add_suite = $('<button id="item-add" type="button" class="btn btn-mini" ><i class="icon-plus-sign"></i> Add Suite</button>').click(function(e){
+		var add_suite = $('<button id="" type="button" class="btn btn-mini" ><i class="icon-plus-sign"></i> Add Suite</button>').click(function(e){
 			
 			$(pV+'#myModal').modal();
 
 		});
 
-		var multi_suite = $('<button id="item-add" type="button" class="btn btn-mini" data-toggle="button"><i class="icon-th-list"></i> Multi-Selec</button>').click(function(e){
+		var multi_suite = $('<button id="" type="button" class="btn btn-mini" data-toggle="button"><i class="icon-th-list"></i> Multi-Selec</button>').click(function(e){
 			
 			if(multi===true){
 				multi = false;

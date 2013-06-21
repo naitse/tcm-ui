@@ -81,18 +81,6 @@ define(function(require){
 				$(tc).find('.tc-last-run-results-cont').hide();
 			}
 
-
-
-			// var prop_btn = ''
-
-			// var proposed_class = '';
-			// if(tcObject.proposed == 1){
-			// 	prop_btn = $('<button type="button" title="accept tc" class="btn btn-mini prop-tc" ><i class="icon-question-sign"></i></button>');
-			// 	proposed_class = ' proposed'
-			// }
-
-
-
 			try{
 				var feature_closed = $('.feature[feature-id='+feature_id+']').data('conflict');
 				var feature_ready = $('.feature[feature-id='+feature_id+']').hasClass('ready');
@@ -113,12 +101,45 @@ define(function(require){
 		},
 
 		renderTC: function(tc, view_container){
-
 			var self = this;
+
+			$(tc).find('.dropdown-menu > li').on({
+				click: function(e){
+					// e.stopPropagation();
+					$(this).parents('.btn-group').removeClass('open')
+					$(this).parents('.tc').find('.wrapper').addClass('active')
+
+					if($(this).hasClass('ddm-failed') ||  $(this).hasClass('ddm-block')){
+					}else{
+						// tcsModule.togleDropState($(this).parents('.tc'))
+						var icon_white = ($(this).children('i').attr('class') == 'icon-off')?' icon-white':'';
+						var newState = $('<i class="'+$(this).children('i').attr('class')+icon_white+'" style="margin-top: 2px;"></i>')
+						var caret = $('<span class="caret"></span>')
+						$(this).parents('.btn-group').find('.dropdown-toggle').removeClass(function (index, css) {
+							return (css.match (/\bddm-\S+/g) || []).join(' ')
+						}).addClass($(this).attr('class')).text('').append(newState, caret).attr('status-id',$(this).attr('status-id'))
+
+					}
+				}
+			});
+
+
 			$(view_container + ' #tc-container').append(tc);
 				tcmModel.releases.iterations.features.test_cases.suites.fetch($(tc).data('tcObject').tcId).done(function(data){
 				self.renderTagsContainer($(tc).data('tcObject').tcId,data, view_container);
 			})
+		},
+
+		togleDropState:function(tc){
+
+			var li = $(tc).find('.dropdown-menu > li');
+
+			var icon_white = ($(li).children('i').attr('class') == 'icon-off')?' icon-white':'';
+			var newState = $('<i class="'+$(li).children('i').attr('class')+icon_white+'" style="margin-top: 2px;"></i>')
+			var caret = $('<span class="caret"></span>')
+			$(li).parents('.btn-group').find('.dropdown-toggle').removeClass(function (index, css) {
+				return (css.match (/\bddm-\S+/g) || []).join(' ')
+			}).addClass($(li).attr('class')).text('').append(newState, caret).attr('status-id',$(li).attr('status-id'))
 		},
 
 		renderTagsContainer: function(tcId,tagsMap,view_container){

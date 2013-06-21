@@ -4,6 +4,7 @@ define(function(require){
         projectTemplate = require('text!templates/project/project.html'),
         styles = require('text!templates/project/style'),
         tcmModel = require('tcmModel'),
+        global = require('global'),
         pV = '#projectView ',
         _ = require('underscore');
 
@@ -25,8 +26,14 @@ define(function(require){
             $('#link-project').addClass('active').parents('.dropdown').find('a.dropdown-toggle').addClass('active');
         },
 
-        attachEvents: function(){
+        refreshRender: function(){
+            // fetchReleases();
+        },
 
+        attachEvents: function(){
+            $(pV + ' #release-select-project').chosen()
+            
+            fetchReleases()
 			tcmModel.project.configuration.fetch().done(function(data){
 					$(pV + ' input').attr('disabled', false);
                 if(data.length > 0){
@@ -35,6 +42,12 @@ define(function(require){
                     $(pV + ' input.iter-per-spring').val(data[0].springIterations);
 					$(pV + ' input.iter-duration').val(data[0].iterationDuration);
 				}
+
+                global.project.config.bug_url = data[0].bugurl;
+                global.project.config.springIterations = data[0].springIterations;
+                global.project.config.iterationDuration = data[0].iterationDuration;
+                global.project.config.id = data[0].id;
+                global.project.config.currentrelease = data[0].currentrelease;
 			});
 
 
@@ -88,6 +101,13 @@ define(function(require){
                 }
         })
 
+      $(pV + " .btn-save-iter").live({
+                click:function(e){
+                    e.stopPropagation();
+                    createIteration();
+                }
+        })
+
         $(pV + " #datepicker" ).datepicker({
               showOn: "button",
               buttonImage: "assets/images/calendar.gif",
@@ -123,6 +143,19 @@ define(function(require){
 
     });
 
+    function fetchReleases(){
+          tcmModel.releases.fetch().done(function(data){
+                //[{"releaseName":"27","iterationName":"16,18,19,20,21,22"},{"releaseName":"28","iterationName":"23,24,25"}]
+                  
+                $(pV + ' #release-select-project').find('option').remove();
+                $(data).each(function(){
+                  var optionG = $('<option>').attr('value', this.id).text( "Release "+this.releaseName);
+                  $(pV + ' #release-select-project').append(optionG)
+                })
+                $(pV + ' #release-select-project').trigger("liszt:updated")
+        });
+    }
+
     function createRelease(){
 
         tcmModel.releases.create( $("#new-release-name").val() ).done(function(data, segundo, tercero){
@@ -131,37 +164,33 @@ define(function(require){
             if (rlsId == "false"){
                 console.log('Release exists');
             }else{
-                $("#new-release-name").parents('.config').find('input').attr('disable',true);
+                fetchReleases();
+                // $("#new-release-name").parents('.config').find('input').attr('disable',true);
             }
         });
     }
 
     function createIteration(){
 
-                    tcmModel.releases.create( $("#new-rls-title").val() ).done(function(data, segundo, tercero){
-                        var rlsId = tercero.getResponseHeader('location').toString();
-                        rlsId = rlsId.substring(rlsId.lastIndexOf('/') +1 , rlsId.length);
-                        if (rlsId == "false"){
-                            console.log('Release exists');
-                        }else{
 
+        var rlsId = $(pV + ' #release-select-project').find('option:selected').val();
+        $(pV + " .btn-save-iter").button('loading');
+        tcmModel.releases.iterations.create(rlsId, $(pV + " #new-iter-name").val() ).done(function(data, segundo, tercero){
 
-                            tcmModel.releases.iterations.create(rlsId, $("#new-iter-title").val() ).done(function(data, segundo, tercero){
+            var iterId = tercero.getResponseHeader('location').toString();
+            iterId = iterId.substring(iterId.lastIndexOf('/') +1 , iterId.length);
 
-                                var iterId = tercero.getResponseHeader('location').toString();
-                                iterId = iterId.substring(iterId.lastIndexOf('/') +1 , iterId.length);
+            $(pV + " #new-iter-name").val('');
+            $(pV + " .btn-save-iter").button('reset');
+            
+            // $("#jiraItems tr input:checked").each(function(){
+            //     var issue = $(this).parents('.jiraRow').data('jiraIssue');
 
-                                $("#jiraItems tr input:checked").each(function(){
-                                    var issue = $(this).parents('.jiraRow').data('jiraIssue');
+            //     deferreds.push( tcmModel.releases.iterations.features.create(0, iterId, issue.key, issue.summary, issue.description) );
+            // })
 
-                                    deferreds.push( tcmModel.releases.iterations.features.create(0, iterId, issue.key, issue.summary, issue.description) );
-                                })
-
-                                $.when.apply($, deferreds).then(syncCompleted);
-                            });
-                        }
-
-                    });
+            // $.when.apply($, deferreds).then(syncCompleted);
+        });
 
         
     }
