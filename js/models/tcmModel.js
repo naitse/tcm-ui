@@ -2,7 +2,7 @@
 define( function(require){
     var basePath = "http://tcm-backend.cloudhub.io/api/";
     //var basePath = "http://tcm-backend.qa2.cloudhub.io/api/";
-    //var basePath = "http://54.242.24.131/api/";
+    //var basePath = "http://54.226.164.226/api/";
     //var basePath = "http://localhost:8088/api/";
     var basePath2 = basePath.replace('api/','');
 	var $ = require('jquery');
@@ -21,6 +21,12 @@ define( function(require){
                 this.url += '?' + $.param(params);
             }
 
+        },
+        statusCode: {
+            401: function(){
+                var wl = window.location;
+                wl.href = wl.protocol + '//' + wl.hostname + wl.pathname + 'login.html'
+            }
         }
     });
 
@@ -285,6 +291,7 @@ define( function(require){
                 features: {
                     url: basePath +'releases/{rlsId}/iterations/{iterId}/features',
                     closeurl: basePath2 +'closeJira',
+                    deleteurl: basePath2 +'deleteFeature',
 
                     fetch: function (releaseId, iterationid) {
                         return $.ajax({
@@ -309,6 +316,33 @@ define( function(require){
                             dataType: "json",
                             contentType : 'application/json'
                         });
+
+                    },
+
+                    _create: function(releaseId, iterationid, key, summary, desc ){
+                        var data ={
+                            "key":key,
+                            "summary":summary,
+                            "desc":desc
+                        };
+
+                        return $.ajax({
+                            type: "POST",
+                            url: this.url.replace('{rlsId}', releaseId).replace('{iterId}', iterationid),
+                            data: JSON.stringify(data),
+                            dataType: "json",
+                            contentType : 'application/json'
+                        });
+
+                    },
+
+                    delete: function(featureId ){
+
+                            return $.ajax({
+                                type: "GET",
+                                url:  this.deleteurl + '?featureId='+featureId,
+                                dataType: "json"
+                            });
 
                     },
 

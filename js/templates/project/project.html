@@ -9,18 +9,33 @@
                     <span class="iter-per-spring">Iterations per Spring: <input type="text" disabled="true" class="iter-per-spring"/></span>
                     <span class="iter-duration">Iteration duration (weeks): <input type="text" disabled="true" class="iter-duration"/></span>
                 </div>
-            </div>
             <button class="btn btn-mini btn-promary projec-config-save" data-loading-text="saving" >Save</button>
+            </div>
         </div>
 
         <div class="well well-small ">
             <div class="config">
-                <div class="new-release-config" style="display:none;">
+                <!-- <button class="btn btn-mini btn-new-release" data-loading-text="saving" >New Release</button> -->
+                <div class="new-release-config" style="">
                     <span >Release Name: (without "Release")<input type="text" disabled="true" id="new-release-name" /></span>
                     <span >Release start: <input type="text" disabled="true" id="datepicker" /></span>
-                    <button class="btn btn-mini btn-save-release" data-loading-text="saving" >Save New Release</button>
+                    <button class="btn btn-mini btn-save-release" data-loading-text="saving" >Save </button>
                 </div>
-                <button class="btn btn-mini btn-new-release" data-loading-text="saving" >New Release</button>
+            </div>
+        </div>
+         <div class="well well-small ">
+            <div class="config">       
+                <div class="new-iteration-config" style="">
+                    Create a new iteration for a release
+                    <span> Choose a release: 
+                        <select data-placeholder="Releases"
+                            id="release-select-project" tabindex="3">
+                        <option></option>
+                    </select>
+                    </span>
+                    <span >Iteration Name: <input type="text" disabled="true" id="new-iter-name" /></span>
+                    <button class="btn btn-mini btn-save-iter" data-loading-text="saving" >Save</button>
+                </div>
             </div>
         </div>
     </div>

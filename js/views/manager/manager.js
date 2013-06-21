@@ -1,9 +1,13 @@
 define(function(require){
 
-    var $ = require('jquery'),
+    var $ = require('jquery-plugins'),
+        global = require('global'),
         managerTemplate = require('text!templates/manager/manager.html'),
         tcmModel = require('tcmModel'),
         tcsModule = require('modules/tc/tc'),
+        sprint = require('modules/sprint/sprint'),
+        itemsModule = require('modules/item/item'),
+        featuresModule = require('modules/feature/feature'),
         PM = require('panelsManager'),
         _ = require('underscore');
 
@@ -15,18 +19,19 @@ define(function(require){
    var FuckRequireJS = 0;
     var statCheck;
     var monitoring_interval = 15000;
-    var monitoring = true;
-    var jiraLink = 'www.google.com';//http://www.mulesoft.org/jira/secure/CreateIssue.jspa?pid=10462&issuetype=1
+    var monitoring = false//true;
+    var newBug = '';
+    var jiraLink = 'http://www.mulesoft.org/jira/browse/';//http://www.mulesoft.org/jira/secure/CreateIssue.jspa?pid=10462&issuetype=1
 
-   var currentSS = {
-        releaseName:'',
-        releaseId:0,
-        iterationName:'',
-        iterationId:0,
-        featureId:0,
-        feature:'',
-        tcId:0
-   }
+   // window.global.currentSS = {
+   //      releaseName:'',
+   //      releaseId:0,
+   //      iterationName:'',
+   //      iterationId:0,
+   //      featureId:0,
+   //      feature:'',
+   //      tcId:0
+   // }
 
     var ManagerView = {
 
@@ -44,14 +49,32 @@ define(function(require){
             $('.brand').addClass('active').parents('.dropdown').find('a.dropdown-toggle').addClass('active');
 
             this.attachEvents();
+            newBug = global.project.config.bug_url;
+            // tcmModel.project.configuration.fetch().done(function(data){
+            //   if(data.length > 0){
+            //     newBug = data[0].bugurl;
+            //     // sprint.render(sprint.create(data[0].springIterations,data[0].iterationDuration,{"year":2013,"month":5,"day":10}),'.spring-progress',200,40);
+            //   }
+            // });
 
-            tcmModel.project.configuration.fetch().done(function(data){
-              if(data.length > 0){
-                jiraLink = data[0].bugurl;
-              }
-            });
+            PM.makeResizable("#tcViewer",[550,100,313,700]);
+              PM.colapseExpandRightPanel('#tcViewer','none');
+            $('#tcViewer').css('height',(($('#tcViewer .tcm-container').height() - 20)*100)/$('#tcViewer .tcm-container').height()+'%')
+            adjustTabHeight()
 
             getReleases();
+        },
+
+        refreshRender:function(){
+
+          console.log('refreshing')
+          
+          $("#tcViewer #feature-container").css({
+              'height' : '100%',
+              'width' : '100%'
+            });
+          console.log($('#tcViewer #feature-container').height())
+          getReleases();
         },
 
         expose:{
@@ -72,11 +95,12 @@ define(function(require){
 
              
             adjustTabHeight()
+
         });
  
         $('#release-select').live({
           change: function(){
-              currentSS ={
+              global.currentSS ={
                     releaseName:'',
                     releaseId:0,
                     iterationName:'',
@@ -85,9 +109,9 @@ define(function(require){
                     feature:'',
                     tcId:0
                }
-            currentSS.releaseId = $(this).find('option:selected').parents('optgroup').attr('rel-id');
-            currentSS.iterationId = $(this).find('option:selected').val()
-              itSelected(currentSS.iterationId)
+            global.currentSS.releaseId = $(this).find('option:selected').parents('optgroup').attr('rel-id');
+            global.currentSS.iterationId = $(this).find('option:selected').val()
+              itSelected(global.currentSS.iterationId)
           }
         });
         
@@ -95,18 +119,20 @@ define(function(require){
           click: function(e){
                 e.stopPropagation();
                 PM.colapseExpandRightPanel('#tcViewer','none');
-                currentSS.featureId = parseInt($(this).attr('feature-id'));
-                currentSS.feature = $(this);
+                global.currentSS.featureId = parseInt($(this).attr('feature-id'));
+                global.currentSS.feature = $(this);
 
                 var jiraKey = $(this).find('.jira-key').data('jiraKey');
-                var issueTitle = $('<div>').addClass('jira-key').attr('href', jiraLink + jiraKey).text(jiraKey+' - '+$(this).data('summary'))
-                $('.desc-header-text').html('').append(issueTitle)
+                if(jiraKey != "N0k31"){
+                  var issueTitle = $('<div>').addClass('jira-key').attr('href', jiraLink + jiraKey).text(jiraKey+' - '+$(this).data('summary'))
+                  $('.desc-header-text').html('').append(issueTitle)
+                }
     
                 $('.feature').removeClass('active');
                 $(this).addClass('active');
                 loadFeatureDesc($(this).data('desc'))
                 $('.add-tc').attr('disabled',false)
-                getTests(currentSS.featureId);
+                getTests(global.currentSS.featureId);
              
                 $('#desc-wrapper').css({
                   'height':100
@@ -127,8 +153,19 @@ define(function(require){
                 }
 
                 displayed = true
-            }
+            },
+          mouseenter: function(e){
+            e.stopPropagation();
+              $(this).find('.summary').css('margin-right','45px');
+              $(this).find('.remove-feature').stop(true,true).show();
+          },
+          mouseleave: function(e){
+            e.stopPropagation();
+            $(this).find('.summary').css('margin-right','0px');
+              $(this).find('.remove-feature').stop(true,true).hide();
+          }
         });
+
 
         $('.desc-expander').live({
           click: function(e){
@@ -154,17 +191,17 @@ define(function(require){
             $(this).addClass('refreshing');
             clearData();
             PM.collapsIssueDescription("#tcViewer");
-            itSelected(currentSS.iterationId);
+            itSelected(global.currentSS.iterationId);
           }
         });
 
         $('#tc-refresh').live({
           click: function(e){
             e.stopPropagation();
-            if (currentSS.featureId != 0){
+            if (global.currentSS.featureId != 0){
               $(this).addClass('refreshing');
               clearTCs()
-              getTC(currentSS.featureId);
+              getTC(global.currentSS.featureId);
             }
           }
         });
@@ -213,21 +250,10 @@ define(function(require){
         $('#tcViewer .tc .dropdown-menu > li').live({
           click: function(e){
             e.stopPropagation();
-            $(this).parents('.btn-group').removeClass('open')
-
             if($(this).hasClass('ddm-failed') ||  $(this).hasClass('ddm-block')){
-              $(this).parents('.tc').find('.wrapper').addClass('active')
               runTC($(this).parents('.tc').data('tcObject'),this);
             }else{
-
-            var icon_white = ($(this).children('i').attr('class') == 'icon-off')?' icon-white':'';
-            var newState = $('<i class="'+$(this).children('i').attr('class')+icon_white+'" style="margin-top: 2px;"></i>')
-            var caret = $('<span class="caret"></span>')
-            $(this).parents('.btn-group').find('.dropdown-toggle').removeClass(function (index, css) {
-                return (css.match (/\bddm-\S+/g) || []).join(' ')
-            }).addClass($(this).attr('class')).text('').append(newState, caret).attr('status-id',$(this).attr('status-id'))
-
-              updateTCstatus($(this).parents('.tc').attr('tc-id'),$(this).attr('status-id'),currentSS.feature)
+              updateTCstatus($(this).parents('.tc').attr('tc-id'),$(this).attr('status-id'),global.currentSS.feature)
             }
           }
         });
@@ -253,7 +279,7 @@ define(function(require){
          $('#tcViewer #rp-wrapper .save').live({
           click: function(e){
             e.stopPropagation();
-            saveTc($(this).parents('#rp-wrapper'), $('#tcViewer #rp-wrapper .modal-body').data('flag'), $('#tcViewer #rp-wrapper .modal-body').data('tcObject'),currentSS.feature)
+            saveTc($(this).parents('#rp-wrapper'), $('#tcViewer #rp-wrapper .modal-body').data('flag'), $('#tcViewer #rp-wrapper .modal-body').data('tcObject'),global.currentSS.feature)
           }
         });
         
@@ -288,7 +314,7 @@ define(function(require){
           click: function(e){
             e.stopPropagation();
             if($(this).hasClass('sec-state')){
-              deleteInterceptor($(this).parents('.tc').attr('tc-id'),currentSS.feature)
+              deleteInterceptor($(this).parents('.tc').attr('tc-id'),global.currentSS.feature)
             }else{
               $(this).addClass('sec-state');
               $(this).stop(true, true).animate({"width":"+=20"});
@@ -394,11 +420,11 @@ define(function(require){
         $('.bug-tc').live({
           click: function(e){
             e.stopPropagation();
-            window.open('http://www.mulesoft.org/jira/secure/CreateIssue.jspa?pid=10462&issuetype=1','_blank');
+            window.open(newBug,'_blank');
           }
         });
 
-        $('.close-jira-btn').live({
+        $('#tcViewer .feature .close-jira-btn').live({
           // click: function(e){
           //   e.stopPropagation();
           //   deleteFeatureInterceptor($(this).parents('.feature'));
@@ -407,7 +433,7 @@ define(function(require){
             e.stopPropagation();
             if($(this).hasClass('sec-state')){
               closeJira($(this).parents('.feature'));
-              // deleteInterceptor($(this).parents('.tc').attr('tc-id'),currentSS.feature)
+              // deleteInterceptor($(this).parents('.tc').attr('tc-id'),global.currentSS.feature)
             }else{
               $(this).addClass('sec-state');
               $(this).stop(true, true).animate({"width":"+=20"});
@@ -427,18 +453,39 @@ define(function(require){
           }
         });
 
+        $('#tcViewer .feature .remove-feature').live({
+          click: function(e){
+            e.stopPropagation();
+            if($(this).hasClass('sec-state')){
+              featuresModule.deleteFeature($(this).parents('.feature').attr('feature-id'))
+              // deleteInterceptor($(this).parents('.tc').attr('tc-id'),global.currentSS.feature)
+            }else{
+              $(this).addClass('sec-state');
+              $(this).stop(true, true).animate({"width":"+=20"});
+              $(this).find('i').hide();
+              $(this).append($('<span class="del-feature-confirm-label" style="display:none; position: relative; top: -2; color: red; ">Sure?</span>'))
+              $(this).find('.del-feature-confirm-label').show();
+            }
+          },
+          mouseleave:function(e){
+            e.stopPropagation();
+            if($(this).hasClass('sec-state')){
+              $(this).removeClass('sec-state')
+              $(this).stop(true, true).animate({"width":"-=20"});
+              $(this).find('.del-feature-confirm-label').remove();
+              $(this).find('i').show();
+            }
+          }
+        });
+
+
+
         $('.close-jira-btn').live({
           click: function(e){
             e.stopPropagation();
           }
         });
 
-        // $('#close-feature-btn').live({
-        //     click: function(e){
-        //       e.stopPropagation();
-        //       closeJira($(this).parents('#close-feature-alert').data('feature'));
-        //     }
-        // });
 
         $('.desc-header-text .jira-key').live({
           click: function(e){
@@ -467,6 +514,73 @@ define(function(require){
           }
         })
 
+        $('#tcViewer .item.release').live({
+          click:function(e){
+            e.stopPropagation();
+            global.currentSS.releaseId = $(this).attr('item-id');
+            global.currentSS.releaseName = $(this).find('.summary').text();
+            $('#tcViewer .item.release').removeClass('active');
+            $(this).addClass('active');
+            $('#tcViewer #releases-container .iteration-holder').hide(0);
+            $('#tcViewer #releases-container .iteration-holder[rlsid='+global.currentSS.releaseId+']').show(100);
+
+          }
+        });
+
+        $('#tcViewer .item.iteration').live({
+          click:function(e){
+            e.stopPropagation();
+            global.currentSS.iterationId = $(this).attr('item-id');
+             // $('#tcViewer #holder').attr('class', 'features').find('.iteration-holder-name').text(global.currentSS.releaseName+' / '+$(this).find('.summary').text());
+              $('#tcViewer #holder i').css('visibility','visible');
+            itSelected(global.currentSS.iterationId, $(this).find('.summary').text());
+          }
+        });
+
+        $('#tcViewer #feature-container').scroll(function(){
+           $('.feature-holder').position({
+            my:        "left top",
+            at:        "left top",
+            of:        $('#tcViewer #feature-container'), // or $("#otherdiv)
+            collision: "fit"
+          })
+        })
+
+        $('#holder.features i').live({
+          click:function(e){
+            e.stopPropagation();
+            PM.colapseExpandRightPanel('#tcViewer','none');
+              clearTimeout(statCheck);
+              $('.noresult').remove();
+             $('#filter-completed-features').removeClass('enabled').attr("disabled",true);
+            $('.add-tc').attr('disabled',true)
+            $('#desc-container').children().remove()
+            $('#desc-container').text('');
+            $('#desc-wrapper').hide()
+            $('.desc-header-text').html('')
+            $('#desc-expander').removeClass('desc-collapser').addClass('desc-expander')
+            clearTCs() 
+            $('#feature-container').stop(true,true).hide("slide", { direction: "right"},100,function(){
+                $('#releases-container').stop(true,true).show("slide", { direction: "left"},100,function(){
+                    $('#tcViewer #holder').attr('class', 'releases').find('.iteration-holder-name').text("Releases");
+                    $('#tcViewer #holder i').css('visibility','hidden');
+                });
+              })
+          }
+        });
+
+        $('#tcViewer #add-feature').click(function(){
+          $('#new-feature-modal').modal();
+        })
+
+        $('#tcViewer #new-feature-modal .cancel').click(function(){
+          $('#new-feature-modal').modal('hide');
+        })
+
+        $('#tcViewer #new-feature-modal .save-feature').click(function(){
+            saveFeature();
+        })
+
         }
     };
 
@@ -487,6 +601,8 @@ define(function(require){
 
         $('#tcViewer .left-center-panel').css('height',(($('.tcm-container').height() - 20)*100)/$('.tcm-container').height()+'%')
 
+        
+
     }
 
 
@@ -494,231 +610,103 @@ define(function(require){
 
 function getReleases(){
   tcmModel.releases_iterations.fetch().done(function(data){
-    //[{"releaseName":"27","iterationName":"16,18,19,20,21,22"},{"releaseName":"28","iterationName":"23,24,25"}]
-    if(FuckRequireJS == 0){
-      $('#release-select').chosen()
-      PM.makeResizable("#tcViewer",[550,100,313,700]);
-      PM.colapseExpandRightPanel('#tcViewer','none');
-    $('#tcViewer').css('height',(($('#tcViewer .tcm-container').height() - 20)*100)/$('#tcViewer .tcm-container').height()+'%')
-    adjustTabHeight()
-    }
-    $('#release-select').find('optgroup').remove();
+
+    $('#tcViewer #releases-container').children().remove();
+    $('#tcViewer  #iterations-container').children().remove();
     $(data).each(function(){
-      var optionG = $('<optgroup>').attr('label', "Release "+this.name).attr('rel-id',this.id)
-       $(this.iterations).each(function(){
-        var option = $('<option>').attr('value', this.id).text(prefix + this.name);
-        $(optionG).append(option);
-      })
-      $('#release-select').append(optionG)
+
+      var itersCount = this.iterations.length;
+
+      var self = this;
+      var wrapper = $('<div class="release-iterations-wrapper" id="'+this.id+'">')
+      $('#tcViewer  #releases-container').append(wrapper);
+      itemsModule.renderItem('#tcViewer  #releases-container .release-iterations-wrapper#' + this.id,itemsModule.createItem("Release "+this.name,this.id,itersCount,false, 'release'));
+          var iteration_holder = $('<div class="iteration-holder" style="display:none;"></div>').attr('rlsid',self.id)
+          $('#tcViewer  #releases-container .release-iterations-wrapper#' + self.id).append(iteration_holder);
+        $(this.iterations).each(function(){
+          itemsModule.renderItem('.iteration-holder[rlsid='+self.id+']',itemsModule.createItem(this.name,this.id,0,false,'iteration'));
+        })
     })
-     
-    $('#release-select').trigger("liszt:updated")
-    FuckRequireJS = 1
-  });
+  })
+
+
 } 
 
 //######################################### releases ops end
 
 //######################################### iteration ops
 
-function itSelected(iterationId){
-    PM.toggleLoading('#tcViewer','#feature-container',true, 'big')
-  PM.colapseExpandRightPanel('#tcViewer','none');
-  clearData();
-   currentSS.iterationId = iterationId
-    var noresult = $('<div>').addClass('noresult').text('No IONs found')
-    $('#filter-completed-features').removeClass('enabled').attr('disabled',true);
-    $('#tcViewer #feature-container').html('')
-    tcmModel.releases.iterations.features.fetch(currentSS.releaseId, currentSS.iterationId).done(function(data){
-      if (data.length > 0){
-        prepareFeatures(data)
-        if (monitoring==true){
-          clearTimeout(statCheck)
-          statCheck=setTimeout(function(){statsMonitoring(iterationId)}, monitoring_interval);
-        }
-      }else{
+function itSelected(iterationId, iterationName) {
 
-        $('#tcViewer #feature-container').append(noresult)
-      }
-      PM.toggleLoading('#tcViewer','#feature-container',false)
-      $('#filter-completed-features').addClass('enabled').attr("disabled",false);
-      $('#feature-refresh').removeClass('refreshing')
+                  console.log('HOLA',iterationId,iterationName)
+            var releaseName = global.currentSS.releaseName;
+                  $('#tcViewer .theFeatures').children().remove();
+    $('#releases-container').stop(true,true).hide("slide", { direction: "left"},"fast",function(){
+        $('#feature-container').stop(true,true).show("slide", { direction: "right"},100,function(){
+                  PM.toggleLoading('#tcViewer','.theFeatures',true,'big');  
+                  PM.colapseExpandRightPanel('#tcViewer','none');
+                  clearData();
+                  $('.noresult').remove();
+                  var noresult = $('<div>').addClass('noresult').text('No Items found')
+                  $('#filter-completed-features').removeClass('enabled').attr('disabled',true);
+                  $('#add-feature').removeClass('enabled').attr('disabled',true);
+                  
+                 tcmModel.releases.iterations.features.fetch(global.currentSS.releaseId, global.currentSS.iterationId).done(function(data){
+                    if (data.length > 0){
+                      // $('.theFeatures').css('height',$('#tcViewer #feature-container').height() - 35);
+                      $(data).each(function(){
+                          featuresModule.render('#tcViewer .theFeatures',featuresModule.create(this))
+                      })
+                      //prepareFeatures(data)
+                      if (monitoring==true){
+                        clearTimeout(statCheck)
+                        statCheck=setTimeout(function(){statsMonitoring(iterationId)}, monitoring_interval);
+                      }
+                    }else{
 
-    });
+                      $('#tcViewer #feature-container').append(noresult)
+                    }
+
+                    PM.toggleLoading('#tcViewer','.theFeatures',false)
+                    $('#filter-completed-features').addClass('enabled').attr("disabled",false);
+                     $('#add-feature').addClass('enabled').attr('disabled',false);
+                    // $('#feature-refresh').removeClass('refreshing')
+                    $('#tcViewer #holder').attr('class', 'features').find('.iteration-holder-name').text(releaseName+'/'+iterationName);
+                 
+              });
+        });
+    })
 
 }
-
 //######################################### iteration ops end
 
 //######################################### feature ops
 
-function prepareFeatures(data){ 
-    $(data).each(function(){
-      //[{"jiraKey":"ION-2333","featureName":"Enable global deployment","featureDescription":"hay que hacer muchas cosas locas","featureId":1}]
-      var feature = $('<div>').addClass('feature').attr('feature-id',this.featureId).data('desc', this.featureDescription).data('summary',this.featureName).data('state',this.state).data('conflict',0);
-      var title_bar = $('<div>').addClass('title-bar')
-      var jiraKey = $('<a target="_blank">').addClass('jira-key').attr('href', jiraLink + this.jiraKey).text(this.jiraKey).data('jiraKey',this.jiraKey)
-      var summary = $('<div>').addClass('summary').text(this.featureName).attr('title',this.featureName)
-      var stats = $('<div>').addClass('stats')
-      var count = $('<div>').addClass('count')
-      var bar = $('<div>').addClass('bar')
-      var display = '';
+function saveFeature(){
 
-      if(this.state == 2){
-        var close_jira_icon = 'icon-ok-circle open';
-      }else{
-        var close_jira_icon = 'icon-thumbs-up closed';
-      }
+    req = {
+      jiraKey:"N0k31",
+      featureName:$('.new-feature-title').val(),
+      featureDescription:$('.new-feature-desc').val()
+    }
 
-      var close_jira = $('<button type="button" class="btn btn-mini close-jira-btn "><i class="'+close_jira_icon+'"></i></button>')//icon-thumbs-up
-      
-      $(stats).append(count)
-      $(title_bar).append(jiraKey,stats);
-      $(feature).append(title_bar,summary,close_jira);
-      
-      renderFeature(feature)
-      
-    })
-}
+    $('.save-feature').button('loading')
 
+    tcmModel.releases.iterations.features._create(global.currentSS.releaseId, global.currentSS.iterationId, req.jiraKey, req.featureName, req.featureDescription).done(function(data,segundo,tercero){
+        $('.save-feature').button('reset')         
+         $('.new-feature-title').val('')
+          $('.new-feature-desc').val('')
+         var featureId = tercero.getResponseHeader('location').toString();
+        featureId = featureId.substring(featureId.lastIndexOf('/') +1 , featureId.length);
 
-function renderFeature(feature){
-  var feature_id = $(feature).attr('feature-id');
-  $('#tcViewer #feature-container').append(feature);
-  if ($.browser.mozilla ) {
-    $(feature).find('.summary').css({
-      'margin-right': $(feature).find('.title-bar').width() + 2,
-      'top':'2px'
+        req.featureId = featureId;
+        featuresModule.render('#tcViewer .theFeatures',featuresModule.create(req))
+        // prepareFeatures(req);
     });
-  }
-  $(feature).find('.stats').addClass('loading-small');
-  updateFeatureTestStats(feature)
-}
 
-function getFeatureTestStats(feature){
-  var feature_id = $(feature).attr('feature-id');
-  tcmModel.releases.iterations.features.executedTestCases.fetch(currentSS.releaseId,currentSS.iterationId,feature_id).done(function(data){
-    renderStatsCount(feature, data)
-    renderFeatureBar(feature);
-    $(feature).find('.stats').removeClass('loading-small');
-    $(feature).find('.bar').show()
-  })
-}
-
-function renderStatsCount(feature,data){
-  data = data[0]
-  $(feature).find('.count').text(data.run+'/'+data.total);
-  
-}
-
-function renderFeatureBar(feature){
-     var prob = $(feature).find('.bar');
-     var current_max = $(feature).find('.count').text().split('/')
-     var current_value = parseInt(current_max[0]); 
-     var maximun = parseInt(current_max[1])
-     
-     prob.progressbar({
-          value: current_value,
-          max:maximun,
-          change: function() {
-            
-          },
-          complete: function() {
-            
-          }
-        });
-     prob.css({
-       'width': '40px',
-       'height': '12',
-       'border': '1px solid #6C7885'
-     }).find('.ui-progressbar-value').css({
-       'border-color': '#8695A8',
-       'background':'#B1BBC8'
-     })
-     
-  }
-
-function resetFeatureTestStats(feature){
-
-  $(feature).find('.progress').remove()
-  $(feature).find('.count').text('')
 
 }
 
-
-function updateFeatureTestStats(feature, singleData){
-
-  resetFeatureTestStats(feature)
-  $(feature).find('.stats').addClass('loading-small');
-
-if (typeof singleData === 'undefined') {
-    var feature_id = $(feature).attr('feature-id');
-  tcmModel.releases.iterations.features.executedTestCases.fetch(currentSS.releaseId, currentSS.iterationId, feature_id).done(function(data){
-    data = data[0]
-    processStats(feature, data)
-  })
-}
-else {
-    processStats(feature, singleData);
-}
-
-}
-
-function processStats(feature, data){
-    var cellWidth = 100 / parseInt(data.total);
-    var propgressBar = $('<div class="progress" style="width: 40px; height: 12px; border: 1px solid rgb(108, 120, 133);">')
-    for(var i=0; i<parseInt(data.pass);i++){
-      var node = $('<div class="bar bar-success" style="width: '+cellWidth+'%;"></div>')
-      $(propgressBar).append(node)
-    }
-    for(var i=0; i<parseInt(data.blocked);i++){
-      var node = $('<div class="bar bar-warning" style="width: '+cellWidth+'%;"></div>')
-      $(propgressBar).append(node)
-    }
-    for(var i=0; i<parseInt(data.failed);i++){
-      var node = $('<div class="bar bar-danger" style="width: '+cellWidth+'%;"></div>')
-      $(propgressBar).append(node)
-    }
-    for(var i=0; i<parseInt(data.inprogress);i++){
-      var node = $('<div class="bar bar-info" style="width: '+cellWidth+'%;"></div>')
-      $(propgressBar).append(node)
-    }
-    for(var i=0; i<parseInt(data.notrun);i++){
-      var node = $('<div class="bar bar-notrun" style="width: '+cellWidth+'%;"></div>')
-      $(propgressBar).append(node)
-    }
-
-    if(data.total != 0 && data.total == data.pass){
-      $(feature).find('.close-jira-btn').show();
-      $(feature).find('.summary').css('margin-right','30px');
-      if(data.state !=2){
-          $(feature).data('state',data.state);
-          updateFeatureState(feature);
-      }
-    }else if(data.total != 0 && data.state == 0){
-        $(feature).data('conflict', 1);
-        $(feature).find('.close-jira-btn').show().attr('disabled',true);
-        $(feature).find('.close-jira-btn > i').removeClass('icon-thumbs-up').addClass('icon-warning-sign closed');
-    }else{
-      $(feature).find('.close-jira-btn').hide();
-      $(feature).find('.summary').css('margin-right','0px');
-    }
-
-    var runned = data.pass + data.failed + data.blocked
-    $(feature).find('.stats').append(propgressBar)
-
-    if(data.total == 0 && data.state == 0){
-        $(feature).addClass('ready');
-        $(feature).find('.progress').addClass('no-tc-feature-done');
-        $(feature).find('.close-jira-btn').show().attr('disabled',true);
-        $(feature).find('.close-jira-btn > i').addClass('icon-thumbs-up closed');
-    }
-
-    $(feature).find('.count').text(runned +'/'+data.total)
-    $(feature).data('tcStats',data);
-    $(feature).find('.stats').removeClass('loading-small');
-
-}
 
 function loadFeatureDesc(desc){
   
@@ -763,12 +751,13 @@ function getTests(featureId){
   $('#tcViewer #tc-container').children().remove();
 
   on_complete = function(data){
+          $('#tcViewer #tc-container').children().remove();
           $(data).each(function(){
           var tc_html = tcsModule.createTcHTML(this,featureId);
           tcsModule.renderTC(tc_html, view_container)
       })
   }
-  tcsModule.getTC(currentSS.releaseId, currentSS.iterationId,featureId,on_complete);
+  tcsModule.getTC(global.currentSS.releaseId, global.currentSS.iterationId,featureId,on_complete);
   
 }   
    
@@ -776,7 +765,7 @@ function getTests(featureId){
 function clearData(){
   clearTimeout(statCheck);
    $('#filter-completed-features').removeClass('enabled').attr("disabled",true);
-  $('#tcViewer #feature-container').children().remove()
+  $('#tcViewer .theFeatures').children().remove()
   $('.add-tc').attr('disabled',true)
   $('#desc-container').children().remove()
   $('#desc-container').text('');
@@ -816,7 +805,7 @@ function saveTc(modal, flag, tcObject, featureReference){
   
   var title = $(modal).find('.new-tc-title').val()
   var desc = $(modal).find('.new-tc-desc').val()
-  var feature= currentSS.featureId//$('.active').attr('feature-id')
+  var feature= global.currentSS.featureId//$('.active').attr('feature-id')
   
   if (jQuery.trim($('#tcViewer #rp-wrapper').find('.new-tc-title').val()).length <= 0){
     $(modal).find('.new-tc-title').addClass('title-error')
@@ -832,16 +821,16 @@ function saveTc(modal, flag, tcObject, featureReference){
   }
   
   if (flag == 0){
-      tcmModel.releases.iterations.features.test_cases.add(currentSS.releaseId, currentSS.iterationId, currentSS.featureId, req).done(function(data){
+      tcmModel.releases.iterations.features.test_cases.add(global.currentSS.releaseId, global.currentSS.iterationId, global.currentSS.featureId, req).done(function(data){
       
-      tcmModel.releases.iterations.features.test_cases.fetch(currentSS.releaseId, currentSS.iterationId, currentSS.featureId).done(function(data){
+      tcmModel.releases.iterations.features.test_cases.fetch(global.currentSS.releaseId, global.currentSS.iterationId, global.currentSS.featureId).done(function(data){
         $(data).each(function(){
           if($('#tcViewer .tc[tc-id="'+this.tcId+'"]').size() == 0){
-            var tc_html = tcsModule.createTcHTML(this,currentSS.featureId);
+            var tc_html = tcsModule.createTcHTML(this,global.currentSS.featureId);
             tcsModule.renderTC(tc_html, view_container)
           }
         })
-        updateFeatureTestStats(featureReference)
+        featuresModule.updateFeatureTestStats(featureReference)
       });
 
     }).fail(function(){
@@ -857,9 +846,9 @@ function saveTc(modal, flag, tcObject, featureReference){
   }
     PM.toggleLoading('#tcViewer','#tcViewer .tc[tc-id="'+updateReq.tcId+'"]',true)
 
-    tcmModel.releases.iterations.features.test_cases.update(currentSS.releaseId, currentSS.iterationId, currentSS.featureId, updateReq).done(function(){
+    tcmModel.releases.iterations.features.test_cases.update(global.currentSS.releaseId, global.currentSS.iterationId, global.currentSS.featureId, updateReq).done(function(){
 
-      tcmModel.releases.iterations.features.test_cases.fetch(currentSS.releaseId,currentSS.iterationId, currentSS.featureId).done(function(data){
+      tcmModel.releases.iterations.features.test_cases.fetch(global.currentSS.releaseId,global.currentSS.iterationId, global.currentSS.featureId).done(function(data){
             $('#tcViewer .tc[tc-id="'+updateReq.tcId+'"]').data('tcObject',updateReq);
             $('#tcViewer .tc[tc-id="'+updateReq.tcId+'"]').find('.tc-description').text(updateReq.name);
             $('#tcViewer .tc[tc-id="'+updateReq.tcId+'"]').find('.tc-steps').text(updateReq.description);
@@ -871,7 +860,7 @@ function saveTc(modal, flag, tcObject, featureReference){
   }else if(flag == 2){
       $(modal).find('.save').button('loading');
       var statusId = $(modal).find('.stat').attr('status-id');
-      updateTCstatusNotPass(tcObject.tcId,statusId,currentSS.feature,modal);
+      updateTCstatusNotPass(tcObject.tcId,statusId,global.currentSS.feature,modal);
 
   }
   
@@ -882,8 +871,7 @@ function saveTc(modal, flag, tcObject, featureReference){
 function updateTCstatusNotPass(tcId,statusId,feature,modal){
 
   var actualResult = $(modal).find('.actual-result').val();
-  tcmModel.releases.iterations.features.test_cases.status.updateStatus(currentSS.releaseId, currentSS.iterationId, currentSS.featureId,tcId, statusId, actualResult).done(function(){
-    //if(statusId >=1){
+  tcmModel.releases.iterations.features.test_cases.status.updateStatus(global.currentSS.releaseId, global.currentSS.iterationId, global.currentSS.featureId,tcId, statusId, actualResult).done(function(){
       var caret = $('<span class="caret"></span>')
       var newState = $('<i class="'+$(modal).find('.stat i').attr('class')+'" style="margin-top: 2px;"></i>');
       $('#tcViewer .tc[tc-id='+tcId+']').find('.tc-last-run-results-cont').show();
@@ -898,20 +886,14 @@ function updateTCstatusNotPass(tcId,statusId,feature,modal){
       $('#tcViewer #rp-wrapper').find('.save').button('reset');
       PM.colapseExpandRightPanel('#tcViewer','none');
       clearTCModal();
-      updateFeatureTestStats(feature);
-    //}
+      featuresModule.updateFeatureTestStats(feature);
   })
 }
 
 function updateTCstatus(tcId,statusId,feature){
 
-              // $('#tcViewer .tc[tc-id='+tcId+']').find('.edit-tc').hide();
-              // $('#tcViewer .tc[tc-id='+tcId+']').find('.del-tc').hide();
-              // $('#tcViewer .tc[tc-id='+tcId+']').find('.bug-tc').hide();
-  tcmModel.releases.iterations.features.test_cases.status.updateStatus(currentSS.releaseId, currentSS.iterationId, currentSS.featureId,tcId, statusId, '').done(function(){
-    //if(statusId >=1){
-      updateFeatureTestStats(feature);
-    //}
+  tcmModel.releases.iterations.features.test_cases.status.updateStatus(global.currentSS.releaseId, global.currentSS.iterationId, global.currentSS.featureId,tcId, statusId, '').done(function(){
+      featuresModule.updateFeatureTestStats(feature);
   })
 
 }
@@ -953,9 +935,9 @@ function deleteInterceptor(tcId,feature){
 function removeTestCase(tcId,feature){
 
   PM.toggleLoading('#tcViewer',' .tc[tc-id="'+tcId+'"]', true)
-  tcmModel.releases.iterations.features.test_cases.del(currentSS.releaseId, currentSS.iterationId, currentSS.featureId, tcId).done(function(){
+  tcmModel.releases.iterations.features.test_cases.del(global.currentSS.releaseId, global.currentSS.iterationId, global.currentSS.featureId, tcId).done(function(){
     $('#tcViewer .tc[tc-id="'+tcId+'"]').remove();
-    updateFeatureTestStats(feature)
+    featuresModule.updateFeatureTestStats(feature)
   })
 
 }  
@@ -975,7 +957,7 @@ function removeTestCase(tcId,feature){
             var feature_object = {
                 featureId:$(this).attr('feature-id'),
                 states:states,
-                issueKey:$(this).find('.jira-key').text()
+                issueKey:$(this).find('.jira-key').data('jiraKey')
             }
 
             features_array.push(feature_object);
@@ -985,10 +967,10 @@ function removeTestCase(tcId,feature){
       }
     });
 
-        tcmModel.releases.iterations.monitoringExecutedTestCases.fetch(currentSS.releaseId, currentSS.iterationId, features_array).done(function(data){
+        tcmModel.releases.iterations.monitoringExecutedTestCases.fetch(global.currentSS.releaseId, global.currentSS.iterationId, features_array).done(function(data){
             if(data.length > 0){
               $(data).each(function(){
-                updateFeatureTestStats($('.feature[feature-id='+data[0].featureId+']'), data[0].states);
+                featuresModule.updateFeatureTestStats($('.feature[feature-id='+this.featureId+']'), this.states);
               });
             }
             statCheck=setTimeout(function(){statsMonitoring(iterationId)}, monitoring_interval);
@@ -1010,7 +992,7 @@ function removeTestCase(tcId,feature){
       tcmModel.releases.iterations.features.close(featureId, jiraKey).done(function(data,statusText,response){
         if (data != false){
         $(feature).find('.close-jira-btn > i').removeClass('icon-time').addClass('icon-thumbs-up closed');
-          updateFeatureState(feature);
+          featuresModule.updateFeatureState(feature);
         }else{
           $(feature).find('.close-jira-btn > i').removeClass('icon-time').addClass('icon-remove-circle open');
           $(feature).find('.close-jira-btn').attr('disabled',false)
@@ -1022,17 +1004,6 @@ function removeTestCase(tcId,feature){
 
     }
 
-    function updateFeatureState(feature){
-        var iconClass = 'icon-thumbs-up closed';
-        $(feature).find('.close-jira-btn').attr('disabled',true);
-        $(feature).find('.close-jira-btn > i').removeClass('icon-time').addClass(iconClass);
-        $(feature).addClass('ready');
-          if($(feature).hasClass('active')){
-            $('#tcViewer #tc-container').children('#tcViewer .tc').each(function(){
-                $(this).find('.btn-group').remove();
-            })
-          }
-    }
 
     function filterFeatures(value){
                  $(".feature").each(function() {
@@ -1048,9 +1019,13 @@ function removeTestCase(tcId,feature){
     }
 
     function filterCompletedFeatures(){
-        $('.feature.ready').toggle('fast',function(){
-          $('#filter-completed-features').addClass('enabled').attr("disabled",false);
+      if($('.feature.ready').size()>0){
+        $('.feature.ready').toggle(0,function(){
+          $('#filter-completed-features').addClass('enabled').removeClass('active').attr("disabled",false);
         });
+      }else{
+        $('#filter-completed-features').addClass('enabled').removeClass('active').attr("disabled",false);
+      }
 
     }
 
@@ -1101,6 +1076,8 @@ function removeTestCase(tcId,feature){
       $('#tcViewer .tc .active').parents('.tc').find('.tc-suites').tagit("tags")
       return tags;
     }
+
+    
 
     return ManagerView;
 

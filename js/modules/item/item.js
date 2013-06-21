@@ -7,24 +7,32 @@ define(function(require){
         _ = require('underscore');
 
     var itemsModule = {
-    	createItem: function(name,id,count){
+    	createItem: function(name,id,count,buttonsFlag,customClass){
+
+            var customClass = (customClass != "undefined")? customClass : "" ;
+
     		var item = $(itemTemplate);
+            $(item).addClass(customClass);
     		$(item).attr('item-id', id);
     		$(item).find('.summary').text(name);
     		$(item).find('.count').text(count);
 
-            item.on({
-                mouseenter: function(e){
-                    e.stopPropagation();
-                    $(this).find('#item-add').css('visibility','visible');
-                    $(this).find('#item-remove').css('visibility','visible');
-                },
-                mouseleave: function(e){
-                    e.stopPropagation();
-                    $(this).find('#item-add').css('visibility','hidden');
-                    $(this).find('#item-remove').css('visibility','hidden');
-                }
-            });
+            if (buttonsFlag != false){
+                item.on({
+                    mouseenter: function(e){
+                        e.stopPropagation();
+                        $(this).find('#item-add').css('visibility','visible');
+                        $(this).find('#item-remove').css('visibility','visible');
+                    },
+                    mouseleave: function(e){
+                        e.stopPropagation();
+                        $(this).find('#item-add').css('visibility','hidden');
+                        $(this).find('#item-remove').css('visibility','hidden');
+                    }
+                });
+            }else{
+                $(item).find('button').remove();
+            }
 
             $(item).find('.tc-steps').on({
                 click:function(e){

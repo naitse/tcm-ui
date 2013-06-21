@@ -2,18 +2,28 @@
     <div class="left-center-panel">
         <div id="lp-wrapper">
             <div class='left-pannel round-corner-all'>
-                <div class="toolbar">
-                    <select data-placeholder="Iterations"
-                            id="release-select" tabindex="3">
-                        <option></option>
-                    </select>
-                    <div id="feature-refresh" class="icon-refresh"></div>
-                    <button id="filter-completed-features" type="button" class="btn btn-mini" data-toggle="button" disabled="true">
-                        <i class="icon-filter"></i>Pending
-                    </button>
-                    <input type="text" id="feature-filter" />
+                <div class="toolbar iteration-holder-name">
+                    <div id="holder"class="release-holder"><i class=" icon-chevron-left icon-white" style="visibility:hidden"></i><div class="iteration-holder-name">Releases</div></div>
+                    
                 </div>
-                <div id="feature-container">
+                <div id="releases-container">
+                </div>
+           <!--      <div id="iterations-container" style="display:none;">
+                </div> -->
+                <div id="feature-container" style="display:none;">
+                <div class="feature-actions">
+                    <div class="feature-buttons">
+                        <input type="text" id="feature-filter" />
+                         <button id="filter-completed-features" type="button" class="btn btn-mini" data-toggle="button" disabled="true">
+                                <i class="icon-filter"></i>
+                            </button>
+                             <button id="add-feature" type="button" class="btn btn-mini" disabled="true">
+                                <i class="icon-plus"></i>
+                            </button>
+                    </div>
+                </div>
+                    <div class="theFeatures">
+                    </div>
                 </div>
             </div>
         </div>
@@ -65,6 +75,31 @@
             <a href="#" class="btn btn-primary save" data-loading-text="working...">Add</a>
         </div>
     </div>
+
+
+    <div id="new-feature-modal" class="modal" style="display:none;">
+        <div class="modal-header">
+            <h4 class="feature-title">Create Item</h4>
+        </div>
+        <div class="modal-body">
+            <div class="feature-fields">
+                <h7>Title:</h7>
+                <input class="new-feature-title" type="text" style=" width: 100%; "></input>
+                <br/>
+                <h7>Description:</h7>
+                <textarea class="new-feature-desc" style=" width: 100%; height:200px; resize: none;"></textarea>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <div class="alert alert-error hide">
+                There was an error, please try again...
+            </div>
+            <a href="#" class="btn cancel"  >Close</a>
+            <a href="#" class="btn btn-primary save-feature" data-loading-text="working...">Add</a>
+        </div>
+    </div>
+
+    <!-- <div class="spring-progress"></div> -->
 
 <!--         <div id="delete-tc-alert" class="modal hide fade" style="height: 20px;">
           <div class="modal-body" style=" padding: 0px; ">

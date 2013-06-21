@@ -13,7 +13,9 @@ define(['jquery', 'chosen', 'bootstrap', 'jqueryui', 'blockui','extendJS','texte
 						backgroundColor: '#000', 
 						opacity:         0.2, 
 						cursor:          'wait' 
-					}
+					},
+					fadeIn:0,
+					fadeOut:0
 				})
 			}else{
 				$(parent_container +' '+ container).unblock()
