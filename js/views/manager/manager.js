@@ -19,7 +19,7 @@ define(function(require){
    var FuckRequireJS = 0;
     var statCheck;
     var monitoring_interval = 15000;
-    var monitoring = false//true;
+    var monitoring = true;
     var newBug = '';
     var jiraLink = 'http://www.mulesoft.org/jira/browse/';//http://www.mulesoft.org/jira/secure/CreateIssue.jspa?pid=10462&issuetype=1
 
