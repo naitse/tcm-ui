@@ -1,9 +1,9 @@
 
 define( function(require){
-    var basePath = "http://tcm-backend.cloudhub.io/api/";
+    //var basePath = "http://tcm-backend.cloudhub.io/api/";
     //var basePath = "http://tcm-backend-qa.cloudhub.io/api/";
     //var basePath = "http://54.226.164.226/api/";
-    //var basePath = "http://localhost:8088/api/";
+    var basePath = "http://localhost:8088/api/";
     var basePath2 = basePath.replace('api/','');
 	var $ = require('jquery');
 	
@@ -24,8 +24,10 @@ define( function(require){
         },
         statusCode: {
             401: function(){
-                var wl = window.location;
-                wl.href = wl.protocol + '//' + wl.hostname + wl.pathname + 'login.html'
+                if(!window.location.href.indexOf('login.html')){
+                    var wl = window.location;
+                    wl.href = wl.protocol + '//' + wl.hostname + wl.pathname + 'login.html'
+                }
             }
         }
     });

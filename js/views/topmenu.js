@@ -6,36 +6,24 @@ define(function(require){
     sprint = require('modules/sprint/sprint');
 
     var TopMenuView = {
-
+        hotLink: false,
+        
         render: function(){
 
             $(".tcm-top-menu-container").empty();
             $(".tcm-top-menu-container").append(menuTemplate);
 
             $("#username").text($.cookie('usrname'));
-
+            if(!this.hotLink){
+              this.renderBar();
+            }
+            
             this.attachEvents();
 
         },
-       	attachEvents: function(){
-       		$('.tcm-top-menu-container a').live({
-       			click:function(){
-       				if(!$(this).hasClass('dropdown-toggle')){
-	       				$('.tcm-top-menu-container a').removeClass('active');
-    	   				$(this).addClass('active').parents('.dropdown').find('a.dropdown-toggle').addClass('active');
-       				}
-       			}
-       		});
 
-        $('.tcm-top-menu-container #logout').live({
-            click:function(){
-              $.cookie('apiKey', null, { path: '/' });
-              $.cookie('projectId', null, { path: '/' });
-              $.cookie('usrname', null, { path: '/' });
-            }
-          });
-       	
-          tcmModel.project.configuration.fetch().done(function(data){
+        renderBar: function(){
+           tcmModel.project.configuration.fetch().done(function(data){
               if(data.length > 0){
 
                 global.project.config.bug_url = data[0].bugurl;
@@ -55,7 +43,27 @@ define(function(require){
               }
             });
 
-        }
+        
+        },
+       	attachEvents: function(){
+       		$('.tcm-top-menu-container a').live({
+       			click:function(){
+       				if(!$(this).hasClass('dropdown-toggle')){
+	       				$('.tcm-top-menu-container a').removeClass('active');
+    	   				$(this).addClass('active').parents('.dropdown').find('a.dropdown-toggle').addClass('active');
+       				}
+       			}
+       		});
+
+        $('.tcm-top-menu-container #logout').live({
+            click:function(){
+              $.cookie('apiKey', null, { path: '/' });
+              $.cookie('projectId', null, { path: '/' });
+              $.cookie('usrname', null, { path: '/' });
+            }
+          });
+       	}
+         
     };
 
     return TopMenuView;

@@ -11,14 +11,27 @@ define(function(require){
         rendered: false,
 
 
-        render: function(){
+        render: function(iterId){
             if(!this.rendered){
-                $("#pannel-wrapper").append(planTemplate);
 
-                this.loadIterations();
+                var template = $(planTemplate)
+
+                if (typeof iterId != 'undefined'){
+                    $(template).find('#plan-controls').remove();
+                    $("#pannel-wrapper").append(template);
+                    fetch(0, iterId)
+                }else{
+
+                    $("#pannel-wrapper").append(template);
+                    this.loadIterations();
+                }
+
+
+
                 this.attachEvents();
                 this.rendered = true;
             }
+
             $('.tcm-top-menu-container a').removeClass('active');
             $('#link-plan').addClass('active').parents('.dropdown').find('a.dropdown-toggle').addClass('active');
             $('.brand').removeClass('active')
@@ -38,8 +51,21 @@ define(function(require){
                 $("#planProgressBar").show()
                 $("#planProgressBar").find(".bar").css("width","10%");
 
+                
                 var iterId =  $("#plan-release-select option:selected").val();
                 var rlsId =  $("#plan-release-select option:selected").parents('optgroup').attr('rel-id');
+                
+                fetch(rlsId, iterId)
+
+            });
+
+        }
+
+    };
+
+    function fetch(rlsId, iterId){
+
+               
                 var planGridContainer  = $('#planGridContainer');
                 var planSummaryBody = $("#plan-summary-table-body");
 
@@ -52,29 +78,6 @@ define(function(require){
 
                     if(coverageData.length > 0){
                         var group = $('<div  class="accordion-group"/>');
-
-                        // Feature
-                        // _.each(coverageData, function (ftr) {
-
-                        //     var groupHeader = $('<div class="accordion-heading"></div>')
-                        //     groupHeader.append($('<a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion'+ ftr.jiraKey +'" href="#collapse'+ ftr.jiraKey +'">' + ftr.jiraKey + '</a>'));
-                        //     group.append(groupHeader);
-
-                        //     var testsCollapsable = $('<div id="collapse' + ftr.jiraKey + '" class="accordion-body collapse"><div class="accordion-inner"/></div></div>');
-                        //     // Test cases
-                        //     _.each(ftr.testCase, function(testItem){
-
-
-                        //         testsCollapsable.find(".accordion-inner").append($("<div>" + testItem.name + "</dicv>"));
-
-
-                        //     });
-                        //     group.append(testsCollapsable);
-                        // });
-
-                        // $("#planProgressBar").find(".bar").css("width","70%");
-
-                        // planGridContainer.append(group);
 
                         _.each(coverageData, function (ftr) {
                             var row = $('<tr style=" cursor: pointer; "></tr>').attr("feature-id",ftr.jiraKey);
@@ -127,12 +130,7 @@ define(function(require){
                     $('#btnGetPlan').button('reset');
                     adjustTabtHeight()
                  });
-
-            });
-
-        }
-
-    };
+    }
 
     function adjustTabtHeight(){
 
