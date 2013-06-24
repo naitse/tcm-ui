@@ -23,15 +23,6 @@ define(function(require){
     var newBug = '';
     var jiraLink = 'http://www.mulesoft.org/jira/browse/';//http://www.mulesoft.org/jira/secure/CreateIssue.jspa?pid=10462&issuetype=1
 
-   // window.global.currentSS = {
-   //      releaseName:'',
-   //      releaseId:0,
-   //      iterationName:'',
-   //      iterationId:0,
-   //      featureId:0,
-   //      feature:'',
-   //      tcId:0
-   // }
 
     var ManagerView = {
 
@@ -50,12 +41,6 @@ define(function(require){
 
             this.attachEvents();
             newBug = global.project.config.bug_url;
-            // tcmModel.project.configuration.fetch().done(function(data){
-            //   if(data.length > 0){
-            //     newBug = data[0].bugurl;
-            //     // sprint.render(sprint.create(data[0].springIterations,data[0].iterationDuration,{"year":2013,"month":5,"day":10}),'.spring-progress',200,40);
-            //   }
-            // });
 
             PM.makeResizable("#tcViewer",[550,100,313,700]);
               PM.colapseExpandRightPanel('#tcViewer','none');
@@ -123,11 +108,14 @@ define(function(require){
                 global.currentSS.feature = $(this);
 
                 var jiraKey = $(this).find('.jira-key').data('jiraKey');
-                if(jiraKey != "N0k31"){
+
+                if(jiraKey != "N0k31" && jiraKey != "suite" ){
                   var issueTitle = $('<div>').addClass('jira-key').attr('href', jiraLink + jiraKey).text(jiraKey+' - '+$(this).data('summary'))
-                  $('.desc-header-text').html('').append(issueTitle)
+                }else{
+                  var issueTitle = $('<div>').text(' '+$(this).data('summary')).css({'text-decoration': 'inherit','cursor':'default','margin-left':'20px'});
                 }
-    
+                  $('.desc-header-text').html('').append(issueTitle)
+
                 $('.feature').removeClass('active');
                 $(this).addClass('active');
                 loadFeatureDesc($(this).data('desc'))
@@ -148,23 +136,57 @@ define(function(require){
                  'height' : '80'
                 })
                     
-                if($('.desc-expander').size() == 1){
+                if($('.desc-expander').size() == 1 && jiraKey != "suite"){
                   $('#desc-expander').click()  
                 }
 
                 displayed = true
-            },
-          mouseenter: function(e){
-            e.stopPropagation();
-              $(this).find('.summary').css('margin-right','45px');
-              $(this).find('.remove-feature').stop(true,true).show();
-          },
-          mouseleave: function(e){
-            e.stopPropagation();
-            $(this).find('.summary').css('margin-right','0px');
-              $(this).find('.remove-feature').stop(true,true).hide();
-          }
+            }
+          // mouseenter: function(e){
+          //   e.stopPropagation();
+          //     $(this).find('.summary').css('margin-right','45px');
+          //     // $(this).find('.remove-feature').stop(true,true).show(0);
+          // },
+          // mouseleave: function(e){
+          //   e.stopPropagation();
+          //   $(this).find('.summary').css('margin-right','0px');
+          //     // $(this).find('.remove-feature').stop(true,true).hide(0);
+          // }
         });
+
+
+        $('.feature .bt-ctrl.open').live({
+                click:function(e){
+                   e.stopPropagation();
+                   $(this).removeClass('open').addClass('close')
+                   var self = this;
+                   $(this).parents('.item-control-buttons').find('.wrapper').stop(true,true).hide("slide", { direction: "right"},100,function(){
+                    $(self).parents('.feature').find('.summary').css('margin-right','0px');
+                   })
+                   // $(this).parents('.item-control-buttons').stop(true, true).animate({"width":"-=55"});
+                }
+            })
+
+
+            $(".feature .item-control-buttons").live({
+                mouseleave:function(){
+                    $(this).find('.bt-ctrl.open').click();
+                }
+            });
+
+            $('.feature .bt-ctrl.close').live({
+                click:function(e){
+                   e.stopPropagation();
+
+                    var self = this;
+
+                   $(this).removeClass('close').addClass('open')
+                   $(self).parents('.feature').find('.summary').css('margin-right','30px');
+                   $(this).parents('.item-control-buttons').find('.wrapper').stop(true,true).show("slide", { direction: "right"},100,function(){
+                   })
+                }
+            })
+
 
 
         $('.desc-expander').live({
@@ -206,32 +228,32 @@ define(function(require){
           }
         });
         
-        $('#tcViewer .tc-expander').live({
-          click: function(e){
-            e.stopPropagation();
-            if($(this).parents('.tc').find('.tc-steps').text() == ''){
-              $(this).parents('.tc').find('.tc-steps').hide();
-            }else{
-              $(this).parents('.tc').find('.tc-steps').show();
-            }
-            $(this).parents('.tc').find('.steps-wrapper').show('fast');
-            $(this).removeClass('tc-expander').addClass('tc-collapse detailsOpen');
-          }
-        });
+        // $('#tcViewer .tc-expander').live({
+        //   click: function(e){
+        //     e.stopPropagation();
+        //     if($(this).parents('.tc').find('.tc-steps').text() == ''){
+        //       $(this).parents('.tc').find('.tc-steps').hide();
+        //     }else{
+        //       $(this).parents('.tc').find('.tc-steps').show();
+        //     }
+        //     $(this).parents('.tc').find('.steps-wrapper').show('fast');
+        //     $(this).removeClass('tc-expander').addClass('tc-collapse detailsOpen');
+        //   }
+        // });
         
-        $('#tcViewer .tc-collapse').live({
-          click: function(e){
-            e.stopPropagation();
-            $(this).parents('.tc').find('.steps-wrapper').hide('fast');
-            $(this).removeClass('tc-collapse detailsOpen').addClass('tc-expander');
-          }
-        });
+        // $('#tcViewer .tc-collapse').live({
+        //   click: function(e){
+        //     e.stopPropagation();
+        //     $(this).parents('.tc').find('.steps-wrapper').hide('fast');
+        //     $(this).removeClass('tc-collapse detailsOpen').addClass('tc-expander');
+        //   }
+        // });
         
-        $('#tcViewer .tc-suites').live({
-          click: function(e){
-            e.stopPropagation();
-          }
-        });
+        // $('#tcViewer .tc-suites').live({
+        //   click: function(e){
+        //     e.stopPropagation();
+        //   }
+        // });
 
 
         $('#tcViewer .run-tc-modal .dropdown-menu > li').live({
@@ -343,15 +365,15 @@ define(function(require){
         $('#tcViewer .tc').live({
           mouseenter: function(e){
             e.stopPropagation();
-              $(this).find('.edit-tc').show();
-              $(this).find('.del-tc').show();
-              $(this).find('.bug-tc').show();
+              $(this).find('.edit-tc').show(0);
+              $(this).find('.del-tc').show(0);
+              $(this).find('.bug-tc').show(0);
           },
           mouseleave: function(e){
             e.stopPropagation();
-              $(this).find('.edit-tc').hide();
-              $(this).find('.del-tc').hide();
-              $(this).find('.bug-tc').hide();
+              $(this).find('.edit-tc').hide(0);
+              $(this).find('.del-tc').hide(0);
+              $(this).find('.bug-tc').hide(0);
           }
         });
 
@@ -379,7 +401,7 @@ define(function(require){
           }
         });
 
-        $('.edit-tc').live({
+        $('#tcViewer .edit-tc').live({
           click: function(e){
             e.stopPropagation();
             PM.colapseExpandRightPanel('#tcViewer','none');
@@ -393,17 +415,9 @@ define(function(require){
           click: function(e){
             e.stopPropagation();
             PM.colapseExpandRightPanel('#tcViewer','none');  
-            $(this).find('.detailsIcon').click();
-            $('#tcViewer .tc .wrapper').removeClass('active');
-            $(this).find('.wrapper').addClass('active');
           }
         });
 
-        $('#tcViewer .tc #tcViewer .tc-steps').live({
-          click: function(e){
-            e.stopPropagation();
-          }
-        });
 
           $('#tcViewer .tc .dropdown-menu').live({
                 mouseleave: function(){
@@ -411,11 +425,6 @@ define(function(require){
                 }
             });
 
-      $('#tcViewer .tc .steps-wrapper').live({
-        click:function(e){
-          e.stopPropagation();
-        }
-      })
 
         $('.bug-tc').live({
           click: function(e){
@@ -462,7 +471,7 @@ define(function(require){
             }else{
               $(this).addClass('sec-state');
               $(this).stop(true, true).animate({"width":"+=20"});
-              $(this).find('i').hide();
+              $(this).find('i').hide(0);
               $(this).append($('<span class="del-feature-confirm-label" style="display:none; position: relative; top: -2; color: red; ">Sure?</span>'))
               $(this).find('.del-feature-confirm-label').show();
             }
@@ -473,7 +482,7 @@ define(function(require){
               $(this).removeClass('sec-state')
               $(this).stop(true, true).animate({"width":"-=20"});
               $(this).find('.del-feature-confirm-label').remove();
-              $(this).find('i').show();
+              $(this).find('i').show(0);
             }
           }
         });
@@ -620,11 +629,15 @@ function getReleases(){
       var self = this;
       var wrapper = $('<div class="release-iterations-wrapper" id="'+this.id+'">')
       $('#tcViewer  #releases-container').append(wrapper);
-      itemsModule.renderItem('#tcViewer  #releases-container .release-iterations-wrapper#' + this.id,itemsModule.createItem("Release "+this.name,this.id,itersCount,false, 'release'));
+      var release = itemsModule.createItem("Release "+this.name,this.id,itersCount,false, 'release');
+      $(release).find('.item-control-buttons').remove();
+      itemsModule.renderItem('#tcViewer  #releases-container .release-iterations-wrapper#' + this.id,release);
           var iteration_holder = $('<div class="iteration-holder" style="display:none;"></div>').attr('rlsid',self.id)
           $('#tcViewer  #releases-container .release-iterations-wrapper#' + self.id).append(iteration_holder);
         $(this.iterations).each(function(){
-          itemsModule.renderItem('.iteration-holder[rlsid='+self.id+']',itemsModule.createItem(this.name,this.id,0,false,'iteration'));
+          var iterarion = itemsModule.createItem(this.name,this.id,0,false,'iteration');
+          $(iterarion).find('.item-control-buttons').remove();
+          itemsModule.renderItem('.iteration-holder[rlsid='+self.id+']',iterarion);
         })
     })
   })
@@ -638,7 +651,6 @@ function getReleases(){
 
 function itSelected(iterationId, iterationName) {
 
-                  console.log('HOLA',iterationId,iterationName)
             var releaseName = global.currentSS.releaseName;
                   $('#tcViewer .theFeatures').children().remove();
     $('#releases-container').stop(true,true).hide("slide", { direction: "left"},"fast",function(){
@@ -821,6 +833,7 @@ function saveTc(modal, flag, tcObject, featureReference){
   }
   
   if (flag == 0){
+    $(modal).find('.save').button('loading');
       tcmModel.releases.iterations.features.test_cases.add(global.currentSS.releaseId, global.currentSS.iterationId, global.currentSS.featureId, req).done(function(data){
       
       tcmModel.releases.iterations.features.test_cases.fetch(global.currentSS.releaseId, global.currentSS.iterationId, global.currentSS.featureId).done(function(data){
@@ -831,6 +844,7 @@ function saveTc(modal, flag, tcObject, featureReference){
           }
         })
         featuresModule.updateFeatureTestStats(featureReference)
+        $(modal).find('.save').button('reset');
       });
 
     }).fail(function(){
@@ -844,16 +858,17 @@ function saveTc(modal, flag, tcObject, featureReference){
     description:desc,
     proposed:proposed
   }
-    PM.toggleLoading('#tcViewer','#tcViewer .tc[tc-id="'+updateReq.tcId+'"]',true)
-
+    PM.toggleLoading('#tcViewer',' .tc[tc-id="'+updateReq.tcId+'"]',true)
+  $(modal).find('.save').button('loading');
     tcmModel.releases.iterations.features.test_cases.update(global.currentSS.releaseId, global.currentSS.iterationId, global.currentSS.featureId, updateReq).done(function(){
 
-      tcmModel.releases.iterations.features.test_cases.fetch(global.currentSS.releaseId,global.currentSS.iterationId, global.currentSS.featureId).done(function(data){
+      // tcmModel.releases.iterations.features.test_cases.fetch(global.currentSS.releaseId,global.currentSS.iterationId, global.currentSS.featureId).done(function(data){
             $('#tcViewer .tc[tc-id="'+updateReq.tcId+'"]').data('tcObject',updateReq);
             $('#tcViewer .tc[tc-id="'+updateReq.tcId+'"]').find('.tc-description').text(updateReq.name);
             $('#tcViewer .tc[tc-id="'+updateReq.tcId+'"]').find('.tc-steps').text(updateReq.description);
-            PM.toggleLoading('#tcViewer','.tc[tc-id="'+updateReq.tcId+'"]',false)
-      })
+            PM.toggleLoading('#tcViewer',' .tc[tc-id="'+updateReq.tcId+'"]',false)
+            $(modal).find('.save').button('Update');
+      // })
     }).fail(function(){
       $(modal).find('.alert').removeClass('hide')
     })
@@ -863,7 +878,6 @@ function saveTc(modal, flag, tcObject, featureReference){
       updateTCstatusNotPass(tcObject.tcId,statusId,global.currentSS.feature,modal);
 
   }
-  
   
 
 }
