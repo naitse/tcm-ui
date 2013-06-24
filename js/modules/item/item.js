@@ -20,14 +20,17 @@ define(function(require){
             if (buttonsFlag != false){
                 item.on({
                     mouseenter: function(e){
-                        e.stopPropagation();
-                        $(this).find('#item-add').css('visibility','visible');
-                        $(this).find('#item-remove').css('visibility','visible');
+                        // e.stopPropagation();
+                        
+                        $(this).find('.icon-adjust').css('visibility','visible');
+                        // $(this).find('#item-add').css('visibility','visible');
+                        // $(this).find('#item-remove').css('visibility','visible');
                     },
                     mouseleave: function(e){
-                        e.stopPropagation();
-                        $(this).find('#item-add').css('visibility','hidden');
-                        $(this).find('#item-remove').css('visibility','hidden');
+                        // e.stopPropagation();
+                        $(this).find('.icon-adjust').css('visibility','hidden');
+                        // $(this).find('#item-add').css('visibility','hidden');
+                        // $(this).find('#item-remove').css('visibility','hidden');
                     }
                 });
             }else{
@@ -38,7 +41,40 @@ define(function(require){
                 click:function(e){
                   e.stopPropagation();  
                 }
+            });
+
+            $('.item .bt-ctrl.open').live({
+                click:function(e){
+                   e.stopPropagation();
+                   $(this).removeClass('open').addClass('close')
+
+                   $(this).parents('.item-control-buttons').find('.wrapper').stop(true,true).hide("slide", { direction: "right"},100,function(){
+
+                    
+                   })
+                   // $(this).parents('.item-control-buttons').stop(true, true).animate({"width":"-=55"});
+                }
             })
+
+
+            $(".item-control-buttons").on({
+                mouseleave:function(){
+                    $(this).find('.bt-ctrl.open').click();
+                }
+            });
+
+            $('.item .bt-ctrl.close').live({
+                click:function(e){
+                   e.stopPropagation();
+
+                    var self = this;
+
+                   $(this).removeClass('close').addClass('open')
+                   $(this).parents('.item-control-buttons').find('.wrapper').stop(true,true).show("slide", { direction: "right"},100,function(){
+                   })
+                }
+            })
+
             $(item).find('.steps-wrapper').on({
                 click:function(e){
                   e.stopPropagation();  
@@ -62,6 +98,7 @@ define(function(require){
 		$('body').append($(styles));
 
 	}
+
 
 	attachStyles();
 

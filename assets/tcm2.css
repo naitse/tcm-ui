@@ -118,4 +118,5 @@ pre{white-space:pre-wrap;white-space:-moz-pre-wrap;white-space:-pre-wrap;white-s
 #tcViewer .item .item-add{display:none;}
 #tcViewer .theFeatures { position: absolute; bottom: 0; left: 0; top: 27px; right: 0px; overflow: hidden;overflow-y: auto;}
 /*http://jsfiddle.net/sKb84/*/
+.item.active:hover{border: 1px solid #d2e9fa;box-shadow: #d2e9fa 0 0 50px inset;-moz-box-shadow: #d2e9fa 0 0 50px inset;-webkit-box-shadow: #d2e9fa 0 0 50px inset;}
 

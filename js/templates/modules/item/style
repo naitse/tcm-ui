@@ -10,10 +10,33 @@ border-radius: 12px;
 }
 .item .jira-key{width:100px;margin-left:5px;position:relative;top:6px;font-size:12}
 .item .stats .count{width:14px;text-align:center;position:relative;top:-3px;font-size:11}
-.item.selected {background:#D2E9FA;}
-.item #item-remove {visibility:hidden; float: right;}
-.item #item-add {visibility:hidden; float: right;}
+.item:hover{color:black;box-shadow:yellow 0px 0px 40px -17px inset;-webkit-box-shadow:yellow 0px 0px 40px -17px inset;-moz-box-shadow:yellow 0px 0px 40px -17px inset;}
+.item.selected:hover{border: 1px solid #d2e9fa;box-shadow: #d2e9fa 0 0 50px inset;-moz-box-shadow: #d2e9fa 0 0 50px inset;-webkit-box-shadow: #d2e9fa 0 0 50px inset;}
+.item.selected {border: 1px solid #d2e9fa;box-shadow: #d2e9fa 0 0 50px inset;-moz-box-shadow: #d2e9fa 0 0 50px inset;-webkit-box-shadow: #d2e9fa 0 0 50px inset;}
+.item #item-remove {visibility:visible; float: right;}
+.item #item-add {visibility:visible; float: right;}
 .item.iteration .title-bar {visibility:hidden;}
 .item.iteration {height:28px;}
 .item.iteration .summary {margin-right: 0px;font-size: 15;line-height: 1.4em;margin-left: 15px;}
+.item .item-control-buttons {
+position: absolute;
+top: 0px;
+right: 0px;
+width: auto;
+height: 44px;
+border-left: 1px solid #ccc;
+max-width:27px;
+}
+.item .item-control-buttons .wrapper{
+	display:none;
+	padding-right:4px;
+}
+
+.item .item-control-buttons .wrapper button{
+width: 20px;
+padding: 0px;
+}
+.item .bt-ctrl{
+	width:9px;
+}
 </style>

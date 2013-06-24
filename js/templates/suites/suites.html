@@ -1,3 +1,47 @@
+<style>
+
+/*#suitesViewer .item-control-buttons {
+position: absolute;
+top: 0px;
+right: 0px;
+width: 55px;
+height: 44px;
+border: 2px solid #ccc;
+border-radius: 6px 0px 0px 6px;
+}*/
+
+#suitesViewer .item{
+    height:48px;
+}
+
+#suitesViewer .intance-suite{
+    height: 76px;
+    width: 188px;
+    background-color: #0f5a7f;
+    z-index: 999999;
+    border: 3px solid #03415f;
+}
+
+#suitesViewer .intance-suite .chzn-container{
+    width: 170px;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+}
+
+#suitesViewer .intance-suite #suite-instance-itration {
+        width: 170px;
+    position: absolute;
+    bottom: 6px;
+    left: 10px;
+}
+
+#suitesViewer .item #suite-instance {
+    float:right;
+}
+
+
+</style>
 <div id="suitesViewer">
     <div class="left-center-panel">
         <div id="lp-wrapper">
@@ -10,7 +54,7 @@
         </div>
         <div class='right-pannel round-corner-all'>
             <div class="toolbar">
-                <select data-placeholder="Select tags..." style="width: 100%;" multiple="" tabindex="-1" id="tags-select" class="chzn-select">
+                <select data-placeholder="Select tags..." style="width: 100%; display:none;" multiple="" tabindex="-1" id="tags-select" class="chzn-select">
                 <option value=""></option>
               </select>
             </div>
@@ -62,6 +106,11 @@
     <button id="suite-close" class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
     <button id="suite-save" class="btn btn-primary">Save changes</button>
   </div>
+</div>
+
+<div class="intance-suite round-corner-all" style="display:none;">
+    <select class="iterdd"></select>
+    <button id="suite-instance-itration" class="btn btn-primary"  data-loading-text="working...">Instance</button>
 </div>
 
 

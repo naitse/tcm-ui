@@ -138,7 +138,26 @@ define(['jquery', 'chosen', 'bootstrap', 'jqueryui', 'blockui','extendJS','texte
 			$(modal).find('input').val('');
 			$(modal).find('textarea').val('');
 
-		}
+		},
+
+		clearTCModal:function(pV){
+
+    $(pV +' #rp-wrapper').find('.dropdown-toggle').removeClass(function (index, css) {
+        return (css.match (/\bddm-\S+/g) || []).join(' ')
+    }).addClass('ddm-inprogress').text('').append('<i class="icon-hand-right " style="margin-top: 2px;"></i>',' In Progress ', '<span class="caret"></span>').attr('status-id',1);
+
+            $(pV +' .proposed').parents('label').show();
+            $(pV +' .tc-fields').show();
+            $(pV +' .rp-title').text('')
+            $(pV +' #rp-wrapper .save').text('Add')
+            $(pV +' .new-tc-title').val('').removeClass('title-error');
+            $(pV +' .new-tc-desc').val('');
+            $(pV +' #rp-wrapper .modal-body').data('flag',0);
+            $(pV +' #rp-wrapper .modal-body').data('tcObject','');
+            $(pV +' .proposed').attr('checked',false);
+            proposed = 0;
+
+}
 	}
 
 	return output;

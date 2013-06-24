@@ -27,7 +27,7 @@ define(function(require){
 
             $(feature).find('.jira-key').data('jiraKey',object.jiraKey);
 
-            if(object.jiraKey == "N0k31"){
+            if(object.jiraKey == "N0k31" || object.jiraKey == "suite" ){
                 $(feature).find('.stats').css('margin-top','7px')
                 $(feature).find('.close-jira-btn').remove();
             }else{
@@ -137,11 +137,11 @@ define(function(require){
             $(feature).find('.close-jira-btn').attr('disabled',true);
             $(feature).find('.close-jira-btn > i').removeClass('icon-time').addClass(iconClass);
             $(feature).addClass('ready');
-            if($(feature).hasClass('active')){
-                $('#tcViewer #tc-container').children('#tcViewer .tc').each(function(){
-                    $(this).find('.btn-group').remove();
-                })
-            }
+            // if($(feature).hasClass('active')){
+            //     $('#tcViewer #tc-container').children('#tcViewer .tc').each(function(){
+            //         $(this).find('.btn-group').remove();
+            //     })
+            // }
         },
 
         deleteFeature: function(featureId){
@@ -156,6 +156,11 @@ define(function(require){
                     fadeOut:0
                 });
             tcmModel.releases.iterations.features.delete(featureId).done(function(data){
+                var feature = $('.feature[feature-id='+featureId+']');
+
+                if($(feature).hasClass('active')){
+                    $(feature).parents('#tcViewer').find('#tc-container').children().remove();
+                }
                 $('.feature[feature-id='+featureId+']').remove();
             })
 
