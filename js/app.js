@@ -59,10 +59,10 @@ define([
 
     ];
 
-    function loadModule(module){
+    function loadModule(module, queryParam){
 
 
-        if($.cookie('apiKey') && $.cookie('apiKey') != null && $.cookie('apiKey') != "null"){
+        if( window.location.hash.indexOf('planhl') >= 0 || ($.cookie('apiKey') && $.cookie('apiKey') != null && $.cookie('apiKey') != "null")){
 
             _.each(modules, function(moduleItem){
 
@@ -78,7 +78,7 @@ define([
 
                     if(!module.rendered){
                             module.checkJQ();
-                            module.render();
+                            module.render(queryParam);
                     }else{
                         try{//in case the function refreshRender does not exist at the module
                             module.refreshRender();
@@ -105,10 +105,8 @@ define([
     var App = {
 
         initialize: function(){
-
+            TopMenuView.hotLink = window.location.hash.indexOf('planhl') >= 0;
             TopMenuView.render();
-
-            // managerView.render();
 
             this.routePaths();
 
@@ -122,6 +120,7 @@ define([
                     "viewer": "viewer",
                     "sync": "sync",
                     "plan": "plan",
+                    "planhl/:iterId": "planhl",
                     "metrics": "metrics",
                     "rlsmetrics": "rlsmetrics",
                     "suites": "suites",
@@ -146,7 +145,11 @@ define([
                 loadModule(syncView);
             });
 
-            app_router.on('route:plan', function(actions) {
+            app_router.on('route:planhl', function( iterId) {
+                loadModule(planView,iterId);
+            });
+
+            app_router.on('route:plan', function( actions) {
                 loadModule(planView);
             });
 
