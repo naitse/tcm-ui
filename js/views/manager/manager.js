@@ -578,7 +578,7 @@ define(function(require){
           }
         });
 
-        $('#tcViewer #add-feature').click(function(){
+        $('#tcViewer #add-feature.enabled').click(function(){
           $('#new-feature-modal').modal();
         })
 
@@ -653,23 +653,21 @@ function itSelected(iterationId, iterationName) {
 
             var releaseName = global.currentSS.releaseName;
                   $('#tcViewer .theFeatures').children().remove();
-    $('#releases-container').stop(true,true).hide("slide", { direction: "left"},"fast",function(){
-        $('#feature-container').stop(true,true).show("slide", { direction: "right"},100,function(){
-                  PM.toggleLoading('#tcViewer','.theFeatures',true,'big');  
                   PM.colapseExpandRightPanel('#tcViewer','none');
                   clearData();
                   $('.noresult').remove();
                   var noresult = $('<div>').addClass('noresult').text('No Items found')
+                  
+    $('#releases-container').hide("slide", { direction: "left"},100,function(){
+        $('#feature-container').show("slide", { direction: "right"},100,function(){
                   $('#filter-completed-features').removeClass('enabled').attr('disabled',true);
                   $('#add-feature').removeClass('enabled').attr('disabled',true);
                   
                  tcmModel.releases.iterations.features.fetch(global.currentSS.releaseId, global.currentSS.iterationId).done(function(data){
                     if (data.length > 0){
-                      // $('.theFeatures').css('height',$('#tcViewer #feature-container').height() - 35);
                       $(data).each(function(){
                           featuresModule.render('#tcViewer .theFeatures',featuresModule.create(this))
                       })
-                      //prepareFeatures(data)
                       if (monitoring==true){
                         clearTimeout(statCheck)
                         statCheck=setTimeout(function(){statsMonitoring(iterationId)}, monitoring_interval);
@@ -678,11 +676,8 @@ function itSelected(iterationId, iterationName) {
 
                       $('#tcViewer #feature-container').append(noresult)
                     }
-
-                    PM.toggleLoading('#tcViewer','.theFeatures',false)
                     $('#filter-completed-features').addClass('enabled').attr("disabled",false);
                      $('#add-feature').addClass('enabled').attr('disabled',false);
-                    // $('#feature-refresh').removeClass('refreshing')
                     $('#tcViewer #holder').attr('class', 'features').find('.iteration-holder-name').text(releaseName+'/'+iterationName);
                  
               });
@@ -1035,7 +1030,12 @@ function removeTestCase(tcId,feature){
     function filterCompletedFeatures(){
       if($('.feature.ready').size()>0){
         $('.feature.ready').toggle(0,function(){
-          $('#filter-completed-features').addClass('enabled').removeClass('active').attr("disabled",false);
+          var node = $('#filter-completed-features');
+          if ($(node).hasClass('active')){
+            $('#filter-completed-features').addClass('enabled').removeClass('active').attr("disabled",false);
+          }else{
+            $('#filter-completed-features').addClass('enabled').addClass('active');
+          }
         });
       }else{
         $('#filter-completed-features').addClass('enabled').removeClass('active').attr("disabled",false);
@@ -1091,7 +1091,13 @@ function removeTestCase(tcId,feature){
       return tags;
     }
 
-    
+    function loadingOn(){
+        $('#tcViewer  #feature-container').append('<div class="loading-big-block"></div>')
+    }
+
+    function loadingOff(){
+        $('#tcViewer  #feature-container').find('.loading-big-block').remove();
+    } 
 
     return ManagerView;
 

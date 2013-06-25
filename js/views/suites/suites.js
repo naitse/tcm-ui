@@ -278,10 +278,24 @@ define(function(require){
         });
 
 		$('.intance-suite').live({
+			// mouseenter:function(e){
+			// 	 e.stopPropagation();
+			// },
 			mouseleave:function(e){
 		            e.stopPropagation();
-		              $(this).stop(true,true).hide();
+		        if($('.intance-suite').data('clicked') != true){
+		            $('.intance-suite').stop(true,true).hide();
+		        }
 		  }
+		})
+
+		$('#suitesViewer .intance-suite .active-result').live({
+			click: function(){
+				$('.intance-suite').data('clicked',true);
+				setTimeout(function(){
+				    	$('.intance-suite').data('clicked',false);
+	            },2000)
+			}
 		})
 
 		$('#suitesViewer .intance-suite #suite-instance-itration').click(function(e){
