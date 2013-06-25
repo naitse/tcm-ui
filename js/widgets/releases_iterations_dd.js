@@ -6,7 +6,7 @@ define(function(require){
     var chosen = require('chosen');
 
     $.fn.extend({
-        releases_iterations_dd: function() {
+        releases_iterations_dd: function(onSChange,afterRender) {
 
             var $this;
             $this = $(this);
@@ -27,8 +27,17 @@ define(function(require){
 
                     });
 
+                    if(typeof onSChange != 'undefined'){
+                        $this.chosen().change(function(){
+                            onSChange();
+                        });
+                    }else{
+                        $this.chosen();
+                    }
 
-                    $this.chosen();
+                    if(typeof afterRender != 'undefined'){
+                            afterRender();
+                    }
 
                 });
             }

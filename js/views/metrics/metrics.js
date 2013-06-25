@@ -7,18 +7,33 @@ define(function(require){
     var dd = require('releases_iterations_dd');
     require('highcharts');
     require('exporting');
+    var permalinkIterId = '';
+    var monitoring_interval = 60000;
 
     var MetricsView = {
         moduleId: "Metrics",
 
         rendered: false,
 
-        render: function(){
+        render: function(iterId){
             if(!this.rendered){
-                $("#pannel-wrapper").append(planTemplate);
 
-                this.loadIterations();
-                this.attachEvents();
+                 var template = $(planTemplate)
+
+                if (typeof iterId != 'undefined'){
+                    $(template).find('#metrics-controls').remove();
+                    $(template).find('.permalink').remove();
+                    $("#pannel-wrapper").append(template);
+                    this.loadMetrics(0,iterId,true);
+                }else{
+
+                    $("#pannel-wrapper").append(template);
+                    this.loadIterations();
+                    this.loadMetrics(0,$("#tcMetrics #metrics-release-select option").last().val());
+                    attachEvents();
+                }
+
+                adjustChartHeight()
                 this.rendered = true;
             }
             $('.tcm-top-menu-container a').removeClass('active');
@@ -29,73 +44,89 @@ define(function(require){
 
         loadIterations: function(){
 
-           $('#tcMetrics #metrics-release-select').releases_iterations_dd();
+           $('#tcMetrics #metrics-release-select').releases_iterations_dd(function(){
+                    
+                    var iterId =  $("#tcMetrics #metrics-release-select option:selected").val();
+                    // var rlsId =  $("#tcMetrics #metrics-release-select option:selected").parents('optgroup').attr('rel-id');
+                 MetricsView.loadMetrics(0,iterId);
+           },function(){
+                MetricsView.loadMetrics(0,$("#tcMetrics #metrics-release-select option").last().val())
+           })
+            
+           // $('#tcMetrics #metrics-release-select').chosen()
 
         },
 
-        attachEvents: function(){
-            var btnGetMetrics = $('#tcMetrics #btnGetMetrics');
-
-            btnGetMetrics.on('click', function(){
-                var iterId =  $("#tcMetrics #metrics-release-select option:selected").val();
-                var rlsId =  $("#tcMetrics #metrics-release-select option:selected").parents('optgroup').attr('rel-id');
-
-                btnGetMetrics.button('loading');
-                $("#tcMetrics #alertNoMetrics").addClass('hide');
-                $("#tcMetrics #metricsContainer").hide();
-
-                $("#tcMetrics #metricsProgressBar").show();
-                $("#tcMetrics #metricsProgressBar").find(".bar").css("width","10%");
+        loadMetrics: function(rlsId,iterId,monitoring){
 
 
-                $.when( tcmModel.releases.iterations.metrics_executed(rlsId, iterId)).done(function( metrics ){
-                    if(metrics.length > 0){
-                        var chartData = new Array();
+                    $("#tcMetrics #alertNoMetrics").addClass('hide');
+                    $("#tcMetrics #metricsContainer").hide();
 
-                        _.each(metrics[0], function(value, key, list){
+                    $("#tcMetrics #metricsProgressBar").show();
+                    $("#tcMetrics #metricsProgressBar").find(".bar").css("width","10%");
+                    loadingOn()
+                    $('#tcMetrics .link-exposer').text('')
 
+                    $.when( tcmModel.releases.iterations.metrics_executed(rlsId, iterId)).done(function( metrics ){
+                        if(metrics.length > 0){
+                            var chartData = new Array();
 
-                            chartData.push([ key, value]);
-
-                        });
-
-                        $('#executionContainer').data('data',chartData);
-
-                        renderExecutionPie();
-                    }
-
-                });
-
-                $("#tcMetrics #metricsProgressBar").find(".bar").css("width","50%");
-
-                $.when( tcmModel.releases.iterations.metrics_dailyexecuted(rlsId, iterId)).done(function( metrics ){
-                    if(metrics.length > 0){
-                        var days = new Array();
-                        var testcases = new Array();
+                            _.each(metrics[0], function(value, key, list){
 
 
-                        _.each(metrics, function(value, key, list){
-                            days.push(value.day);
-                            testcases.push(value.testcases);
-                        });
+                                chartData.push([ key, value]);
 
-                        $('#dailyExecutionContainer').data('data',[days,testcases]);
-                        // $('#dailyExecutionContainer').data('testcases',testcases);
+                            });
 
-                        renderDailyExec();
-                    }
+                            $('#executionContainer').data('data',chartData);
+                            $('#tcMetrics .permalink').attr('disabled',false)
+                            permalinkIterId = iterId
+                            renderExecutionPie();
+                            loadingOff()
+                            if(monitoring == true ){
+                                statCheck=setTimeout(function(){MetricsView.loadMetrics(0,iterId);}, monitoring_interval);
+                            }
+                        }
 
-                });
+                    });
+
+                    $("#tcMetrics #metricsProgressBar").find(".bar").css("width","50%");
+
+                    $.when( tcmModel.releases.iterations.metrics_dailyexecuted(rlsId, iterId)).done(function( metrics ){
+                        if(metrics.length > 0){
+                            var days = new Array();
+                            var testcases = new Array();
 
 
-                $("#tcMetrics #metricsProgressBar").hide();
-                btnGetMetrics.button('reset');
-                $("#tcMetrics #metricsContainer").show();
-                fixBorder()
-            });
+                            _.each(metrics, function(value, key, list){
+                                days.push(value.day);
+                                testcases.push(value.testcases);
+                            });
+
+                            $('#dailyExecutionContainer').data('data',[days,testcases]);
+                            // $('#dailyExecutionContainer').data('testcases',testcases);
+
+                            renderDailyExec();
+                        }
+
+                    });
+
+
+                    $("#tcMetrics #metricsProgressBar").hide();
+                    $("#tcMetrics #metricsContainer").show();
+                    fixBorder()
         }
 
     };
+
+    function attachEvents(){
+        $('#tcMetrics .permalink').click(function(){
+            var wl = window.location;
+             var permalink =  wl.protocol + '//' + wl.hostname + wl.pathname + '#itmhl/'+ permalinkIterId;
+             $('#tcMetrics .link-exposer').text(permalink);
+        })
+    }
 
     function renderExecutionPie(data){
 
@@ -197,6 +228,14 @@ define(function(require){
         }else{
             //to prevent focused graph to be removed
         }
+    }
+
+    function loadingOn(){
+        $('#tcMetrics  #metricsContainer').append('<div class="loading-big-block"></div>')
+    }
+
+    function loadingOff(){
+        $('#tcMetrics  #metricsContainer').find('.loading-big-block').remove();
     }
 
     function fixBorder(){

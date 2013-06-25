@@ -32,6 +32,7 @@ define(function(require){
                 global.project.config.id = data[0].id;
                 global.project.config.currentrelease = data[0].currentrelease;
 
+
                 jiraLink = data[0].bugurl;
                 currentR = {
                   year:data[0].currentrelease.split('/')[0],

@@ -99,7 +99,7 @@ define(function(require){
 
 		},
 
-		renderTC: function(tc, view_container){
+		renderTC: function(tc, view_container,getSuites){
 
 			// this.attachEvents(tc);
 
@@ -130,9 +130,12 @@ define(function(require){
 
 
 			$(view_container + ' #tc-container').append(tc);
-			tcmModel.releases.iterations.features.test_cases.suites.fetch($(tc).data('tcObject').tcId).done(function(data){
-				self.renderTagsContainer($(tc).data('tcObject').tcId,data, view_container);
-			})
+			if(getSuites != false){
+				tcmModel.releases.iterations.features.test_cases.suites.fetch($(tc).data('tcObject').tcId).done(function(data){
+					self.renderTagsContainer($(tc).data('tcObject').tcId,data, view_container);
+				})
+			}
+
 		},
 
 		togleDropState:function(tc){

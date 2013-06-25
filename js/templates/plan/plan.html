@@ -1,3 +1,18 @@
+<style>
+#tcPlan .link-exposer {
+    width: 400px;
+    position: relative;
+top: -40px;
+left: 371;
+    height: 0px;
+}
+
+#tcPlan .permalink {
+    position: relative;
+top: -22px;
+left: 334;
+}
+</style>
 <div id="tcPlan" style="display:none">
     <div id="plan-controls">
         <div ><h3>Select Iteration:</h3></div>
@@ -6,7 +21,9 @@
             <select data-placeholder="Choose an Iteration..." id="plan-release-select" tabindex="3">
                 <option></option>
             </select>
-            <button type="button" id="btnGetPlan" class="btn btn-primary" data-loading-text="Loading...">Display Plan</button></div>
+            <button type="button" id="btnGetPlan" class="btn btn-primary" data-loading-text="Loading...">Display Plan</button>
+        </div>
+        <button type="button" id="get-perma-link" class="btn btn-mini permalink" disabled="true"><i class="icon-permalink"></i></button><div class="link-exposer"></div>
         <div>
             <div id="alertNoPlanfound" class="alert alert-error hide" stlye="width:200px;">
                 No Test Cases found for given iteration!

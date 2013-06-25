@@ -4,6 +4,7 @@ define(function(require){
         planTemplate = require('text!templates/plan/plan.html'),
         tcmModel = require('tcmModel'),
         _ = require('underscore');
+        var permalinkIterId = '';
 
     var PlanView = {
         moduleId: "Plan",
@@ -24,6 +25,7 @@ define(function(require){
 
                     $("#pannel-wrapper").append(template);
                     this.loadIterations();
+                    perma()
                 }
 
 
@@ -63,6 +65,14 @@ define(function(require){
 
     };
 
+    function perma(){
+        $('#tcPlan .permalink').click(function(){
+            var wl = window.location;
+             var permalink =  wl.protocol + '//' + wl.hostname + wl.pathname + '#planhl/'+ permalinkIterId;
+             $('#tcPlan .link-exposer').text(permalink);
+        })
+    }
+
     function fetch(rlsId, iterId){
 
                
@@ -72,7 +82,11 @@ define(function(require){
                 planGridContainer.empty();
                 planSummaryBody.empty();
 
+                    $('#tcPlan .link-exposer').text('');
                 $.when( tcmModel.releases.iterations.plan(rlsId, iterId) ).done( function(coverageData){
+
+                    permalinkIterId = iterId
+                    $('#tcPlan .permalink').attr('disabled',false)
 
                     $("#planProgressBar").find(".bar").css("width","30%");
 

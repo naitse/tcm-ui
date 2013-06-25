@@ -27,6 +27,20 @@
 #metricsContainer{
     margin-top: 30px;
 }
+
+#tcMetrics .loading-big-block {
+    position: absolute;
+top: 94px;
+left: 75px;
+}
+
+#tcMetrics .link-exposer {
+    width: 400px;
+position: relative;
+top: -22px;
+left: 258;
+height: 0px;
+}
 </style>
 <div id="tcMetrics">
     <div id="metrics-controls">
@@ -36,7 +50,8 @@
             <select data-placeholder="Choose an Iteration..." id="metrics-release-select" tabindex="3">
                 <option></option>
             </select>
-            <button type="button" id="btnGetMetrics" class="btn btn-primary" data-loading-text="Loading...">Pull Metrics</button></div>
+             <button type="button" id="get-perma-link" class="btn btn-mini permalink" disabled="true"><i class="icon-permalink"></i></button><div class="link-exposer"></div>
+        </div>
         <div>
             <div id="alertNoMetrics" class="alert alert-error hide" stlye="width:200px;">
                 There was an error pulling metrics
