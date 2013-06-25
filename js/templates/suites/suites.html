@@ -30,7 +30,7 @@ border-radius: 6px 0px 0px 6px;
 }
 
 #suitesViewer .intance-suite #suite-instance-itration {
-        width: 170px;
+        width: 170px !important;
     position: absolute;
     bottom: 6px;
     left: 10px;
@@ -40,6 +40,35 @@ border-radius: 6px 0px 0px 6px;
     float:right;
 }
 
+#suitesViewer .toolbar {
+    height:30px;
+}
+
+#suitesViewer #add-suite {
+  width: 21px;
+height: 19px; 
+float: right;
+margin-right: 60px;
+margin-top: 4px;
+cursor: pointer; 
+}
+#suitesViewer #add-suite .icon-plus-sign {
+width: 21px;
+height: 19px;
+background-size: 730px;
+background-position-y: -151px;
+}
+
+body #suitesViewer #myModal {
+  width: 345px; /* desired relative width */
+  /*left: 25%;  (100%-width)/2 */
+  /* place center */
+/*  margin-left:auto;
+  margin-right:auto; */
+}
+body #suitesViewer #myModal.fade.in {
+  top: auto; /* fade in to correct spot */
+}
 
 </style>
 <div id="suitesViewer">

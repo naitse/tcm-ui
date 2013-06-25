@@ -4,7 +4,7 @@ pre{white-space:pre-wrap;white-space:-moz-pre-wrap;white-space:-pre-wrap;white-s
 .tcm-container{min-width:1118px;min-height:600px;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;-ms-box-sizing:border-box;-o-box-sizing:border-box;box-sizing:border-box;overflow:hidden;border-top:2px solid #ccc;box-sizing:border-box;width:100%;height:100%;margin-left:auto;margin-right:auto;padding:9px 20px 47px 20px;background:white}
 .left-pannel{min-width: 36px;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;-ms-box-sizing:border-box;-o-box-sizing:border-box;box-sizing:border-box;border:1px solid #ccc;box-shadow:inset 0 0 8px -3px black;-moz-box-shadow:0 0 6px -3px black inset;box-sizing:border-box;height:100%;width:100%;float:left;overflow-y:auto;overflow:hidden;padding-bottom:29px}
 .right-pannel{-webkit-box-sizing:border-box;-moz-box-sizing:border-box;-ms-box-sizing:border-box;-o-box-sizing:border-box;box-sizing:border-box;border:1px solid #ccc;box-shadow:inset 0 0 8px -3px black;-moz-box-shadow:0 0 6px -3px black inset;box-sizing:border-box;height:100%;width:auto;float:none;overflow-y:auto;overflow:hidden;padding-bottom:29px}
-.toolbar{min-width: 363px;background:#587198;border-bottom:1px solid #ccc;border-radius:6px 6px 0 0;height:23px}
+.toolbar{min-width: 363px;background:#03415F;border-bottom:1px solid #ccc;border-radius:6px 6px 0 0;height:23px}
 #release-select{width:180px}
 .hide{display:none}
 .desc-header{height:28px;border-bottom:1px solid #ccc;background:#f7f7f7;font-weight:bold;overflow:hidden}

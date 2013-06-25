@@ -338,7 +338,7 @@ define(function(require){
 
     function attachObjects(){
 
-		var add_suite = $('<button id="" type="button" class="btn btn-mini" ><i class="icon-plus-sign"></i> Add Suite</button>').click(function(e){
+		var add_suite = $('<div id="add-suite" type="button" title="Add Suite"class="" ><i class="icon-plus-sign icon-white"></i></div>').click(function(e){
 			
 			$(pV+'#myModal').modal();
 
@@ -494,7 +494,16 @@ function editTc(tcObject){
 
     function addSuiteToUI(data){
     	var data = data[0];
-		itemsModule.renderItem('#suitesViewer  #feature-container',itemsModule.createItem(data.name,data.id));
+
+		var suite = itemsModule.createItem(data.name,data.id,0)
+
+		var instance_suite = '<button id="suite-instance" title="Instance suite" type="button" class="btn btn-mini" style=""><i class="icon-share-alt"></i></button>';
+
+		$(suite).find('.item-control-buttons .wrapper').prepend(instance_suite);
+
+        itemsModule.renderItem('#suitesViewer  #feature-container',suite);
+
+
 		var option = $('<option>').attr('value', data.name).text(data.name).data('tagId',data.id,0);
 		$('#suitesViewer #tags-select').append(option)
 		$('#suitesViewer #tags-select').trigger("liszt:updated")
