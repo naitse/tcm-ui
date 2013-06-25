@@ -578,8 +578,10 @@ define(function(require){
           }
         });
 
-        $('#tcViewer #add-feature.enabled').click(function(){
-          $('#new-feature-modal').modal();
+        $('#tcViewer #add-feature.enabled').live({
+          click:function(){
+            $('#new-feature-modal').modal();
+          }
         })
 
         $('#tcViewer #new-feature-modal .cancel').click(function(){
