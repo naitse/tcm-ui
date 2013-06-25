@@ -148,7 +148,7 @@ cursor: pointer;
 width: 21px;
 height: 19px;
 background-size: 730px;
-background-position-y: -151px;
+background-position: 0px -151px;
 }
 #tcViewer #filter-completed-features {
   width: 21px;
@@ -162,8 +162,7 @@ cursor: pointer;
 width: 21px;
 height: 19px;
 background-size: 730px;
-background-position-y: -225;
-background-position-x: -636;
+background-position: -636px -225px;
 }
 
 

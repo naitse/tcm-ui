@@ -1,7 +1,7 @@
 <style type="text/css">
 .item{position:relative;font-size:13;padding:0 5px 0 3px;background-color:white;border-bottom:1px solid #ccc;border-top:1px solid #ccc;height:38px;overflow:hidden;margin-left:2px;padding-left:0;font-weight:bold;margin-bottom:1px}
 .item .title-bar{background:transparent;height:100%;z-index:2;position:relative;/*box-shadow:-4px 0 10px 2px*/;display: inline-block;padding-right: 6px;}
-.item .summary{font-weight: normal;margin-top:3px;position:absolute;z-index:0;border-radius:6px;padding-left:10px;font-size:17;display: inline-table;word-wrap: break-word;line-height: 1.8em;}
+.item .summary{top:0px;left:24px;font-weight: normal;margin-top:3px;position:absolute;z-index:0;border-radius:6px;padding-left:10px;font-size:17;display: inline-table;word-wrap: break-word;line-height: 1.8em;}
 .item .stats {
 width:14px;
 	border: 2px solid #03415f;
@@ -17,7 +17,8 @@ border-radius: 12px;
 .item #item-add {visibility:visible; float: right;}
 .item.iteration .title-bar {visibility:hidden;}
 .item.iteration {height:28px;}
-.item.iteration .summary {margin-right: 0px;font-size: 15;line-height: 1.4em;margin-left: -26px;}
+.item.iteration .summary {margin-right: 0px;font-size: 15;line-height: 1.4em;margin-left: -26px;top: 0px;
+left: 22px;}
 .item .item-control-buttons {
 position: absolute;
 top: 0px;
