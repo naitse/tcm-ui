@@ -1,9 +1,9 @@
 
 define( function(require){
-    var basePath = "http://tcm-backend.cloudhub.io/api/";
+    //var basePath = "http://tcm-backend.cloudhub.io/api/";
     //var basePath = "http://tcm-backend-qa.cloudhub.io/api/";
     //var basePath = "http://54.226.164.226/api/";
-    //var basePath = "http://localhost:8088/api/";
+    var basePath = "http://localhost:8088/api/";
     var basePath2 = basePath.replace('api/','');
 	var $ = require('jquery');
 	
@@ -173,6 +173,17 @@ define( function(require){
                     return $.ajax({
                         type: "GET",
                         url: this.url,
+                        dataType: "json"
+                    });
+            }
+        },
+        ris:{
+            url: basePath2 + 'ris?iterationId=',
+
+            fetch: function (iterId) {
+                    return $.ajax({
+                        type: "GET",
+                        url: this.url + iterId,
                         dataType: "json"
                     });
             }

@@ -4,6 +4,7 @@ define(function(require){
         planTemplate = require('text!templates/interop/interop.html'),
         tcmModel = require('tcmModel'),
         tcsModule = require('modules/tc/tc'),
+        global = require('global'),
         sprint = require('modules/sprint/sprint'),
         styles = require('text!templates/interop/style'),
         pV = "#interOp";
@@ -32,11 +33,7 @@ define(function(require){
         refreshRender:function () {
             $(pV + ' .time-line').remove();
 
-            tcmModel.project.configuration.fetch().done(function(data){
-                if(data.length > 0){
-                    sprint.render(sprint.create(data[0].springIterations,data[0].iterationDuration,{"year":2013,"month":5,"day":10}),'#interOp')//,'90%',120);
-                }
-            });
+            renderProjectBar()
 
             tcmModel.suites.source(1).done(function(data){
                 if(data.length > 0){
@@ -45,6 +42,9 @@ define(function(require){
                         $(pV + ' .suite-tcs').children().remove();
                         $(data).each(function(){
                             var tc_html = tcsModule.createTcHTML(this,null,false);
+                            $(tc_html).find('.btn-group').remove();
+                            $(tc_html).find('.tc-suites').remove();
+                            $(tc_html).find('.suites-label').remove();
                             tcsModule.renderTC(tc_html, '#interOp'); //REMOVE THE PARSER
                         })
                     });
@@ -54,11 +54,7 @@ define(function(require){
 
         loadIterations: function(){
 
-            tcmModel.project.configuration.fetch().done(function(data){
-                if(data.length > 0){
-                    sprint.render(sprint.create(data[0].springIterations,data[0].iterationDuration,{"year":2013,"month":5,"day":10}),'#interOp')//,'90%',120);
-                }
-            });
+            renderProjectBar();
 
             tcmModel.suites.source(1).done(function(data){
                 if(data.length > 0){
@@ -67,6 +63,9 @@ define(function(require){
                         $(pV + ' .suite-tcs').children().remove();
                         $(data).each(function(){
                             var tc_html = tcsModule.createTcHTML(this,null,false);
+                            $(tc_html).find('.btn-group').remove();
+                            $(tc_html).find('.tc-suites').remove();
+                            $(tc_html).find('.suites-label').remove();
                             tcsModule.renderTC(tc_html, '#interOp'); //REMOVE THE PARSER
                         })
                     });
@@ -82,6 +81,15 @@ define(function(require){
 
     };
 
+    function renderProjectBar(){
+            var currentR = {
+                  year:global.project.config.currentrelease.split('/')[0],
+                  month:global.project.config.currentrelease.split('/')[1],
+                  day:global.project.config.currentrelease.split('/')[2],
+                }
+
+            sprint.render(sprint.create(global.project.config.springIterations,global.project.config.iterationDuration,currentR),'#interOp')//,'90%',120);
+    }
 
     function adjustTabtHeight(){
 

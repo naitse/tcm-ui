@@ -12,11 +12,12 @@ define([
     'views/plugins/plugins-settings',
     'views/interop/interop',
     'views/project/project',
+    'views/ris/ris', //release state, hotlik page to show the curren implementation qa progress
     // 'tcm2',
     'backbone',
     'jquery.cookie'
 
-], function($, _, TopMenuView, managerView, syncView, planView, MetricsView, RlsMetricsView, SuitesView, PluginsSettingsView, InteropView, ProjectView){
+], function($, _, TopMenuView, managerView, syncView, planView, MetricsView, RlsMetricsView, SuitesView, PluginsSettingsView, InteropView, ProjectView,ReleaseImplementationView){
 
 
     var modules = [
@@ -55,6 +56,10 @@ define([
         {
             'id': 'Project',
             'divContainer': '#projectView'
+        },
+        {
+            'id': 'ReleaseImplementation',
+            'divContainer': '#ReleaseImplementation'
         }
 
     ];
@@ -62,7 +67,7 @@ define([
     function loadModule(module, queryParam){
 
 
-        if( window.location.hash.indexOf('planhl') >= 0 || ($.cookie('apiKey') && $.cookie('apiKey') != null && $.cookie('apiKey') != "null")){
+        if( window.location.hash.indexOf('itmhl') >= 0 || window.location.hash.indexOf('ris') >= 0 || window.location.hash.indexOf('planhl') >= 0 || ($.cookie('apiKey') && $.cookie('apiKey') != null && $.cookie('apiKey') != "null")){
 
             _.each(modules, function(moduleItem){
 
@@ -105,7 +110,7 @@ define([
     var App = {
 
         initialize: function(){
-            TopMenuView.hotLink = window.location.hash.indexOf('planhl') >= 0;
+            TopMenuView.hotLink = window.location.hash.indexOf('planhl') >= 0 || window.location.hash.indexOf('itmhl') >= 0 || window.location.hash.indexOf('ris') >= 0 ;
             TopMenuView.render();
 
             this.routePaths();
@@ -122,11 +127,13 @@ define([
                     "plan": "plan",
                     "planhl/:iterId": "planhl",
                     "metrics": "metrics",
+                    "itmhl/:iterId": "metricshl",
                     "rlsmetrics": "rlsmetrics",
                     "suites": "suites",
                     "plugins-settings": "plugins-settings",
                     "interop":"interop",
                     "project":"project",
+                    "ris/:iterId":"ris",
                     "*actions": "defaultRoute"
                 }
             });
@@ -157,6 +164,10 @@ define([
                 loadModule(MetricsView);
             });
 
+            app_router.on('route:metricshl', function(iterId) {
+                loadModule(MetricsView,iterId);
+            });
+
             app_router.on('route:rlsmetrics', function(actions) {
                 loadModule(RlsMetricsView);
             });
@@ -175,6 +186,10 @@ define([
 
             app_router.on('route:project', function(actions) {
                 loadModule(ProjectView);
+            });
+
+            app_router.on('route:ris', function(iterId) {
+                loadModule(ReleaseImplementationView,iterId);
             });
 
             Backbone.history.start();
