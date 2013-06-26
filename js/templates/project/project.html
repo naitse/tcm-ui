@@ -13,18 +13,46 @@
             </div>
         </div>
 
-        <div class="well well-small ">
-            <div class="config">
+        <div class="well well-small " style="position:relative;min-height:400px;">
+            <div class="config releases">
                 <!-- <button class="btn btn-mini btn-new-release" data-loading-text="saving" >New Release</button> -->
-                <div class="new-release-config" style="">
+                <div class="release-table-container well">
+                    <table style="margin-bottom: 12px;">
+                        <thead>
+                                <tr>
+                                    <th>Release Name</th>
+                                </tr>
+                       </thead>
+                   </table>
+                    <div class="table-wrapper">
+                        <table id="releases-table" class="table" style="">
+                           <tbody>
+                           </tbody>
+                       </table>
+                   </div>
+               </div>
+               <div class="new-release-config" style="">
                     <span >Release Name: (without "Release")<input type="text" disabled="true" id="new-release-name" /></span>
                     <span >Release start: <input type="text" disabled="true" id="datepicker" /></span>
                     <button class="btn btn-mini btn-save-release" data-loading-text="saving" >Save </button>
                 </div>
-            </div>
-        </div>
-         <div class="well well-small ">
-            <div class="config">       
+             </div>
+             <div class="config iterations"> 
+                <div class="iterations-table-container well">
+                    <table style="margin-bottom: 12px;">
+                        <thead>
+                                <tr>
+                                    <th>Iteration Name</th>
+                                </tr>
+                       </thead>
+                   </table>
+                    <div class="table-wrapper">
+                        <table id="iterations-table" class="table" style="">
+                           <tbody>
+                           </tbody>
+                       </table>
+                   </div>
+               </div>      
                 <div class="new-iteration-config" style="">
                     Create a new iteration for a release
                     <span> Choose a release: 
@@ -37,6 +65,8 @@
                     <button class="btn btn-mini btn-save-iter" data-loading-text="saving" >Save</button>
                 </div>
             </div>
+        </div>
+         <div class="well well-small ">
         </div>
     </div>
 </div>

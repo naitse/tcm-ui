@@ -222,6 +222,15 @@ define( function(require){
                     contentType : 'application/json'
                 });
             },
+
+            remove: function(rlsid) {
+
+                return $.ajax({
+                    type: "POST",
+                    url: basePath2 + 'deleteRelease?releaseId=' + rlsid,
+                    dataType: "json",
+                });
+            },
             metrics_iter_trend: function(releaseId){
                 var urlplan  = basePath +'releases/{rlsId}/metricgetIterationsTrend'
 
