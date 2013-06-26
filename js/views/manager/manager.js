@@ -272,6 +272,7 @@ define(function(require){
           click: function(e){
             e.stopPropagation();
             if($(this).hasClass('ddm-failed') ||  $(this).hasClass('ddm-block')){
+              clearTCModal();
               runTC($(this).parents('.tc').data('tcObject'),this);
             }else{
               updateTCstatus($(this).parents('.tc').attr('tc-id'),$(this).attr('status-id'),global.currentSS.feature)
@@ -779,6 +780,7 @@ function clearData(){
   $('#desc-container').text('');
   $('#desc-wrapper').hide()
   $('.desc-header-text').html('')
+  $('.actual-result').val('')
   $('#desc-expander').removeClass('desc-collapser').addClass('desc-expander')
   clearTCs()
 }
@@ -800,6 +802,7 @@ function clearTCModal(){
             $('#tcViewer #rp-wrapper .save').text('Add')
             $('#tcViewer .new-tc-title').val('').removeClass('title-error');
             $('#tcViewer .new-tc-desc').val('');
+            $('#tcViewer .actual-result').val('')
             $('#tcViewer #rp-wrapper .modal-body').data('flag',0);
             $('#tcViewer #rp-wrapper .modal-body').data('tcObject','');
             $('#tcViewer .proposed').attr('checked',false);
