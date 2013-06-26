@@ -1,8 +1,30 @@
 <style type="text/css">
-#projectView .config {width: 550px;}
+#projectView .config {width: 49%;}
 #projectView #release_select_project_chzn {width: 210px !important; float:right;}
 #projectView #release_select_project_chzn .chzn-results{width: 200px !important;}
 #projectView .config span {width: 100%;display: inline-block;}
 #projectView .config span input {float:right;}
 #projectView .ui-datepicker-trigger {float: right;margin-right: 5px;margin-top: 2px;}
+#projectView .release-table-container {min-height: 241px;}
+#projectView .release-table-wrapper {margin:10px;}
+#projectView .iterations-table-wrapper {margin:10px;}
+#projectView .table-wrapper {overflow: hidden;overflow-y: auto;max-height: 205px;}
+#projectView .config.iterations {position: absolute;top: 0px;right: 0px;}
+
+#projectView .remove-release-btn.icon-remove-circle{
+	width: 20px;
+	height: 20px; 
+	float: right;
+	margin-right: 4px;
+	margin-top: -1px;
+	background-size: 730px;
+	background-position: -262px -150px;
+	cursor: pointer;
+}
+#projectView .remove-release-btn.icon-remove-circle.sec-state{
+	background-position: -150px -150px;
+	background-color: red;
+	border-radius: 13px;
+	height: 20px !important;
+}
 </style>

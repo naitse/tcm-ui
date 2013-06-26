@@ -113,6 +113,25 @@ define(function(require){
               buttonImage: "assets/images/calendar.gif",
               buttonImageOnly: true
         });
+
+
+        $(pV +'.remove-release-btn').live({
+          click: function(e){
+            e.stopPropagation();
+            if($(this).hasClass('sec-state')){
+                deleteRelease($(this).parents('td').attr('id'));
+            }else{
+              $(this).addClass('sec-state');
+            }
+          },
+          mouseleave:function(e){
+            e.stopPropagation();
+            if($(this).hasClass('sec-state')){
+              $(this).removeClass('sec-state')
+            }
+          }
+        });
+
     
         }
 
@@ -146,14 +165,45 @@ define(function(require){
     function fetchReleases(){
           tcmModel.releases.fetch().done(function(data){
                 //[{"releaseName":"27","iterationName":"16,18,19,20,21,22"},{"releaseName":"28","iterationName":"23,24,25"}]
-                  
+                 $('.release-row').remove(); 
                 $(pV + ' #release-select-project').find('option').remove();
                 $(data).each(function(){
                   var optionG = $('<option>').attr('value', this.id).text( "Release "+this.releaseName);
                   $(pV + ' #release-select-project').append(optionG)
                 })
                 $(pV + ' #release-select-project').trigger("liszt:updated")
+
+
+                $(data).each(function(){
+                    addReleaseRow(this);
+                })
+
+
         });
+    }
+
+    function addReleaseRow(data){
+        var row = $('<tr class="release-row"/>');
+        var td = $('<td id="">Release '+data.releaseName+'<i class="remove-release-btn icon-remove-circle"></i></td>');
+        $(td).attr('id', data.id);
+        $(row).append(td)
+        $('#releases-table tbody').append(row);
+    }
+
+    function addIterationsRow(data){
+        var row = $('<tr class="release-row"/>');
+        var td = $('<td/>');
+        $(td).text('Release '+ data.releaseName).attr('id', data.id);
+        $(row).append(td)
+        $('#releases-table tbody').append(row);
+    }
+
+    function deleteRelease(rlsid){
+        global.toggleLoading($('#'+rlsid),true,'small')
+        tcmModel.releases.remove(rlsid).done(function(data){
+            fetchReleases();
+        })
+
     }
 
     function createRelease(){

@@ -18,6 +18,25 @@ define(function(require){
                 id:'',
                 currentrelease:''
             }
+        },
+        toggleLoading: function(container, toggle, size){
+            if (size != 'big'){
+                size = 'small';
+            }
+            if (toggle == true){
+                $(container).block({
+                    message:'<div class="loading-'+size+'-block"></div>',
+                    overlayCSS:  { 
+                        backgroundColor: '#000', 
+                        opacity:         0.2, 
+                        cursor:          'wait' 
+                    },
+                    fadeIn:0,
+                    fadeOut:0
+                })
+            }else{
+                $(container).unblock()
+            }
         }
     }
 

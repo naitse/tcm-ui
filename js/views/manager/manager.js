@@ -51,8 +51,7 @@ define(function(require){
         },
 
         refreshRender:function(){
-
-          console.log('refreshing')
+          newBug = global.project.config.bug_url;
           
           $("#tcViewer #feature-container").css({
               'height' : '100%',
@@ -429,7 +428,7 @@ define(function(require){
         $('.bug-tc').live({
           click: function(e){
             e.stopPropagation();
-            window.open(newBug,'_blank');
+            window.open(global.project.config.bug_url,'_blank');
           }
         });
 
@@ -864,7 +863,7 @@ function saveTc(modal, flag, tcObject, featureReference){
             $('#tcViewer .tc[tc-id="'+updateReq.tcId+'"]').find('.tc-description').text(updateReq.name);
             $('#tcViewer .tc[tc-id="'+updateReq.tcId+'"]').find('.tc-steps').text(updateReq.description);
             PM.toggleLoading('#tcViewer',' .tc[tc-id="'+updateReq.tcId+'"]',false)
-            $(modal).find('.save').button('Update');
+            $(modal).find('.save').button('complete');
       // })
     }).fail(function(){
       $(modal).find('.alert').removeClass('hide')
