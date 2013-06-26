@@ -431,7 +431,7 @@ function editTc(tcObject){
 				// $('#suitesViewer #tags-select').append(option)
 				var suite = itemsModule.createItem(this.name,this.id,this.count)
 
-				var instance_suite = '<button id="suite-instance" title="Instance suite" type="button" class="btn btn-mini" style=""><i class="icon-share-alt"></i></button>';
+				var instance_suite = '<div id="suite-instance" title="Instance suite" type="button" class="" style=""><i class="icon-share-alt"></i></div>';
 
 				$(suite).find('.item-control-buttons .wrapper').prepend(instance_suite);
 

@@ -40,4 +40,6 @@ padding: 0px;
 .item .bt-ctrl{
 	width:9px;
 }
+
+.item-control-buttons .wrapper div:hover {border:1px solid;}
 </style>
