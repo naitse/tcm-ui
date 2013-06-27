@@ -214,15 +214,15 @@ define(function(require){
 
     function createRelease(){
 
-        try{
+        if($('.rstart').val().match(/(\d{1,2}\/\d{1,2}\/\d{4})/gm)){
             var startDate = $('.rstart').val().split('/')
             var start = startDate[2]+'-'+startDate[0]+'-'+startDate[1];
 
             var endDate = $('.rend').val().split('/')
             var end = endDate[2]+'-'+endDate[0]+'-'+endDate[1];
-        }catch(e){
-            var start =''
-            var end = ''
+        }else{
+            var start = 'empty'
+            var end = 'empty'
         }
         $(pV + " .btn-save-release").button('loading');
         tcmModel.releases.create( $("#new-release-name").val(),start,end).done(function(data, segundo, tercero){
