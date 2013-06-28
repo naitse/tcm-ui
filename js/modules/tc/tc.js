@@ -62,7 +62,7 @@ define(function(require){
 
 			$(tc).data('tcObject',tcObject)
 			$(tc).attr('tc-id',tcObject.tcId);
-			$(tc).find('.tc-description').text(tcObject.name.trunc(100,false));
+			$(tc).find('.tc-description')//.text(tcObject.name.trunc(100,false));
 			// $(tc).find('.run-status-tc').addClass('tc-s-' + statusClass).find('i').addClass(statusIcon);
 			$(tc).find('.dropdown-toggle').addClass('ddm-'+statusClass).find('i').addClass(statusIcon);
 			$(tc).find('ddm-notrun').data('statusId', 0);

@@ -18,7 +18,9 @@ require.config({
     'jquery.base64': 'libs/jquery.base64/jquery.base64',
     'textext':'libs/textext/textext.min',
     'panelsManager':'panelsManager',
-    'jquery.grid': 'libs/jquery.grid/jquery.handsontable.full'
+    'jquery.grid': 'libs/jquery.grid/jquery.handsontable.full',
+    barman: '//cdnjs.cloudflare.com/ajax/libs/barman/0.2.4/barman.min',
+    handlebars: '//cdnjs.cloudflare.com/ajax/libs/handlebars.js/1.0.0/handlebars.min'
   },
 
   shim: {
@@ -64,6 +66,9 @@ require.config({
     },
     'jquery.grid':{
         deps: ['jquery']
+    },
+    handlebars: {
+      exports: 'Handlebars'
     }
   }
 });

@@ -27,4 +27,21 @@
 	border-radius: 13px;
 	height: 20px !important;
 }
+
+#projectView .remove-iteration-btn.icon-remove-circle{
+	width: 20px;
+	height: 20px; 
+	float: right;
+	margin-right: 4px;
+	margin-top: -1px;
+	background-size: 730px;
+	background-position: -262px -150px;
+	cursor: pointer;
+}
+#projectView .remove-iteration-btn.icon-remove-circle.sec-state{
+	background-position: -150px -150px;
+	background-color: red;
+	border-radius: 13px;
+	height: 20px !important;
+}
 </style>

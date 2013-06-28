@@ -1,0 +1,33 @@
+<div class="tc" tc-id="{{tcId}}">
+   <div class="wrapper">
+      <div class="tc-description ds">{{name}}</div>
+      <div class="detailsIcon ds tc-expander"></div>
+      <div class="tc-stats ds">
+         {{#if btnGroup}}<div class="btn-group" >
+            {{#if delBtn}}<button type="button" title="delete" class="btn btn-mini del-tc" style="display: none;"><i class="icon-trash"></i><span class="del-confirm-label" style="display:none; position: relative; top: -2; color: red; ">Sure?</span></button>{{/if}}
+            {{#if editBtn}}<button type="button" title="edit" class="btn btn-mini edit-tc" style="display: none;"><i class="icon-pencil"></i></button>{{/if}}
+            {{#if bugBtn}}<button type="button" title="open jira" class="btn btn-mini bug-tc" style="display: none;"><i class="icon-bug"></i></button>{{/if}}
+            {{#if stausDd}}<a class="btn dropdown-toggle btn-inverse btn-mini ddm-notrun" data-toggle="dropdown" href="#"><i class="icon-off icon-white " style="margin-top: 2px;"></i><span class="caret"></span></a>
+            <ul class="dropdown-menu pull-right">
+               <li class="ddm-notrun" status-id="0"><i class="icon-off"></i> Not Run </li>
+               <li class="ddm-inprogress" status-id="1"><i class="icon-hand-right"></i> In Progress </li>
+               <li class="ddm-block" status-id="2"><i class="icon-exclamation-sign"></i> Blocked </li>
+               <li class="ddm-failed" status-id="3"><i class="icon-thumbs-down"></i> Fail </li>
+               <li class="ddm-pass" status-id="4"><i class="icon-thumbs-up"></i> Pass </li>
+            </ul>{{/if}}
+         </div>{{/if}}
+      </div>
+   </div>
+   <div class="steps-wrapper" style="display:none;">
+   	<span class="suites-label label">Suites:</span>
+      <ul class="tc-suites">
+      </ul>
+      <span class="desc-label label">Description:</span>
+      <pre class="tc-steps">{{description}}</pre>
+      <div class="tc-last-run-results-cont">
+	      <span class="lrr-label label" >Last run results:</span>
+	      <pre class="tc-last-run-results"></pre>
+  		</div>
+  		<div class="steps-footer"></div>
+   </div>
+</div>

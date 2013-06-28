@@ -209,9 +209,12 @@ define( function(require){
                 });
             },
 
-            create: function(rlsName) {
+            create: function(rlsName,rstart,rend) {
+
                 var data ={
-                    "name":rlsName
+                    "name":rlsName,
+                    "start":rstart,
+                    "end":rend
                 };
 
                 return $.ajax({
@@ -257,6 +260,15 @@ define( function(require){
 
             iterations: {
                 url: basePath + 'releases/{rlsId}/iterations',
+
+                remove: function(iterId) {
+
+                    return $.ajax({
+                        type: "POST",
+                        url: basePath2 + 'deleteIteration?iterationId=' + iterId,
+                        dataType: "json",
+                    });
+                },
 
                 create: function(rlsid, iterName){
                     var data ={
