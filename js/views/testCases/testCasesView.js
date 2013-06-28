@@ -12,31 +12,38 @@ define(function (require) {
 
 	var TestCaseView = TemplateBasedView.extend({
 		
-		template: require('text!templates/testCase.hbs'),
+		template: require('text!templates/testCase/testCase.hbs'),
 		templateData: function () { return extend({}, this.testCase, this.options); },
+
+		viewStates: {
+			normal:'',
+			notloading:  function () { this.unblock(); },
+			loading: function () { 
+				console.log('jkajksa')
+				this.block({
+				message:'<div class="loading-small-block"></div>',
+				overlayCSS:  { 
+					backgroundColor: '#000', 
+					opacity:         0.2, 
+					cursor:          'wait' 
+				},
+				fadeIn:0,
+				fadeOut:0
+			}) }
+
+		},
+
 
 		initializeOptions: function (testCase, options) {
 			this.testCase = testCase;
-			this.options = options;
-
-
-			var viewStates = {
-				normal:'',
-				notloading:  function () { this.unblock(); },
-				loading: function () { this.block({
-					message:'<div class="loading-small-block"></div>',
-					overlayCSS:  { 
-						backgroundColor: '#000', 
-						opacity:         0.2, 
-						cursor:          'wait' 
-					},
-					fadeIn:0,
-					fadeOut:0
-				}) }
-
+			console.log(options.delBtn)
+			this.options = {
+				btnGroup: (options.btnGroup || options.btnGroup === false ) ? options.btnGroup : true,
+				delBtn: (options.delBtn || options.delBtn === false ) ? options.delBtn : true,
+				editBtn: (options.editBtn || options.editBtn === false ) ? options.editBtn : true,
+				bugBtn: (options.bugBtn || options.bugBtn === false ) ? options.bugBtn : true,
+				stausDd: (options.stausDd || options.stausDd === false ) ? options.stausDd : true
 			}
-			
-			this.viewState = viewStates['normal'];
 		},
 
 		events: {
@@ -61,7 +68,7 @@ define(function (require) {
 		updateState: function (testCaseId, state) {
 
 			if (this.testCase.tcId === testCaseId) {
-				this.viewState.state.call(this);
+				eval('this.viewStates.'+state+'.bind(this)');
 			}
 
 		}
@@ -84,18 +91,18 @@ define(function (require) {
 
 				self.views = testCases.map(function (testCase) { return new TestCaseView(testCase, self.options); });
 
-				self.container.html(self.views.map(function (view) { return view.element(); }));
+				self.container.html(self.views.map(function (testCaseView) { return (testCaseView.element().children().data('tcObject',testCaseView.testCase)); }));
 
 			});
 
 		},
 
 		refreshTestCase: function (testCase) {
-			this.views.forEach(function (view) { view.refreshIfContains(testCase); });
+			this.views.forEach(function (testCaseView) { testCaseView.refreshIfContains(testCase); });
 		},
 
 		toggleState: function(testCaseId, state) {
-			this.views.forEach(function (view) { view.updateState(testCase, state); });	
+			this.views.forEach(function (testCaseView) { testCaseView.updateState(testCaseId, state); });	
 		}
 
 	});
