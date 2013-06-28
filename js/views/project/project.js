@@ -34,6 +34,7 @@ define(function(require){
             $(pV + ' #release-select-project').chosen()
             
             fetchReleases()
+            fetchIterations()
 			tcmModel.project.configuration.fetch().done(function(data){
 					$(pV + ' input').attr('disabled', false);
                 if(data.length > 0){
@@ -138,6 +139,23 @@ define(function(require){
           }
         });
 
+        $(pV +'.remove-iteration-btn').live({
+          click: function(e){
+            e.stopPropagation();
+            if($(this).hasClass('sec-state')){
+                deleteIteration($(this).parents('td').attr('id'));
+            }else{
+              $(this).addClass('sec-state');
+            }
+          },
+          mouseleave:function(e){
+            e.stopPropagation();
+            if($(this).hasClass('sec-state')){
+              $(this).removeClass('sec-state')
+            }
+          }
+        });
+
     
         }
 
@@ -147,20 +165,6 @@ define(function(require){
     }
 
     function adjustHeight(){
-
-        // $("#suitesViewer .right-pannel").css({
-        //       'height' : '100%'
-        //   });
-
-        //  $("#suitesViewer .lp-wrapper").css({
-        //       'height' : '100%'
-        //   });
-
-        //  $("#suitesViewer .left-center-panel").css({
-        //       'height' : '100%'
-        //   });
-
-        // $('#suitesViewer').css('height',(($('.tcm-container').height() - 20)*100)/$('.tcm-container').height()+'%')
     }
 
     $(window).resize(function(){
@@ -170,7 +174,6 @@ define(function(require){
 
     function fetchReleases(){
           tcmModel.releases.fetch().done(function(data){
-                //[{"releaseName":"27","iterationName":"16,18,19,20,21,22"},{"releaseName":"28","iterationName":"23,24,25"}]
                  $('.release-row').remove(); 
                 $(pV + ' #release-select-project').find('option').remove();
                 $(data).each(function(){
@@ -188,6 +191,16 @@ define(function(require){
         });
     }
 
+    function fetchIterations(){
+          tcmModel.releases_iterations.fetch().done(function(data){
+                //[{"releaseName":"27","iterationName":"16,18,19,20,21,22"},{"releaseName":"28","iterationName":"23,24,25"}]
+                 $('.iteration-row').remove(); 
+                $(data).each(function(){
+                    addIterationsRow(this);
+                })
+        });
+    }
+
     function addReleaseRow(data){
         var row = $('<tr class="release-row"/>');
         var td = $('<td id="">Release '+data.releaseName+'<i class="remove-release-btn icon-remove-circle"></i></td>');
@@ -197,17 +210,28 @@ define(function(require){
     }
 
     function addIterationsRow(data){
-        var row = $('<tr class="release-row"/>');
-        var td = $('<td/>');
-        $(td).text('Release '+ data.releaseName).attr('id', data.id);
-        $(row).append(td)
-        $('#releases-table tbody').append(row);
+        $(data.iterations).each(function(){
+            var row = $('<tr class="iteration-row"/>');
+            var td = $('<td>'+this.name+'<i class="remove-iteration-btn icon-remove-circle"></i></td></td>').attr('id',this.id);
+            var tdr = $('<td> Release '+data.name+'</td>').attr('id',data.id);
+            $(row).append(td,tdr)
+            $('#iterations-table tbody').append(row);
+        }).bind(data)
     }
 
     function deleteRelease(rlsid){
         global.toggleLoading($('#'+rlsid),true,'small')
         tcmModel.releases.remove(rlsid).done(function(data){
             fetchReleases();
+            fetchIterations();
+        })
+
+    }
+
+    function deleteIteration(iterId){
+        global.toggleLoading($('#'+iterId),true,'small')
+        tcmModel.releases.iterations.remove(iterId).done(function(data){
+            fetchIterations();
         })
 
     }
@@ -253,6 +277,7 @@ define(function(require){
 
             $(pV + " #new-iter-name").val('');
             $(pV + " .btn-save-iter").button('reset');
+            fetchIterations();
             
             // $("#jiraItems tr input:checked").each(function(){
             //     var issue = $(this).parents('.jiraRow').data('jiraIssue');
