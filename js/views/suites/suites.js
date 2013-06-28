@@ -148,7 +148,7 @@ define(function(require){
 					  }
 					 $(this).button('loading');
 					 var self = this;
-					tcmModel.suites.testcases.add($('#suitesViewer .item .selected').attr('item-id'),req).done(function(data){
+					tcmModel.suites.testcases.add($('#suitesViewer .item.selected').attr('item-id'),req).done(function(data){
 						
 						if(data[0].tcId != ""){
 
