@@ -4,7 +4,7 @@ pre{white-space:pre-wrap;white-space:-moz-pre-wrap;white-space:-pre-wrap;white-s
 .tcm-container{min-width:1118px;min-height:600px;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;-ms-box-sizing:border-box;-o-box-sizing:border-box;box-sizing:border-box;overflow:hidden;border-top:2px solid #ccc;box-sizing:border-box;width:100%;height:100%;margin-left:auto;margin-right:auto;padding:9px 20px 47px 20px;background:white}
 .left-pannel{min-width: 36px;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;-ms-box-sizing:border-box;-o-box-sizing:border-box;box-sizing:border-box;border:1px solid #ccc;box-shadow:inset 0 0 8px -3px black;-moz-box-shadow:0 0 6px -3px black inset;box-sizing:border-box;height:100%;width:100%;float:left;overflow-y:auto;overflow:hidden;padding-bottom:29px}
 .right-pannel{-webkit-box-sizing:border-box;-moz-box-sizing:border-box;-ms-box-sizing:border-box;-o-box-sizing:border-box;box-sizing:border-box;border:1px solid #ccc;box-shadow:inset 0 0 8px -3px black;-moz-box-shadow:0 0 6px -3px black inset;box-sizing:border-box;height:100%;width:auto;float:none;overflow-y:auto;overflow:hidden;padding-bottom:29px}
-.toolbar{min-width: 363px;background:#03415F;border-bottom:1px solid #ccc;border-radius:6px 6px 0 0;height:23px}
+.toolbar{background:#03415F;border-bottom:1px solid #ccc;border-radius:6px 6px 0 0;height:23px}
 #release-select{width:180px}
 .hide{display:none}
 .desc-header{height:28px;border-bottom:1px solid #ccc;background:#f7f7f7;font-weight:bold;overflow:hidden}
@@ -98,10 +98,7 @@ pre{white-space:pre-wrap;white-space:-moz-pre-wrap;white-space:-pre-wrap;white-s
 .feature a:hover{color: #ccc;}
 .desc-header-text div{height: 20px;overflow: hidden;color: #454545;text-decoration: underline;cursor: pointer;}
 .desc-header-text div:hover{color: #ccc;}
-#feature-filter{width: auto;
-margin-left: 4px;
-margin-top: -1px;
-margin-bottom: -3px;}
+#feature-filter{width: auto;margin-left: 4px;margin-top: -1px;margin-bottom: -3px;}
 #filter-completed-features:{cursor: pointer;}
 #release_select_chzn{width:130px !important;}
 .no-tc-feature-done{background-color: #5eb95e;background-image: -moz-linear-gradient(top,#62c462,#57a957);background-image: -webkit-gradient(linear,0 0,0 100%,from(#62c462),to(#57a957));background-image: -webkit-linear-gradient(top,#62c462,#57a957);background-image: -o-linear-gradient(top,#62c462,#57a957);background-image: linear-gradient(to bottom,#62c462,#57a957);background-repeat: repeat-x;filter: progid:DXImageTransform.Microsoft.gr}
@@ -110,21 +107,11 @@ margin-bottom: -3px;}
 .tagit-new{height: 14px !important;}
 .tagit-input {font-size: 11px !important;}
 .plan-tc-td {box-shadow: #000 0px 0px 14px -6px inset;-moz-box-shadow: #000 0px 0px 14px -9px inset;-webkit-box-shadow: #000 0px 0px 14px -6px inset;}
-/*.iteration-holder {
-	box-shadow: 0px 0px 37px 2px #d2e9fa inset;
-	-moz-box-shadow: 0px 0px 37px 2px #d2e9fa inset;
-	-webkit-box-shadow: 0px 0px 37px 2px #d2e9fa inset;
-padding-bottom: 4px;
-}*/
-
-.iteration-holder .item.iteration {
-	margin-left: 45;
-}
+.iteration-holder .item.iteration {	margin-left: 45;}
 .iteration-holder-name {padding: 3px;padding-left: 20px;background: #03415f;color: white;font-weight: inherit;}
 .feature-actions {padding: 0px;padding-left: 5px;background: #0f5a7f;color: white;font-weight: bold;}
 .feature-buttons {height:19px; padding: 3px;padding-left: 5px;background: #0f5a7f;color: white;font-weight: bold;}
 #tcViewer .toolbar #holder i{display: inline;float: left;margin-top: 5px;margin-left: 5px;cursor: pointer !important;}
-/*#tcViewer #feature-container {padding-top: 28px;}*/
 #tcViewer .level{display:inline-block;height: 5px; background: grey; width: 13px;margin-right: 2px}
 #tcViewer .levels{height: 11px; width:80px; margin-left: auto; margin-right: auto;}
 #tcViewer .item .item-remove{display:none;}
@@ -132,39 +119,17 @@ padding-bottom: 4px;
 #tcViewer .theFeatures { position: absolute; bottom: 0; left: 0; top: 27px; right: 0px; overflow: hidden;overflow-y: auto;}
 /*http://jsfiddle.net/sKb84/*/
 .item.active:hover{border: 1px solid #d2e9fa;box-shadow: #d2e9fa 0 0 50px inset;-moz-box-shadow: #d2e9fa 0 0 50px inset;-webkit-box-shadow: #d2e9fa 0 0 50px inset;}
-.icon-permalink {
-background-image: url('images/icon-permalink.png')!important;
-background-position: 0!important;
-}
-#tcViewer #add-feature {
-  width: 21px;
-height: 19px; 
-float: right;
-margin-right: 4px;
-margin-top: -1px;
-cursor: pointer;
-}
-#tcViewer #add-feature .icon-plus-sign {
-width: 21px;
-height: 19px;
-background-size: 730px;
-background-position: 0px -151px;
-}
-#tcViewer #filter-completed-features {
-  width: 21px;
-height: 19px; 
-float: right;
-margin-right: 4px;
-margin-top: -1px;
-cursor: pointer;
-}
-#tcViewer #filter-completed-features .icon-filter{
-width: 21px;
-height: 19px;
-background-size: 730px;
-background-position: -636px -225px;
-}
-
+.icon-permalink {background-image: url('images/icon-permalink.png')!important;background-position: 0!important;}
+#tcViewer #add-feature, #tcViewer .add-tc{  width: 21px;height: 19px; float: right;margin-right: 4px;margin-top: -1px;cursor: pointer;}
+#tcViewer .add-tc{position: absolute;right: 3px;top: 6px;}
+#tcViewer #add-feature .icon-plus-sign,#tcViewer .add-tc .icon-plus-sign {width: 21px;height: 19px;background-size: 730px;background-position: 0px -151px;}
+#tcViewer #filter-completed-features {  width: 21px;height: 19px; float: right;margin-right: 4px;margin-top: -1px;cursor: pointer;}
+#tcViewer #filter-completed-features .icon-filter{width: 21px;height: 19px;background-size: 730px;background-position: -636px -225px;}
+.select-all-tc{	width: 21px;height: 19px;float: left;margin-left: 16px;margin-top: -1px;cursor: pointer;}
+#tcViewer .icon-align-justify{width: 21px;height: 19px;background-size: 730px;background-position: -524px -77px;}
+.icon-copy {	background-image: url('images/copy.png')!important;	background-position: 0px 0px;background-size: 100%;width: 20px;height: 20px;}
+#tcViewer .copy-tc {	position:absolute;	right: 33px;	top: 4px;	cursor:pointer;}
+#tcViewer #copy-tc-modal {	width:50% !important;	left: 44% !important;	height: 500px;}#tcViewer #copy-tc-modal .modal-body{	height: 370;}#tcViewer #copy-tc-modal .panel{	width:49%;	border:1px solid;	float: left;height: 346px;}.multi-active{border: 1px solid #d2e9fa;box-shadow: #d2e9fa 0 0 50px inset;-moz-box-shadow: #d2e9fa 0 0 50px inset;-webkit-box-shadow: #d2e9fa 0 0 50px inset;}.panel#feature-cont {	overflow: hidden;	overflow-y:auto; }#release_selector_chzn {	right: 25px;position: absolute;}.panels {	margin-top: 30px;}#copy-tc-modal .modal-body {	overflow: hidden;}
 
 
 

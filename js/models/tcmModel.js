@@ -188,6 +188,20 @@ define( function(require){
                     });
             }
         },
+        testcases:{
+            clone:function(req){
+                url = basePath2 + 'releases_iterations'
+
+                return $.ajax({
+                        type: "POST",
+                        url: basePath2 + "cloneTcs",
+                        data:JSON.stringify(req),
+                        contentType: "application/json",
+                        dataType: "json"
+                });
+
+            }
+        },
         releases: {
             url: basePath + 'releases',
 
