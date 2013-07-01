@@ -104,13 +104,16 @@ define(function(require){
 				}
 			});
 
-			$(pV+' #item-add').live({
+			$(pV+' .add-tc').live({
 				click:function(e){
 					// e.stopPropagation();
+					if($(pV + '.item.selected').size() == 0){
+						return false;
+					}
 					$(pV+' #suite-tc-close').click();
 					$('#suitesViewer #suite-tc-save').removeClass('update').addClass('save-new');
 					PM.colapseExpandRightPanel(pV,'block');
-					$(pV + ' #rp-wrapper').data('item-id',$(this).parents('.item').attr('item-id'))
+					$(pV + ' #rp-wrapper').data('item-id',$(pV + '.item.selected').attr('item-id'))
 				}
 			})
 
@@ -158,6 +161,7 @@ define(function(require){
 							$(tc_html).find('.bug-tc').remove();
 							$(tc_html).find('.dropdown-menu').remove();
 							$(tc_html).find('.dropdown-toggle').remove();
+							$(tc_html).unbind("click");
 				       		tcsModule.renderTC(tc_html, '#suitesViewer'); //REMOVE THE PARSER
 
 							$(pV + '.item[item-id='+suiteId+']').find('.count').text(parseInt($(pV + '.item[item-id='+suiteId+']').find('.count').text()) + 1)
@@ -512,6 +516,8 @@ function editTc(tcObject){
 		var suite = itemsModule.createItem(data.name,data.id,0)
 
 		var instance_suite = '<button id="suite-instance" title="Instance suite" type="button" class="btn btn-mini" style=""><i class="icon-share-alt"></i></button>';
+
+		$(suite).find('#item-add').remove();
 
 		$(suite).find('.item-control-buttons .wrapper').prepend(instance_suite);
 

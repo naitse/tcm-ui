@@ -31,7 +31,13 @@
             <div id="description">
                 <div class="desc-header">
                     <div id="desc-expander" class="desc-expander detailsIcon ds"></div>
-                    <button type="button" class="btn btn-mini add-tc" disabled="disabled">Add TC</button>
+                    <div type="button" title="Add new Item" class="add-tc" disabled="true">
+                        <i class="icon-plus-sign"></i>
+                    </div>
+                    <div type="button" title="Clone tcs" class="copy-tc" disabled="true">
+                        <i class="icon-copy"></i>
+                    </div>
+                    <!-- <button type="button" class="btn btn-mini add-tc" disabled="disabled">Add TC</button> -->
                     <div class="desc-header-text ds"></div>
                     <!-- <div id="tc-refresh" class="icon-refresh"></div> -->
                 </div>
@@ -46,33 +52,38 @@
         </div>
     </div>
     <div id="rp-wrapper" style="display:none;">
-        <div class="modal-header">
-            <h4 class="rp-title"></h4>
-        </div>
-        <div class="modal-body">
-            <div class="tc-fields">
-                <h7>Title:</h7>
-                <input class="new-tc-title" type="text" style=" width: 100%; "></input>
-                <br/>
-                <h7>Description:</h7>
-                <textarea class="new-tc-desc" style=" width: 100%; height:200px; resize: none;"></textarea>
+        <div id="tc-mod" style="">
+            <div class="modal-header">
+                <h4 class="rp-title"></h4>
             </div>
-            <div class="run-tc-modal" style="display:none;">
-                <div class="well well-small run-status">
-                    Run state: 
+            <div class="modal-body">
+                <div class="tc-fields">
+                    <h7>Title:</h7>
+                    <input class="new-tc-title" type="text" style=" width: 100%; "></input>
+                    <br/>
+                    <h7>Description:</h7>
+                    <textarea class="new-tc-desc" style=" width: 100%; height:200px; resize: none;"></textarea>
                 </div>
-                Actual result:
-                <textarea class="actual-result" style=" width: 100%; height:200px; resize: none;"></textarea>
+                <div class="run-tc-modal" style="display:none;">
+                    <div class="well well-small run-status">
+                        Run state: 
+                    </div>
+                    Actual result:
+                    <textarea class="actual-result" style=" width: 100%; height:200px; resize: none;"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="alert alert-error hide">
+                    There was an error, please try again...
+                </div>
+                <label class="checkbox inline" style="float:left;margin-left:5px;">
+                    <input type="checkbox" class="proposed" /> Save as proposed</label>
+                <a href="#" class="btn cancel"  >Cancel</a>
+                <a href="#" class="btn btn-primary save" data-complete-text="Update" data-loading-text="working...">Add</a>
             </div>
         </div>
-        <div class="modal-footer">
-            <div class="alert alert-error hide">
-                There was an error, please try again...
-            </div>
-            <label class="checkbox inline" style="float:left;margin-left:5px;">
-                <input type="checkbox" class="proposed" /> Save as proposed</label>
-            <a href="#" class="btn cancel"  >Cancel</a>
-            <a href="#" class="btn btn-primary save" data-complete-text="Update" data-loading-text="working...">Add</a>
+        <div id="copy-tc-mod" style="display:none;">
+
         </div>
     </div>
 
@@ -99,6 +110,32 @@
         </div>
     </div>
 
+    <div id="copy-tc-modal" class="modal" style="display:none;">
+        <div class="modal-header">
+            <h3 class="feature-title">Copy TCs</h3>
+        </div>
+        <div class="modal-body">
+                            <div type="button" title="Select All" class="select-all-tc" disabled="true">
+                        <i class="icon-align-justify"></i>
+                    </div>
+                        <select data-placeholder="Choose an Iteration..." id="release-selector" tabindex="3" >
+                <option></option>
+            </select>
+            <div class="panels">
+                <div id="tc-container" class="panel">
+                </div>
+                <div id="feature-cont" class="panel">
+                </div>  
+            </div>
+        </div>
+        <div class="modal-footer">
+            <div class="alert alert-error hide">
+                There was an error, please try again...
+            </div>
+            <a href="#" class="btn cancel"  >Cancel</a>
+            <a href="#" class="btn btn-primary save-copy" data-loading-text="working...">Copy</a>
+        </div>
+    </div>
     <!-- <div class="spring-progress"></div> -->
 
 <!--         <div id="delete-tc-alert" class="modal hide fade" style="height: 20px;">
