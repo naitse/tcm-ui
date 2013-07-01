@@ -94,14 +94,15 @@ define(function(require){
                         var group = $('<div  class="accordion-group"/>');
 
                         _.each(coverageData, function (ftr) {
-                            var row = $('<tr style=" cursor: pointer; "></tr>').attr("feature-id",ftr.jiraKey);
+                            var random = Math.floor((Math.random()*1000)+1)
+                            var row = $('<tr style=" cursor: pointer; "></tr>').attr("feature-id",ftr.jiraKey + random);
 
                             row.append("<td>"+ftr.jiraKey+"</td>");
                             row.append("<td>"+ftr.name+"</td>");
                             row.append("<td>"+ftr.testCase.length+"</td>");
 
                             // Test cases
-                            var tcRow = $('<tr style="display:none; "></tr>').addClass('tc-row').attr("feature-id",ftr.jiraKey);
+                            var tcRow = $('<tr style="display:none; "></tr>').addClass('tc-row').attr("feature-id",ftr.jiraKey + random);
                             var tcTd = $('<td colspan="3" style=" padding-left: 30px; " ></td>').addClass('plan-tc-td');
 
                             _.each(ftr.testCase, function(testItem){
