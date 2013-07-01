@@ -67,6 +67,26 @@ background-size: 730px;
 background-position-y: -151px;
 }
 
+#suitesViewer .add-tc{
+  width: 21px;
+height: 19px; 
+float: right;
+margin-right: 4px;
+margin-top: -1px;
+cursor: pointer;
+}
+#suitesViewer .add-tc{
+position: absolute;
+right: 3px;
+top: 6px;
+}
+#suitesViewer .add-tc .icon-plus-sign {
+width: 21px;
+height: 19px;
+background-size: 730px;
+background-position: 0px -151px;
+}
+
 body #suitesViewer #myModal {
   width: 345px; /* desired relative width */
   /*left: 25%;  (100%-width)/2 */
@@ -91,8 +111,11 @@ body #suitesViewer #myModal.fade.in {
         </div>
         <div class='right-pannel round-corner-all'>
             <div class="toolbar">
-                <select data-placeholder="Select tags..." style="width: 100%; display:none;" multiple="" tabindex="-1" id="tags-select" class="chzn-select">
-                <option value=""></option>
+<!--                 <select data-placeholder="Select tags..." style="width: 100%; display:none;" multiple="" tabindex="-1" id="tags-select" class="chzn-select">
+                <option value=""></option> -->
+                <div type="button" title="Add new Item" class="add-tc" disabled="true">
+                        <i class="icon-plus-sign icon-white"></i>
+                </div>
               </select>
             </div>
             <div id="tc-container" class="round-corner-all">

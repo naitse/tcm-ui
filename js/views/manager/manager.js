@@ -99,7 +99,7 @@ define(function(require){
           }
         });
         
-        $('.feature').live({
+        $('#tcViewer .left-pannel .feature').live({
           click: function(e){
                 e.stopPropagation();
                 PM.colapseExpandRightPanel('#tcViewer','none');
@@ -115,10 +115,10 @@ define(function(require){
                 }
                   $('.desc-header-text').html('').append(issueTitle)
 
-                $('.feature').removeClass('active');
+                $(' .left-pannel .feature').removeClass('active');
                 $(this).addClass('active');
                 loadFeatureDesc($(this).data('desc'))
-                $('.add-tc').attr('disabled',false)
+                $('#tcViewer .add-tc').attr('disabled',false)
                 getTests(global.currentSS.featureId);
              
                 $('#desc-wrapper').css({
@@ -154,7 +154,7 @@ define(function(require){
         });
 
 
-        $('.feature .bt-ctrl.open').live({
+        $(' .left-pannel .feature .bt-ctrl.open').live({
                 click:function(e){
                    e.stopPropagation();
                    $(this).removeClass('open').addClass('close')
@@ -167,13 +167,13 @@ define(function(require){
             })
 
 
-            $(".feature .item-control-buttons").live({
+            $(" .left-pannel .feature .item-control-buttons").live({
                 mouseleave:function(){
                     $(this).find('.bt-ctrl.open').click();
                 }
             });
 
-            $('.feature .bt-ctrl.close').live({
+            $(' .left-pannel .feature .bt-ctrl.close').live({
                 click:function(e){
                    e.stopPropagation();
 
@@ -227,33 +227,6 @@ define(function(require){
           }
         });
         
-        // $('#tcViewer .tc-expander').live({
-        //   click: function(e){
-        //     e.stopPropagation();
-        //     if($(this).parents('.tc').find('.tc-steps').text() == ''){
-        //       $(this).parents('.tc').find('.tc-steps').hide();
-        //     }else{
-        //       $(this).parents('.tc').find('.tc-steps').show();
-        //     }
-        //     $(this).parents('.tc').find('.steps-wrapper').show('fast');
-        //     $(this).removeClass('tc-expander').addClass('tc-collapse detailsOpen');
-        //   }
-        // });
-        
-        // $('#tcViewer .tc-collapse').live({
-        //   click: function(e){
-        //     e.stopPropagation();
-        //     $(this).parents('.tc').find('.steps-wrapper').hide('fast');
-        //     $(this).removeClass('tc-collapse detailsOpen').addClass('tc-expander');
-        //   }
-        // });
-        
-        // $('#tcViewer .tc-suites').live({
-        //   click: function(e){
-        //     e.stopPropagation();
-        //   }
-        // });
-
 
         $('#tcViewer .run-tc-modal .dropdown-menu > li').live({
           click: function(e){
@@ -305,9 +278,12 @@ define(function(require){
           }
         });
         
-         $('.add-tc').live({
+         $('#tcViewer .add-tc').live({
           click: function(e){
             e.stopPropagation();
+            if($('#tcViewer .feature.active').size() == 0){
+              return false;
+            }
             PM.colapseExpandRightPanel('#tcViewer','none');
             PM.colapseExpandRightPanel('#tcViewer','block')
             clearTCModal();
@@ -315,6 +291,8 @@ define(function(require){
             
           }
         });
+
+         
         
         $('.del-tc-t.active').live({
           click: function(e){
@@ -418,7 +396,6 @@ define(function(require){
           }
         });
 
-
           $('#tcViewer .tc .dropdown-menu').live({
                 mouseleave: function(){
                       $(this).parents('.btn-group').removeClass('open')
@@ -433,7 +410,7 @@ define(function(require){
           }
         });
 
-        $('#tcViewer .feature .close-jira-btn').live({
+        $('#tcViewer  .left-pannel .feature .close-jira-btn').live({
           // click: function(e){
           //   e.stopPropagation();
           //   deleteFeatureInterceptor($(this).parents('.feature'));
@@ -462,7 +439,7 @@ define(function(require){
           }
         });
 
-        $('#tcViewer .feature .remove-feature').live({
+        $('#tcViewer  .left-pannel .feature .remove-feature').live({
           click: function(e){
             e.stopPropagation();
             if($(this).hasClass('sec-state')){
@@ -489,7 +466,7 @@ define(function(require){
 
 
 
-        $('.close-jira-btn').live({
+        $(' .left-pannel .close-jira-btn').live({
           click: function(e){
             e.stopPropagation();
           }
@@ -503,7 +480,7 @@ define(function(require){
           }
         });
 
-        $('#feature-filter').live({
+        $(' .left-pannel #feature-filter').live({
           keyup:function() {
             filterFeatures($(this).val());
           }
@@ -523,7 +500,7 @@ define(function(require){
           }
         })
 
-        $('#tcViewer .item.release').live({
+        $('#tcViewer  .left-pannel .item.release').live({
           click:function(e){
             e.stopPropagation();
             global.currentSS.releaseId = $(this).attr('item-id');
@@ -536,7 +513,7 @@ define(function(require){
           }
         });
 
-        $('#tcViewer .item.iteration').live({
+        $('#tcViewer  .left-pannel .item.iteration').live({
           click:function(e){
             e.stopPropagation();
             global.currentSS.iterationId = $(this).attr('item-id');
@@ -546,7 +523,7 @@ define(function(require){
           }
         });
 
-        $('#tcViewer #feature-container').scroll(function(){
+        $('#tcViewer  .left-pannel #feature-container').scroll(function(){
            $('.feature-holder').position({
             my:        "left top",
             at:        "left top",
@@ -555,14 +532,15 @@ define(function(require){
           })
         })
 
-        $('#holder.features i').live({
+        $(' .left-pannel #holder.features i').live({
           click:function(e){
             e.stopPropagation();
             PM.colapseExpandRightPanel('#tcViewer','none');
               clearTimeout(statCheck);
               $('.noresult').remove();
+              $('#tcViewer .feature.active').removeClass('active')
              $('#filter-completed-features').removeClass('enabled').attr("disabled",true);
-            $('.add-tc').attr('disabled',true)
+            $('#tcViewer .add-tc').attr('disabled',true)
             $('#desc-container').children().remove()
             $('#desc-container').text('');
             $('#desc-wrapper').hide()
@@ -578,11 +556,17 @@ define(function(require){
           }
         });
 
-        $('#tcViewer #add-feature.enabled').live({
+        $('#tcViewer  .left-pannel #add-feature.enabled').live({
           click:function(){
             $('#new-feature-modal').modal();
           }
         })
+
+        // $('#tcViewer  .panels #add-feature.enabled').live({
+        //   click:function(){
+        //     $('#new-feature-modal').modal();
+        //   }
+        // })
 
         $('#tcViewer #new-feature-modal .cancel').click(function(){
           $('#new-feature-modal').modal('hide');
@@ -591,6 +575,102 @@ define(function(require){
         $('#tcViewer #new-feature-modal .save-feature').click(function(){
             saveFeature();
         })
+
+
+
+        //////////COPY MODAL
+        $('#tcViewer #copy-tc-modal #tc-container .tc').live({
+            click:function(e){
+              e.stopPropagation();
+              $(this).find('.wrapper').removeClass('active');
+              $(this).toggleClass('multi-active').find('.wrapper').toggleClass('multi-active');
+
+            }
+         })
+
+        $('#tcViewer .copy-tc').live({
+          click: function(e){
+            e.stopPropagation();
+            if($('#tcViewer .feature.active').size() == 0 || $('#tcViewer #tc-container .tc').size() == 0){
+              return false;
+            }
+            
+            $('#tcViewer .panels #tc-container').children().remove();
+
+            $('#tcViewer #tc-container .tc').each(function(){
+                var tc_html = tcsModule.createTcHTML($(this).data('tcObject'),null,false);
+                $(tc_html).find('.tc-stats').remove();
+                $(tc_html).find('.suites-label').remove();
+                $(tc_html).find('.tc-suites').remove();
+                $(tc_html).find('.tc-expander').remove();
+                tcsModule.renderTC(tc_html, '#tcViewer .panels')
+            })
+
+           $('#tcViewer #copy-tc-modal #release-selector').releases_iterations_dd(function(){
+                    
+              var iterId =  $("#copy-tc-modal #release-selector option:selected").val();
+                    // var rlsId =  $("#tcMetrics #metrics-release-select option:selected").parents('optgroup').attr('rel-id');
+                 tcmModel.releases.iterations.features.fetch(0, iterId).done(function(data){
+                    if (data.length > 0){
+                      $('.panels #feature-cont').children().remove();
+                      $(data).each(function(){
+                          featuresModule.render('.panels #feature-cont',featuresModule.create(this))
+                      })
+                    }
+                })
+
+           },function(){
+                // $("#tcMetrics #release-select").css('visibility','visible');
+           })
+            
+            $('#tcViewer #copy-tc-modal').modal();
+          }
+        });
+
+        $('#tcViewer #copy-tc-modal .save-copy').on({
+          click:function(){
+            var elements = $('#tcViewer #copy-tc-modal #tc-container .tc.multi-active');
+
+            if($('.panels .feature.active').size() == 0 || $('.panels .tc.multi-active').size() == 0){
+              return false;
+            }
+            var req = {
+              featureId:$('.panels .feature.active').attr('feature-id'),
+              testcases:[]
+            }
+
+            $(elements).each(function(){
+                req.testcases.push($(this).attr('tc-id'));
+            })
+            $('#tcViewer #copy-tc-modal .save-copy').button('loading')
+            tcmModel.testcases.clone(req).done(function(){
+              $('#tcViewer #copy-tc-modal .save-copy').button('reset')
+            })
+          }
+        })
+
+
+        $('.panels .feature').live({
+          click:function(e){
+            e.stopPropagation();
+            $('.panels .feature').removeClass('active')
+            $(this).addClass('active');
+          }
+        })
+
+        $('#tcViewer .select-all-tc').on({
+          click:function(){
+            $('#tcViewer #copy-tc-modal #tc-container .tc').toggleClass('multi-active');
+            $('#tcViewer #copy-tc-modal #tc-container .tc .wrapper').toggleClass('multi-active');
+          }
+        })
+
+        $('#tcViewer #copy-tc-modal .cancel').on({
+          click:function(){
+            $('#tcViewer #copy-tc-modal').modal('hide');
+          }
+        })
+        //////////
 
         }
     };
@@ -775,7 +855,7 @@ function clearData(){
   clearTimeout(statCheck);
    $('#filter-completed-features').removeClass('enabled').attr("disabled",true);
   $('#tcViewer .theFeatures').children().remove()
-  $('.add-tc').attr('disabled',true)
+  $('#tcViewer .add-tc').attr('disabled',true)
   $('#desc-container').children().remove()
   $('#desc-container').text('');
   $('#desc-wrapper').hide()
@@ -961,7 +1041,7 @@ function removeTestCase(tcId,feature){
   function statsMonitoring(iterationId){
       
       var features_array = [];
-    $('.feature').each(function(){
+    $('.left-pannel .feature').each(function(){
       try{
         if(!$(this).hasClass('ready')){
             var states = $(this).data('tcStats')
@@ -983,7 +1063,7 @@ function removeTestCase(tcId,feature){
         tcmModel.releases.iterations.monitoringExecutedTestCases.fetch(global.currentSS.releaseId, global.currentSS.iterationId, features_array).done(function(data){
             if(data.length > 0){
               $(data).each(function(){
-                featuresModule.updateFeatureTestStats($('.feature[feature-id='+this.featureId+']'), this.states);
+                featuresModule.updateFeatureTestStats($('.left-pannel .feature[feature-id='+this.featureId+']'), this.states);
               });
             }
             statCheck=setTimeout(function(){statsMonitoring(iterationId)}, monitoring_interval);

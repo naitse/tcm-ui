@@ -1,7 +1,7 @@
 
 define( function(require){
-    var basePath = "http://tcm-backend.cloudhub.io/api/";
-    //var basePath = "http://tcm-backend-qa.cloudhub.io/api/";
+    //var basePath = "http://tcm-backend.cloudhub.io/api/";
+    var basePath = "http://tcm-backend-qa.cloudhub.io/api/";
     //var basePath = "http://54.226.164.226/api/";
     //var basePath = "http://localhost:8088/api/";
     var basePath2 = basePath.replace('api/','');
@@ -186,6 +186,20 @@ define( function(require){
                         url: this.url + iterId,
                         dataType: "json"
                     });
+            }
+        },
+        testcases:{
+            clone:function(req){
+                url = basePath2 + 'releases_iterations'
+
+                return $.ajax({
+                        type: "POST",
+                        url: basePath2 + "cloneTcs",
+                        data:JSON.stringify(req),
+                        contentType: "application/json",
+                        dataType: "json"
+                });
+
             }
         },
         releases: {
