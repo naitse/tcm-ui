@@ -1,4 +1,7 @@
 <div id="plugin-settings" class="row">
+    <div id="loadingBlock" class="loading-big-block" style="position: absolute; top: 20%;left: 50%;"/>
+
+
 
     <div class="tabbable tabs-left">
         <ul class="nav nav-tabs">
@@ -6,7 +9,7 @@
             <!-- <li><a href="#plugin2" data-toggle="tab"><i class="icon-chevron-right"></i> plugin 2</a></li> -->
 
         </ul>
-        <div id="jira" class="tab-content active" style="height: ">
+        <div id="jira" class="tab-content active">
             <div class="clearfix">
                 <input type="checkbox" id="pluginEnabled-jira" name="enabled"/>Enabled
             </div>
@@ -21,7 +24,7 @@
                 <div class="clearfix">
                     <label for="jirapassword" >Password</label>
                     <div >
-                        <input id="jirapassword" name="password" type="text" disabled="true" />
+                        <input id="jirapassword" name="password" type="password" disabled="true" />
                     </div>
                 </div>
                 <div class="clearfix">
@@ -33,16 +36,20 @@
                 <div class="clearfix">
                     <label for="jiraaddress">Address</label>
                     <div >
-                        <input id="jiraaddress" name="address" type="text" disabled="true" />
+                        <input id="jiraaddress" name="address" type="text" disabled="true" style="width: 40em"/>
                     </div>
                 </div>
                 <div class="clearfix">
                     <label for="jiragreenhopper" >GreenHopper Sprint</label>
                     <div>
-                        <input id="jiragreenhopper" name="greenhopper" type="text" disabled="true" />
+                        <input id="jiragreenhopper" name="greenhopper" type="text" disabled="true" style="width: 40em" />
                     </div>
                 </div>
                 <button id="save-jira" class="btn btn-mini btn-promary projec-config-save" data-loading-text="saving" >Save</button>
+            </div>
+            <div id="dbError" class="alert alert-error fade in" style="display:none;">
+                <button type="button" class="close" >×</button>
+                There were errors when calling DB!
             </div>
         </div>
     </div>

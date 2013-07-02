@@ -21,6 +21,7 @@ define(function(require){
 
                 this.attachEvents();
                 this.rendered = true;
+                $("#dbError").alert();
             }
 
         },
@@ -46,30 +47,30 @@ define(function(require){
                         });
                     }
                 });
-            });
+
+                $("#loadingBlock").hide();
+            }).fail(function(){
+                    $("#loadingBlock").hide();
+                    $("#dbError").show();
+                    console.log("failed load")
+                });
 
         },
 
         attachEvents: function(){
 
+            $("#dbError button").on('click', function(){
+                $("#dbError").hide()
+            });
+
             $("#pluginEnabled-jira").on('click', function(){
-                if(this.checked){
-                    $('#jirauser').removeAttr('disabled');
-                    $('#jirapassword').removeAttr('disabled');
-                    $('#jiraproject').removeAttr('disabled');
-                    $('#jiraaddress').removeAttr('disabled');
-                    $('#jiragreenhopper').removeAttr('disabled');
-                }else{
-                    $('#jirauser').attr('disabled', 'disabled');
-                    $('#jirapassword').attr('disabled', 'disabled');;
-                    $('#jiraproject').attr('disabled', 'disabled');
-                    $('#jiraaddress').attr('disabled', 'disabled');
-                    $('#jiragreenhopper').attr('disabled', 'disabled');
-                }
+                fieldsEnabled(this.checked);
             });
 
 
             $("#save-jira").on('click', function(){
+                $("#loadingBlock").show();
+                fieldsEnabled(false);
 
                 var pluginData = {
                     "id": 2,
@@ -85,13 +86,32 @@ define(function(require){
 
 
               tcmModel.plugins.save(pluginData).done(function(){
-                  console.log('saved');
+                  fieldsEnabled(true);
+                  $("#loadingBlock").hide();
+              }).fail(function(){
+                  $("#loadingBlock").hide();
+                      $("#dbError").show();
+
               });
             })
         }
     };
 
-
+    function fieldsEnabled(bFlag){
+        if(bFlag){
+            $('#jirauser').removeAttr('disabled');
+            $('#jirapassword').removeAttr('disabled');
+            $('#jiraproject').removeAttr('disabled');
+            $('#jiraaddress').removeAttr('disabled');
+            $('#jiragreenhopper').removeAttr('disabled');
+        }else{
+            $('#jirauser').attr('disabled', 'disabled');
+            $('#jirapassword').attr('disabled', 'disabled');;
+            $('#jiraproject').attr('disabled', 'disabled');
+            $('#jiraaddress').attr('disabled', 'disabled');
+            $('#jiragreenhopper').attr('disabled', 'disabled');
+        }
+    }
 
     return PluginsSettingsView;
 
