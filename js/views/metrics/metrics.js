@@ -26,12 +26,15 @@ define(function(require){
                     $(template).find('.permalink').remove();
                     $("#pannel-wrapper").append(template);
                     this.loadMetrics(0,iterId,true);
+                    $('#tcMetrics .graph-previews').css('top','-36px');
                 }else{
 
                     $("#pannel-wrapper").append(template);
                     this.loadIterations();
                     this.loadMetrics(0,$("#tcMetrics #metrics-release-select option").last().val());
                     attachEvents();
+                    $('#tcMetrics .graph-previews').css('top','-114px');
+
                 }
 
                 adjustChartHeight()
