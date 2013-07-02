@@ -188,6 +188,17 @@ define( function(require){
                     });
             }
         },
+        metrics:{
+                url: basePath2 + 'getFBTCS?iterationId=',
+            getFBTCS:function(iterId){
+
+                return $.ajax({
+                    type: "GET",
+                    url: this.url + iterId,
+                    dataType: "json"
+                });
+            }
+        },
         testcases:{
             clone:function(req){
                 url = basePath2 + 'releases_iterations'
