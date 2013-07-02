@@ -4,6 +4,7 @@ define(function(require){
         planTemplate = require('text!templates/metrics/metrics.html'),
         tcmModel = require('tcmModel'),
         _ = require('underscore');
+        tcsModule = require('modules/tc/tc');
     var dd = require('releases_iterations_dd');
     require('highcharts');
     require('exporting');
@@ -112,10 +113,36 @@ define(function(require){
 
                     });
 
+               var self =this
+                    tcmModel.metrics.getFBTCS(iterId).done(function(data){
+                        $('#tcMetrics #tc-container').children().remove();
+                        if(data.length > 0){
+                        $(data).each(function(){
+                            var tc_html = tcsModule.createTcHTML(this,null,false);
+                            $(tc_html).find('.btn-group').remove();
+                            $(tc_html).find('.tc-suites').remove();
+                            $(tc_html).find('.suites-label').remove();
+                            $(tc_html).data('sort',this.statusId);
+                            $(tc_html).attr('title',this.name)
+                            if(this.statusId == 2){
+                                $(tc_html).find('.detailsIcon').addClass('blocked');
+                            }else {
+                                $(tc_html).find('.detailsIcon').addClass('fail');
+                            }
+                            tcsModule.renderTC(tc_html, '#tcMetrics',false); //REMOVE THE PARSER
+                        })
+                                            $('#tcMetrics #tc-container > div').each(function () {
+                        if($(this).data('sort') == 3){
+                        $('#tcMetrics #tc-container').prepend(this)}
+                   })
+                        }
+                    }).fail(function(){
+                    });
 
                     $("#tcMetrics #metricsProgressBar").hide();
                     $("#tcMetrics #metricsContainer").show();
                     fixBorder()
+
         }
 
     };
@@ -262,11 +289,22 @@ define(function(require){
             var newChartWidth = parentWidth - previewsWidth;
             var newChartHeight = parentHeight - metrics_controls -100;
             $('#tcMetrics .graph-container').find('#container').children().highcharts().setSize(newChartWidth, newChartHeight)
+            $('#tcMetrics .graph-previews').css('height',parentHeight -20);
+            $('#tcMetrics #tc-container').css('height',parentHeight - 280)
+
         }catch(err){}
     }
 
     $(window).resize(adjustChartHeight);
 
+    function positionTCs(){
+                    $('#tcMetrics #tc-container').position({
+            my:'center top',
+            at:'center bottom',
+            of: $('#tcMetrics .graph-previews'),
+            collision: 'fit fit'
+            })
+    }
 
     return MetricsView;
 
