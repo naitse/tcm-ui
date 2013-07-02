@@ -10,17 +10,22 @@
 .main-container #container{
     width:100%;
 }
-.graph-previews {
+#tcMetrics .graph-previews {
     display: table-cell;
     width: 300px;
     vertical-align: top;
     padding: 8px;
+        position: relative;
+top: -114px;
+min-height: 580px;
+/*background: red;*/
 }
 
-.graph-previews .graph{
+#tcMetrics .graph-previews .graph{
    width: 320px; 
    height: 200px; 
     padding: 6px;
+
 /*margin-bottom: 20px;*/
 }
 
@@ -41,6 +46,29 @@ top: -22px;
 left: 258;
 height: 0px;
 }
+#tcMetrics #tc-container {
+/*background: red;
+width: 333px;
+height: 400px;
+position: relative;
+top: -23px;
+right: 341px;*/
+}
+
+#tcMetrics .tc .detailsIcon.fail {
+border: 1px solid #E65C56;
+box-shadow: #E65C56 0 25px inset
+-moz-box-shadow: #E65C56 0 25px inset;
+-webkit-box-shadow: #E65C56 0 25px inset;
+}
+
+#tcMetrics .tc .detailsIcon.blocked {
+   border: 1px solid #FFBC41;
+box-shadow: #FFBC41 0 25px inset;
+-moz-box-shadow: #FFBC41 0 25px inset;
+-webkit-box-shadow: #FFBC41 0 25px inset; 
+}
+
 </style>
 <div id="tcMetrics">
     <div id="metrics-controls">
@@ -67,6 +95,8 @@ height: 0px;
             </div>
             <div class="graph-previews round-corner-all">
                 <div id="dailyExecutionContainer" class="graph round-corner-all"></div>
+                <div id="tc-container" class="graph round-corner-all">
+                </div>
             </div>
         </div>
     </div>
