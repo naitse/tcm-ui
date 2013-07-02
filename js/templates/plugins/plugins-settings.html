@@ -1,15 +1,49 @@
 <div id="plugin-settings" class="row">
 
-    <div class="span3 bs-docs-sidebar">
-        <ul class="nav nav-list bs-docs-sidenav affix">
-            <li class="active"><a href="#overview"><i class="icon-chevron-right"></i> Jira</a></li>
-            <li class=""><a href="#transitions"><i class="icon-chevron-right"></i> plugin 2</a></li>
-            <li><a href="#modals"><i class="icon-chevron-right"></i> plugin 3</a></li>
-            <li><a href="#dropdowns"><i class="icon-chevron-right"></i> plugin 4</a></li>
-            <li><a href="#scrollspy"><i class="icon-chevron-right"></i> add new plugin</a></li>
-        </ul>
-    </div>
-    <div  id="plugin-props-table" class="span9"> <!--style="background-color: #f5f5f5; position: relative; margin: 15px 0; padding:39px 19px 14px; border: 1px solid #ddd;border-radius: 4px;"> -->
+    <div class="tabbable tabs-left">
+        <ul class="nav nav-tabs">
+            <li class="active"><a data-toggle="tab" href="#jira"><i class="icon-chevron-right"></i>Jira</a></li>
+            <!-- <li><a href="#plugin2" data-toggle="tab"><i class="icon-chevron-right"></i> plugin 2</a></li> -->
 
+        </ul>
+        <div id="jira" class="tab-content active" style="height: ">
+            <div class="clearfix">
+                <input type="checkbox" id="pluginEnabled-jira" name="enabled"/>Enabled
+            </div>
+            <div class="well well-small ">
+
+                <div class="clearfix">
+                    <label for="jirauser">User</label>
+                    <div >
+                        <input id="jirauser" name="user" type="text" disabled="true" />
+                    </div>
+                </div>
+                <div class="clearfix">
+                    <label for="jirapassword" >Password</label>
+                    <div >
+                        <input id="jirapassword" name="password" type="text" disabled="true" />
+                    </div>
+                </div>
+                <div class="clearfix">
+                    <label for="jiraproject" >Project</label>
+                    <div >
+                        <input id="jiraproject" name="project" type="text" disabled="true" />
+                    </div>
+                </div>
+                <div class="clearfix">
+                    <label for="jiraaddress">Address</label>
+                    <div >
+                        <input id="jiraaddress" name="address" type="text" disabled="true" />
+                    </div>
+                </div>
+                <div class="clearfix">
+                    <label for="jiragreenhopper" >GreenHopper Sprint</label>
+                    <div>
+                        <input id="jiragreenhopper" name="greenhopper" type="text" disabled="true" />
+                    </div>
+                </div>
+                <button id="save-jira" class="btn btn-mini btn-promary projec-config-save" data-loading-text="saving" >Save</button>
+            </div>
+        </div>
     </div>
 </div>
