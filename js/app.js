@@ -86,8 +86,11 @@ define([
                             module.render(queryParam);
                     }else{
                         try{//in case the function refreshRender does not exist at the module
+                            console.log('refresh viewer')
                             module.refreshRender();
-                        }catch(e){}
+                        }catch(e){
+                            console.log(e)
+                        }
                     }
 
 
@@ -139,6 +142,8 @@ define([
             });
 
             var app_router = new AppRouter;
+
+            window.App_router = app_router;
 
             app_router.on('route:defaultRoute', function(actions) {
                 loadModule(managerView);
