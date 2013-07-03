@@ -6,6 +6,7 @@ define(function(require){
         _ = require('underscore');
     require('highcharts');
     require('exporting');
+    require('releases_dd');
 
     var RlsMetricsView = {
         moduleId: "RlsMetrics",
@@ -16,6 +17,8 @@ define(function(require){
             if(!this.rendered){
                 $("#pannel-wrapper").append(planTemplate);
 
+                $("#tcRlsMetrics-release-select").releases_dd(this.loadGraphs);
+
                 this.attachEvents();
                 this.rendered = true;
             }
@@ -25,24 +28,18 @@ define(function(require){
             adjustChartHeight();
 
         },
-        attachEvents: function(){
-            var btnGetMetrics = $('#btnGetMetrics');
 
+        loadGraphs: function(){
+           var btnGetMetrics = $('#btnGetMetrics');
+           var rlsId =  $("#tcRlsMetrics-release-select option:selected").val();
 
-
-            var rlsId =  $("#metrics-release-select option:selected").parents('optgroup').attr('rel-id');
-
-
-
+            $("#tcRlsMetrics #loading-indicator").show();
             $("#tcRlsMetrics #metricsContainer").hide();
 
-            $("#tcRlsMetrics #metricsProgressBar").show();
-            $("#tcRlsMetrics #metricsProgressBar").find(".bar").css("width","10%");
+            $.when(tcmModel.releases.metrics_iter_trend(rlsId), tcmModel.releases.metrics_carried_over(rlsId)).done(function(metricsTrend, metricsCO ){
 
-
-            $.when(tcmModel.releases.metrics_iter_trend('4')).done(function(metrics){
-
-                var data = {
+                //trend graph
+                var dataTrend = {
                     categories: new Array(),
                     blocked: new Array(),
                     failed: new Array(),
@@ -51,31 +48,29 @@ define(function(require){
                     inprogress: new Array()
                 }
 
-                _.each(metrics, function(value, key, list){
-                    data.categories.push(value.name);
-                    data.blocked.push(value.Blocked);
-                    data.failed.push(value.Failed);
-                    data.passed.push(value.Passed);
-                    data.notrun.push(value.notrun);
-                    data.inprogress.push(value.inprogress);
+                _.each(metricsTrend[0], function(value, key, list){
+                    dataTrend.categories.push(value.name);
+                    dataTrend.blocked.push(value.Blocked);
+                    dataTrend.failed.push(value.Failed);
+                    dataTrend.passed.push(value.Passed);
+                    dataTrend.notrun.push(value.notrun);
+                    dataTrend.inprogress.push(value.inprogress);
                 });
 
-                $('#tcRlsMetrics #iterationsTrendContainer').data('data', data);
+                $('#tcRlsMetrics #iterationsTrendContainer').data('data', dataTrend);
                 renderIterationsTrend();
-            });
 
-
-            $.when( tcmModel.releases.metrics_carried_over(rlsId)).done(function( metrics ){
-                if(metrics.length > 0){
+                //carried over grap
+                if(metricsCO[0].length > 0){
                     var categories = new Array();
                     var seriesCarriedOver = new Array();
                     var seriesTotal = new Array();
-                    var data = {
+                    var dataCO = {
                         "categories": "",
                         "data": new Array()
                     }
 
-                    _.each(metrics, function(value, key, list){
+                    _.each(metricsCO[0], function(value, key, list){
 
                         categories.push(value.name);
 
@@ -85,30 +80,38 @@ define(function(require){
 
                     });
 
-                    data.categories = categories;
+                    dataCO.categories = categories;
                     var map = {
                         "name": "total",
                         "data": seriesTotal
                     }
 
-                    data.data.push(map);
+                    dataCO.data.push(map);
                     var map = {
                         "name": "carried over",
                         "data": seriesCarriedOver
                     };
 
-                    data.data.push(map);
+                    dataCO.data.push(map);
 
-                    $('#tcRlsMetrics #carriedOverContainer').data('data', data);
+                    $('#tcRlsMetrics #carriedOverContainer').data('data', dataCO);
                     renderCarriedOverGraph();
                 }
 
+
+                $("#tcRlsMetrics #loading-indicator").hide();
+                $("#tcRlsMetrics #metricsContainer").show();
+
+                fixBorder();
+                adjustChartHeight();
+
+
             });
 
-            $("#tcRlsMetrics #metricsProgressBar").hide();
+        },
 
-            $("#tcRlsMetrics #metricsContainer").show();
-            fixBorder()
+        attachEvents: function(){
+
 
         }
 
@@ -129,6 +132,8 @@ define(function(require){
                     }
                 }
             },
+            height:200,
+            width:300,
             colors: ['#FAA328','#CD433D','#5DB95D', '#c6c6c6', '#46ACCA' ],
             // colors: ['#c6c6c6','#46ACCA', '#5DB95D', '#CD433D', '#FAA328'],
             title: {
@@ -177,6 +182,8 @@ define(function(require){
             ]
         });
 
+
+
     }
 
     function toggleChartFocus(chartDiv){
@@ -194,6 +201,7 @@ define(function(require){
 
             renderCarriedOverGraph();
             fixBorder();
+            adjustChartHeight();
         }else{
             //to prevent focused graph to be removed
         }
@@ -212,34 +220,23 @@ define(function(require){
 
     function adjustChartHeight(){
         try{
-            $('#tcRlsMetrics ').css('height',(($('.tcm-container').height() - 30)*100)/$('.tcm-container').height()+'%')
-
-            var parentWidth = $('#tcRlsMetrics #metricsContainer').width();
-            var parentHeight = $('.tcm-container').height()
-            var metrics_controls = $('#tcRlsMetrics #metrics-controls').height();
-            var previewsWidth = 420;
-            var currentChartWidth = $('#tcRlsMetrics .graph-container').find('#container').children().width();
-            var newChartWidth = parentWidth - previewsWidth;
-            var newChartHeight = parentHeight - metrics_controls -100;
-            $('#tcRlsMetrics .graph-container').find('#container').children().highcharts().setSize(newChartWidth, newChartHeight)
-        }catch(err){}
-    }
-
-    $(window).resize(function(){
-
-        try{
             $('#tcRlsMetrics').css('height',(($('.tcm-container').height() - 30)*100)/$('.tcm-container').height()+'%')
 
             var parentWidth = $('#tcRlsMetrics #metricsContainer').width();
             var parentHeight = $('.tcm-container').height()
             var metrics_controls = $('#tcRlsMetrics #metrics-controls').height();
             var previewsWidth = 420;
-            var currentChartWidth = $('#tcRlsMetrics .graph-container').find('#container').children().width();
             var newChartWidth = parentWidth - previewsWidth;
             var newChartHeight = parentHeight - metrics_controls -100;
             $('#tcRlsMetrics .graph-container').find('#container').children().highcharts().setSize(newChartWidth, newChartHeight)
-        }catch(err){}
-    });
+
+            $("#tcRlsMetrics .graph-previews div").children().highcharts().setSize(300, 200);
+        }catch(err){
+            console.log(err)
+        }
+    }
+
+    $(window).resize(adjustChartHeight);
 
     function renderCarriedOverGraph() {
 
@@ -301,7 +298,7 @@ define(function(require){
             series: data.data
         });
 
-        adjustChartHeight();
+
     }
 
     return RlsMetricsView;

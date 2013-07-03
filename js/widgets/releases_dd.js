@@ -6,24 +6,19 @@ define(function(require){
     var chosen = require('chosen');
 
     $.fn.extend({
-        releases_iterations_dd: function(onSChange,afterRender) {
+        releases_dd: function(onSChange,afterRender) {
 
             var $this;
             $this = $(this);
 
             if (!$this.hasClass("chzn-done")) {
-                tcmModel.releases_iterations.fetch().done(function(data){
+                tcmModel.releases.fetch().done(function(data){
                     $this.find('optgroup').remove();
                     $this.find('option').remove();
 
                     $(data).each(function(){
-                        var optionG = $('<optgroup>').attr('label', "Release "+this.name).attr('rel-id',this.id);
-
-                        $(this.iterations).each(function(){
-                            var option = $('<option>').attr('value', this.id).text( this.name);
-                            $(optionG).append(option);
-                        });
-                        $this.append(optionG);
+                        var option = $('<option>').attr('value',this.id ).text("Release " + this.releaseName);
+                        $this.append(option);
 
                     });
 

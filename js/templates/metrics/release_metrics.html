@@ -25,26 +25,51 @@
     }
 
     #metricsContainer{
-        margin-top: 30px;
+        margin-top: 5px;
+        height: 570px;
     }
+
+    .startup{
+        display: block;
+        position: relative;
+
+        padding: 1px;
+        text-align: left;
+        white-space: normal;
+        background-color: #fff;
+        -webkit-background-clip: padding-box;
+        background-clip: padding-box;
+    }
+
 </style>
 <div id="tcRlsMetrics">
+    <div id="metrics-controls">
+        <div ><h3>Select Release:</h3></div>
 
+        <div>
+            <select data-placeholder="Select a Release..." id="tcRlsMetrics-release-select" tabindex="3">
+                <option>Loading...</option>
+            </select>
 
-    <div id="metricsContainer" style="display:none; " >
-        <div class="graph-container">
+        </div>
+        <div>
+            <div id="alertNoMetrics" class="alert alert-error hide" stlye="width:200px;">
+                There was an error pulling metrics
+            </div>
+        </div>
+    </div>
+
+    <img src="/assets/images/loading.gif" id="loading-indicator" style="margin-top: 10%; margin-left: 40%; display:none; position: absolute; z-index: 1000;" />
+    <div id="metricsContainer" class="startup" >
+        <div class="graph-container" >
             <div class="main-container">
                 <div id="container" style="width: 100%">
                     <div id="carriedOverContainer" class="graph round-corner-all"></div>
                 </div>
             </div>
             <div class="graph-previews round-corner-all">
-                <div id="iterationsTrendContainer" class="graph round-corner-all"></div>
+                <div id="iterationsTrendContainer" style="width: 300px; height: 200px" class="graph round-corner-all"></div>
             </div>
         </div>
     </div>
-    <div class="progress" id="metricsProgressBar" style="display: none">
-        <div class="bar" style="display: none"></div>
-    </div>
-
 </div>

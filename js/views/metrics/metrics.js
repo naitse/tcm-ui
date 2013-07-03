@@ -31,7 +31,7 @@ define(function(require){
 
                     $("#pannel-wrapper").append(template);
                     this.loadIterations();
-                    this.loadMetrics(0,$("#tcMetrics #metrics-release-select option").last().val());
+
                     attachEvents();
                     $('#tcMetrics .graph-previews').css('top','-114px');
 
@@ -49,105 +49,92 @@ define(function(require){
         loadIterations: function(){
 
            $('#tcMetrics #metrics-release-select').releases_iterations_dd(function(){
-                    
-                    var iterId =  $("#tcMetrics #metrics-release-select option:selected").val();
-                    // var rlsId =  $("#tcMetrics #metrics-release-select option:selected").parents('optgroup').attr('rel-id');
-                 MetricsView.loadMetrics(0,iterId);
-           },function(){
-                MetricsView.loadMetrics(0,$("#tcMetrics #metrics-release-select option").last().val())
+                var iterId =  $("#tcMetrics #metrics-release-select option:selected").val();
+
+                MetricsView.loadMetrics(0,iterId);
+
            })
-            
-           // $('#tcMetrics #metrics-release-select').chosen()
 
         },
 
         loadMetrics: function(rlsId,iterId,monitoring){
+            var self = this;
+            $("#tcMetrics #alertNoMetrics").addClass('hide');
+            $("#tcMetrics #metricsContainer").hide();
+            $("#tcMetrics #loading-indicator").show();
+
+            $('#tcMetrics .link-exposer').text('')
+
+            $.when( tcmModel.releases.iterations.metrics_executed(rlsId, iterId),
+                    tcmModel.releases.iterations.metrics_dailyexecuted(rlsId, iterId),
+                    tcmModel.metrics.getFBTCS(iterId)).done(function( metricsExecuted, metricsDaily, metricsFBTCS ){
 
 
-                    $("#tcMetrics #alertNoMetrics").addClass('hide');
-                    $("#tcMetrics #metricsContainer").hide();
-
-                    $("#tcMetrics #metricsProgressBar").show();
-                    $("#tcMetrics #metricsProgressBar").find(".bar").css("width","10%");
-                    loadingOn()
-                    $('#tcMetrics .link-exposer').text('')
-
-                    $.when( tcmModel.releases.iterations.metrics_executed(rlsId, iterId)).done(function( metrics ){
-                        if(metrics.length > 0){
-                            var chartData = new Array();
-
-                            _.each(metrics[0], function(value, key, list){
+                if(metricsExecuted[0].length > 0){
+                    var chartData = new Array();
 
 
-                                chartData.push([ key, value]);
+                    _.each(metricsExecuted[0][0], function(value, key, list){
 
-                            });
-
-                            $('#executionContainer').data('data',chartData);
-                            $('#tcMetrics .permalink').attr('disabled',false)
-                            permalinkIterId = iterId
-                            renderExecutionPie();
-                            loadingOff()
-                            if(monitoring == true ){
-                                statCheck=setTimeout(function(){MetricsView.loadMetrics(0,iterId);}, monitoring_interval);
-                            }
-                        }
-
+                        chartData.push(new Array( key, value));
                     });
 
-                    $("#tcMetrics #metricsProgressBar").find(".bar").css("width","50%");
 
-                    $.when( tcmModel.releases.iterations.metrics_dailyexecuted(rlsId, iterId)).done(function( metrics ){
-                        if(metrics.length > 0){
-                            var days = new Array();
-                            var testcases = new Array();
+                    $('#executionContainer').data('data',chartData);
+                    $('#tcMetrics .permalink').attr('disabled',false)
+                    permalinkIterId = iterId
+                    renderExecutionPie();
+                    if(monitoring == true ){
+                        statCheck=setTimeout(function(){MetricsView.loadMetrics(0,iterId);}, monitoring_interval);
+                    }
+                }
+
+                if(metricsDaily[0].length > 0){
+                    var days = new Array();
+                    var testcases = new Array();
 
 
-                            _.each(metrics, function(value, key, list){
-                                days.push(value.day);
-                                testcases.push(value.testcases);
-                            });
-
-                            $('#dailyExecutionContainer').data('data',[days,testcases]);
-                            // $('#dailyExecutionContainer').data('testcases',testcases);
-
-                            renderDailyExec();
-                        }
-
+                    _.each(metricsDaily[0], function(value, key, list){
+                        days.push(value.day);
+                        testcases.push(value.testcases);
                     });
 
-               var self =this
-                    tcmModel.metrics.getFBTCS(iterId).done(function(data){
-                        $('#tcMetrics #tc-container').children().remove();
-                        if(data.length > 0){
-                        $(data).each(function(){
-                            var tc_html = tcsModule.createTcHTML(this,null,false);
-                            $(tc_html).find('.btn-group').remove();
-                            $(tc_html).find('.tc-suites').remove();
-                            $(tc_html).find('.suites-label').remove();
-                            $(tc_html).data('sort',this.statusId);
-                            $(tc_html).attr('title',this.name)
-                            if(this.statusId == 2){
-                                $(tc_html).find('.detailsIcon').addClass('blocked');
-                            }else {
-                                $(tc_html).find('.detailsIcon').addClass('fail');
-                            }
-                            tcsModule.renderTC(tc_html, '#tcMetrics',false); //REMOVE THE PARSER
-                        })
-                                            $('#tcMetrics #tc-container > div').each(function () {
+                    $('#dailyExecutionContainer').data('data',[days,testcases]);
+                    // $('#dailyExecutionContainer').data('testcases',testcases);
+
+                    renderDailyExec();
+                }
+
+                $('#tcMetrics #tc-container').children().remove();
+                if(metricsFBTCS[0].length > 0){
+                    $(metricsFBTCS[0]).each(function(){
+                        var tc_html = tcsModule.createTcHTML(this,null,false);
+                        $(tc_html).find('.btn-group').remove();
+                        $(tc_html).find('.tc-suites').remove();
+                        $(tc_html).find('.suites-label').remove();
+                        $(tc_html).data('sort',this.statusId);
+                        $(tc_html).attr('title',this.name)
+                        if(this.statusId == 2){
+                            $(tc_html).find('.detailsIcon').addClass('blocked');
+                        }else {
+                            $(tc_html).find('.detailsIcon').addClass('fail');
+                        }
+                        tcsModule.renderTC(tc_html, '#tcMetrics',false); //REMOVE THE PARSER
+                    })
+                    $('#tcMetrics #tc-container > div').each(function () {
                         if($(this).data('sort') == 3){
-                        $('#tcMetrics #tc-container').prepend(this)}
-                   })
-                        }
-                    }).fail(function(){
-                    });
+                            $('#tcMetrics #tc-container').prepend(this)}
+                    })
+                }
 
-                    $("#tcMetrics #metricsProgressBar").hide();
-                    $("#tcMetrics #metricsContainer").show();
-                    fixBorder()
+                $("#tcMetrics #loading-indicator").hide();
+                $("#tcMetrics #metricsContainer").show();
+
+                fixBorder();
+                adjustChartHeight();
+            });
 
         }
-
     };
 
     function attachEvents(){
@@ -162,13 +149,15 @@ define(function(require){
 
         var data = $('#executionContainer').data('data');
         var $this = $('#executionContainer');
-        
+
+
         $('#executionContainer').highcharts({
             chart: {
                 plotBackgroundColor: null,
                 // plotBorderWidth: null,
                 // plotShadow: false,
                 margin: [40, 0, 0, 0],
+                animation:false,
                 events: {
                     click: function(event) {
                         toggleChartFocus($this);
@@ -201,7 +190,7 @@ define(function(require){
             }]
         });
         
-        adjustChartHeight()
+        //adjustChartHeight()
 
     }
 
@@ -255,18 +244,12 @@ define(function(require){
             renderExecutionPie();
 
             fixBorder();
+            adjustChartHeight();
         }else{
             //to prevent focused graph to be removed
         }
     }
 
-    function loadingOn(){
-        $('#tcMetrics  #metricsContainer').append('<div class="loading-big-block"></div>')
-    }
-
-    function loadingOff(){
-        $('#tcMetrics  #metricsContainer').find('.loading-big-block').remove();
-    }
 
     function fixBorder(){
         $('#tcMetrics .main-container #container').children().css({

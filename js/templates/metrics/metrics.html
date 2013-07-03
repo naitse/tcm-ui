@@ -68,15 +68,25 @@ box-shadow: #FFBC41 0 25px inset;
 -moz-box-shadow: #FFBC41 0 25px inset;
 -webkit-box-shadow: #FFBC41 0 25px inset; 
 }
+.startup{
+    display: block;
+    position: relative;
 
+    padding: 1px;
+    text-align: left;
+    white-space: normal;
+    background-color: #fff;
+    -webkit-background-clip: padding-box;
+    background-clip: padding-box;
+}
 </style>
 <div id="tcMetrics">
     <div id="metrics-controls">
         <div ><h3>Select Iteration:</h3></div>
 
         <div>
-            <select data-placeholder="Choose an Iteration..." id="metrics-release-select" tabindex="3">
-                <option></option>
+            <select data-placeholder="Select an Iteration..." id="metrics-release-select" tabindex="3">
+                <option>Loading...</option>
             </select>
              <button type="button" id="get-perma-link" class="btn btn-mini permalink" disabled="true"><i class="icon-permalink"></i></button><div class="link-exposer"></div>
         </div>
@@ -86,7 +96,9 @@ box-shadow: #FFBC41 0 25px inset;
             </div>
         </div>
     </div>
-    <div id="metricsContainer" style="display:none; " >
+    <img src="/assets/images/loading.gif" id="loading-indicator" style="margin-top: 10%; margin-left: 40%; display:none; position: absolute; z-index: 1000;" />
+    <div id="metricsContainer" class="startup" >
+
         <div class="graph-container">
             <div class="main-container">
                 <div id="container" style="width: 100%">
@@ -94,13 +106,10 @@ box-shadow: #FFBC41 0 25px inset;
                 </div>
             </div>
             <div class="graph-previews round-corner-all">
-                <div id="dailyExecutionContainer" class="graph round-corner-all"></div>
-                <div id="tc-container" class="graph round-corner-all">
+                <div id="dailyExecutionContainer" style="width: 300px; height: 200px" class="graph round-corner-all"></div>
+                <div id="tc-container" style="width: 300px; height: 200px" class="graph round-corner-all">
                 </div>
             </div>
         </div>
-    </div>
-    <div class="progress" id="metricsProgressBar" style="display: none">
-        <div class="bar" style="display: none"></div>
     </div>
 </div>
