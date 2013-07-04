@@ -15,9 +15,20 @@ define([
     'views/ris/ris', //release state, hotlik page to show the curren implementation qa progress
     // 'tcm2',
     'backbone',
-    'jquery.cookie'
-
+    'jquery.cookie',
+    'pusher',
+    'PusherNotifier',
+    'gritter'
 ], function($, _, TopMenuView, managerView, syncView, planView, MetricsView, RlsMetricsView, SuitesView, PluginsSettingsView, InteropView, ProjectView,ReleaseImplementationView){
+
+    var pusher = new Pusher('17eb9ecb711bee47d32d');
+
+    var releaseUpdates = PusherNotifier(pusher.subscribe($.cookie('usrname')),
+         {
+            eventName: 'release-updates',
+            title: 'There was a release and these are the news!',
+            gritterOptions: {sticky:true}
+        });
 
 
     var modules = [

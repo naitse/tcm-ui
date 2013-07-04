@@ -21,7 +21,10 @@ require.config({
     'panelsManager':'panelsManager',
     'jquery.grid': 'libs/jquery.grid/jquery.handsontable.full',
     barman: 'libs/barman/barman.min',
-    handlebars: 'libs/handlebars/handlebars'
+    handlebars: 'libs/handlebars/handlebars',
+    pusher:  '//js.pusher.com/2.1/pusher.min',
+    PusherNotifier: 'libs/PusherNotifier/PusherNotifier',
+    gritter: 'libs/gritter/js/jquery.gritter.min'
   },
 
   shim: {
@@ -73,7 +76,14 @@ require.config({
     },
     handlebars: {
       exports: 'Handlebars'
+    },
+    pusher: {
+      exports: 'Pusher'
+    },
+    PusherNotifier: {
+        exports: 'PusherNotifier'
     }
+
   }
 });
 
