@@ -17,7 +17,11 @@ define(function(require){
             if(!this.rendered){
                 $("#pannel-wrapper").append(planTemplate);
 
-                $("#tcRlsMetrics-release-select").releases_dd(this.loadGraphs);
+                $("#tcRlsMetrics-release-select").releases_dd(this.loadGraphs,function(){
+                        $('#tcRlsMetrics_release_select_chzn .chzn-drop').css('left',0)
+                        $('#tcRlsMetrics_release_select_chzn .group-result').show()
+                    }
+                );
 
                 this.attachEvents();
                 this.rendered = true;
