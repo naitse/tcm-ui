@@ -9,6 +9,7 @@ define(function(require){
     require('highcharts');
     require('exporting');
     var permalinkIterId = '';
+    var iterName = '';
     var monitoring_interval = 60000;
 
     var MetricsView = {
@@ -22,15 +23,19 @@ define(function(require){
                  var template = $(planTemplate)
 
                 if (typeof iterId != 'undefined'){
-                    $(template).find('#metrics-controls').remove();
+                    $(template).find('#metrics-controls').hide();
                     $(template).find('.permalink').remove();
                     $("#pannel-wrapper").append(template);
-                    this.loadMetrics(0,iterId,true);
-                    $('#tcMetrics .graph-previews').css('top','-36px');
+                    $('#tcMetrics #metrics-release-select').releases_iterations_dd(null,function(){
+                        iterName = $('#tcMetrics #metrics-release-select option[value='+iterId+']').text();
+                        MetricsView.loadMetrics(0,iterId,true);
+                        $('#tcMetrics .graph-previews').css('top','-36px');
+                    })
                 }else{
 
                     $("#pannel-wrapper").append(template);
                     this.loadIterations();
+
 
                     attachEvents();
                     $('#tcMetrics .graph-previews').css('top','-114px');
@@ -50,9 +55,13 @@ define(function(require){
 
            $('#tcMetrics #metrics-release-select').releases_iterations_dd(function(){
                 var iterId =  $("#tcMetrics #metrics-release-select option:selected").val();
+                iterName =  $("#tcMetrics #metrics-release-select option:selected").text();
 
                 MetricsView.loadMetrics(0,iterId);
 
+           },function(){
+                $('#metrics_release_select_chzn .chzn-drop').css('left',0)
+                $('#metrics_release_select_chzn .group-result').show()
            })
 
         },
@@ -167,7 +176,7 @@ define(function(require){
             //'[{"Not Run":6,"In Progress":0,"Passed":10,"Failed":0,"Blocked":0}]'
             colors: ['#c6c6c6','#46ACCA', '#5DB95D', '#CD433D', '#FAA328'],
             title: {
-                text: 'Test plan execution'
+                text: 'Test plan execution of ' + iterName
             },
             plotOptions: {
                 pie: {
