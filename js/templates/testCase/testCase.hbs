@@ -24,7 +24,7 @@
       </ul>
       <span class="desc-label label">Description:</span>
       <pre class="tc-steps">{{description}}</pre>
-      <div class="tc-last-run-results-cont">
+      <div class="tc-last-run-results-cont" {{#if hideActualResult}} style="display:none;"{{/if}}>
 	      <span class="lrr-label label" >Last run results:</span>
 	      <pre class="tc-last-run-results"></pre>
   		</div>

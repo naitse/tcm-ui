@@ -232,7 +232,7 @@ define(function(require){
 
             $("#tcRlsMetrics .graph-previews div").children().highcharts().setSize(300, 200);
         }catch(err){
-            console.log(err)
+            // console.log(err)
         }
     }
 
