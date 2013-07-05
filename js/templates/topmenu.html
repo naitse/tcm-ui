@@ -77,7 +77,7 @@ box-shadow: inherit;
 
                 <ul class="nav" role="navigation">
                 <li class="dropdown">
-                    <a href="#" id="drop2" role="button" class="dropdown-toggle brand" data-toggle="dropdown">TCM <b class="caret"></b></a>
+                    <a href="#" role="button" class="dropdown-toggle brand" data-toggle="dropdown">TCM <b class="caret"></b></a>
                         <ul class="dropdown-menu pull-left" role="menu" aria-labelledby="drop2">
                             <li role="presentation">
                                 <a id="link-iterations" role="menuitem" tabindex="-1" href="#/viewer">Iterations</a>
@@ -88,18 +88,18 @@ box-shadow: inherit;
                         </ul>
                     </li>
                     <li class="dropdown">
-                        <a href="#" id="drop2" role="button" class="dropdown-toggle" data-toggle="dropdown">Metrics <b class="caret"></b></a>
+                        <a href="#" role="button" class="dropdown-toggle" data-toggle="dropdown">Metrics <b class="caret"></b></a>
                         <ul class="dropdown-menu pull-right" role="menu" aria-labelledby="drop2">
                             <li role="presentation"><a id="link-plan" role="menuitem" tabindex="-1" href="#/plan">Test Plan</a></li>
                             <li role="presentation"><a id="link-rls-metrics" role="menuitem" tabindex="-1" href="#/rlsmetrics">Release</a></li>
                             <li role="presentation"><a id="link-metrics" role="menuitem" tabindex="-1" href="#/metrics">Iteration</a></li>
                         </ul>
                     </li>
-                    <li class="dropdown">
-                        <a href="#" id="drop2" role="button" class="dropdown-toggle" data-toggle="dropdown">Plugins <b class="caret"></b></a>
+                    <li class="dropdown" id="pluginMenu">
+                        <a href="#" role="button" class="dropdown-toggle" data-toggle="dropdown">Plugins <b class="caret"></b></a>
                         <ul class="dropdown-menu pull-right" role="menu" aria-labelledby="drop2">
-                            <li role="presentation"><a id="link-sync" role="menuitem" tabindex="-1" href="#/sync">JIRA Sync</a></li>
-
+                            <li role="presentation"><a id="link-sync" role="menuitem" tabindex="-1" href="#/sync" style="display: none;">JIRA Sync</a></li>
+                            <li role="presentation"><a id="link-export-import" role="menuitem" tabindex="-1" href="#/import-export" style="display: none;">Import/Export</a></li>
                         </ul>
                     </li>
                 </ul>
