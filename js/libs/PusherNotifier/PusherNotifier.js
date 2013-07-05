@@ -15,10 +15,10 @@ function PusherNotifier(channel, options) {
 
 
     channel.bind(this.settings.eventName, function(data){
-
+        console.log(data);
         var gritterOptions = {
             title: (self.settings.titleEventProperty? data[self.settings.titleEventProperty] : self.settings.title),
-            text: data.replace(/\\/g, ''),
+            text: data[self.settings.eventTextProperty].replace(/\\/g, ''),
             image: self.settings.image
         };
 
