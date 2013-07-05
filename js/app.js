@@ -15,9 +15,20 @@ define([
     'views/ris/ris', //release state, hotlik page to show the curren implementation qa progress
     // 'tcm2',
     'backbone',
-    'jquery.cookie'
-
+    'jquery.cookie',
+    'pusher',
+    'PusherNotifier',
+    'gritter'
 ], function($, _, TopMenuView, managerView, syncView, planView, MetricsView, RlsMetricsView, SuitesView, PluginsSettingsView, InteropView, ProjectView,ReleaseImplementationView){
+
+    var pusher = new Pusher('17eb9ecb711bee47d32d');
+
+    var releaseUpdates = PusherNotifier(pusher.subscribe($.cookie('usrname')),
+         {
+            eventName: 'release-updates',
+            titleEventProperty: 'title',
+            gritterOptions: {sticky:true}
+        });
 
 
     var modules = [
@@ -86,8 +97,11 @@ define([
                             module.render(queryParam);
                     }else{
                         try{//in case the function refreshRender does not exist at the module
+                            console.log('refresh viewer')
                             module.refreshRender();
-                        }catch(e){}
+                        }catch(e){
+                            console.log(e)
+                        }
                     }
 
 
@@ -139,6 +153,8 @@ define([
             });
 
             var app_router = new AppRouter;
+
+            window.App_router = app_router;
 
             app_router.on('route:defaultRoute', function(actions) {
                 loadModule(managerView);

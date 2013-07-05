@@ -13,14 +13,18 @@ require.config({
     exporting: 'libs/highcharts/exporting',
     highcharts: 'libs/highcharts/highcharts',
     releases_iterations_dd: 'widgets/releases_iterations_dd',
+    releases_dd: 'widgets/releases_dd',
     confirm_button: 'widgets/confirm_button',
     'jquery.cookie': 'libs/jquerycookie/jquery.cookie',
     'jquery.base64': 'libs/jquery.base64/jquery.base64',
     'textext':'libs/textext/textext.min',
     'panelsManager':'panelsManager',
     'jquery.grid': 'libs/jquery.grid/jquery.handsontable.full',
-    barman: '//cdnjs.cloudflare.com/ajax/libs/barman/0.2.4/barman.min',
-    handlebars: '//cdnjs.cloudflare.com/ajax/libs/handlebars.js/1.0.0/handlebars.min'
+    barman: 'libs/barman/barman.min',
+    handlebars: 'libs/handlebars/handlebars',
+    pusher:  '//js.pusher.com/2.1/pusher.min',
+    PusherNotifier: 'libs/PusherNotifier/PusherNotifier',
+    gritter: 'libs/gritter/js/jquery.gritter.min'
   },
 
   shim: {
@@ -49,6 +53,9 @@ require.config({
     releases_iterations_dd:{
         deps: ['chosen']
     },
+    releases_dd:{
+        deps: ['chosen']
+    },
     confirm_button:{
         deps: ['jquery']
     },
@@ -69,7 +76,14 @@ require.config({
     },
     handlebars: {
       exports: 'Handlebars'
+    },
+    pusher: {
+      exports: 'Pusher'
+    },
+    PusherNotifier: {
+        exports: 'PusherNotifier'
     }
+
   }
 });
 

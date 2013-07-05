@@ -4,6 +4,7 @@ define(function(require){
     tcmModel = require('tcmModel'),
     global = require('global'),
     sprint = require('modules/sprint/sprint');
+    require('jquery.cookie');
 
     var TopMenuView = {
         hotLink: false,
@@ -56,14 +57,38 @@ define(function(require){
        			}
        		});
 
-        $('.tcm-top-menu-container #logout').live({
-            click:function(){
-              $.cookie('apiKey', null, { path: '/' });
-              $.cookie('projectId', null, { path: '/' });
-              $.cookie('usrname', null, { path: '/' });
+            $("#switchProject").on('click', function(){
+                $('#modal-switchProject').modal('show');
+                $("#modal-switch-projects_dd").empty();
+
+                tcmModel.users.projects.fetch($.cookie('usrname')).done(function(projects){
+
+                    $(projects).each(function(){
+                        $("#modal-switch-projects_dd").append('<option value="' + this.id+ '">' + this.name + '</option>')
+                    });
+
+                    $("#modal-switch-projects_dd").chosen();
+
+                });
+
+            });
+
+            $("#modal-switchProject .btn.btn-primary").on('click', function(){
+                $.cookie('projectId', $('#modal-switch-projects_dd option:selected').val());
+
+                App_router.navigate("viewer", {trigger: true, replace: true})
+                window.location.reload(true);
+
+            });
+
+            $('.tcm-top-menu-container #logout').live({
+                click:function(){
+                  $.cookie('apiKey', null, { path: '/' });
+                  $.cookie('projectId', null, { path: '/' });
+                  $.cookie('usrname', null, { path: '/' });
+                }
+              });
             }
-          });
-       	}
          
     };
 

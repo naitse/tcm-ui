@@ -7,6 +7,8 @@ define(function (require) {
 
 		testCasesModel = require('tcmModel').releases.iterations.features.test_cases,
 
+		PM = require('panelsManager'),
+
 		TemplateBasedView = require('views/templateBasedView');
 
 
@@ -35,27 +37,31 @@ define(function (require) {
 
 
 		initializeOptions: function (testCase, options) {
-			this.testCase = testCase;
-			console.log(options.delBtn)
+
 			this.options = {
 				btnGroup: (options.btnGroup || options.btnGroup === false ) ? options.btnGroup : true,
 				delBtn: (options.delBtn || options.delBtn === false ) ? options.delBtn : true,
 				editBtn: (options.editBtn || options.editBtn === false ) ? options.editBtn : true,
 				bugBtn: (options.bugBtn || options.bugBtn === false ) ? options.bugBtn : true,
-				stausDd: (options.stausDd || options.stausDd === false ) ? options.stausDd : true
+				stausDd: (options.stausDd || options.stausDd === false ) ? options.stausDd : true,
+				hideActualResult:(testCase.actualResult === null || testCase.actualResult === "" ) ? true : false
 			}
+
+			this.testCase = testCase;
+
 		},
 
 		events: {
-			'click .one': function () {
-				console.log('BUTTON 1');
-				console.log(this.testCase);
+			'click .wrapper': function () {
+				console.log('clicked', this);
 			},
-			
-			'click .two': function () {
-				console.log('BUTTON 2');
-				console.log(this.testCase);
-			}
+			'click .edit-tc': function(e){
+           		e.stopPropagation();
+	            PM.colapseExpandRightPanel('#tcViewer','none');
+	            $('#tcViewer .tc .wrapper').removeClass('active');
+	            $(this).parents('.wrapper').addClass('active');
+	            editTc($(this).parents('.tc').data('tcObject'))
+	        }
 		},
 
 		refreshIfContains: function (testCase) {
@@ -75,7 +81,7 @@ define(function (require) {
 
 	});
 
-	return Class.create({
+	return Class.create({ //TestCasesView <-------
 
 		constructor: function (container, options) {
 			this.container = container;

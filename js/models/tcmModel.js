@@ -1,7 +1,7 @@
 
 define( function(require){
-    var basePath = "http://tcm-backend.cloudhub.io/api/";
-    //var basePath = "http://tcm-backend-qa.cloudhub.io/api/";
+    //var basePath = "http://tcm-backend.cloudhub.io/api/";
+    var basePath = "http://tcm-backend-qa.cloudhub.io/api/";
     //var basePath = "http://54.226.164.226/api/";
     //var basePath = "http://localhost:8088/api/";
     var basePath2 = basePath.replace('api/','');
@@ -557,6 +557,26 @@ define( function(require){
                     }
                 }
             }
+        },
+        plugins: {
+
+            fetch:function(){
+                return   $.ajax({
+                    type:'GET',
+                    url: basePath + "plugins",
+                    dataType: "json"
+                });
+            },
+            save:function(pluginData){
+                return   $.ajax({
+                    type:'PUT',
+                    url: basePath + "plugins/" + pluginData.id,
+                    data:JSON.stringify(pluginData),
+                    contentType: "application/json",
+                    dataType: "json"
+                });
+            }
+
         }
     };
 

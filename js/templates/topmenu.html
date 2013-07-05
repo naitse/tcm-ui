@@ -108,8 +108,9 @@ box-shadow: inherit;
                     <li id="fat-menu" class="dropdown">
                         <a href="#" id="usrdrop" role="button" class="dropdown-toggle" data-toggle="dropdown"><span id="username"></span> <b class="caret"></b></a>
                         <ul class="dropdown-menu" role="menu" aria-labelledby="drop3">
-                            <li role="presentation"><a role="menuitem" tabindex="-1" >User settings (soon)</a></li>
+                            <li role="presentation"><a role="menuitem" tabindex="-1" id="switchProject" >Switch Project</a></li>
                             <li role="presentation"><a role="menuitem" tabindex="-1" href="#project">Project Settings</a></li>
+                            <li role="presentation"><a role="menuitem" tabindex="-1" href="#plugins-settings">Project Plugins Settings</a></li>
                             <li role="presentation" class="divider"></li>
                             <li role="presentation"><a role="menuitem" id="logout" tabindex="-1" href="login.html">Log out</a></li>
                         </ul>
@@ -118,5 +119,19 @@ box-shadow: inherit;
             </div>
         </div>
         <div class="spring-progress"></div>
+    </div>
+
+    <div id="modal-switchProject" class="modal hide fade" style=" display: none">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h3>Switch Project</h3>
+        </div>
+        <div class="modal-body" style="overflow: visible">
+            <select id="modal-switch-projects_dd" />
+        </div>
+        <div class="modal-footer">
+            <a class="btn">Close</a>
+            <a class="btn btn-primary">Switch</a>
+        </div>
     </div>
 </div>
