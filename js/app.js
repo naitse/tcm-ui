@@ -26,7 +26,7 @@ define([
     var releaseUpdates = PusherNotifier(pusher.subscribe($.cookie('usrname')),
          {
             eventName: 'release-updates',
-            title: 'There was a release and these are the news!',
+            titleEventProperty: 'title',
             gritterOptions: {sticky:true}
         });
 
