@@ -1,9 +1,9 @@
 
 define( function(require){
     //var basePath = "http://tcm-backend.cloudhub.io/api/";
-    var basePath = "http://tcm-backend-qa.cloudhub.io/api/";
+    //var basePath = "http://tcm-backend-qa.cloudhub.io/api/";
     //var basePath = "http://54.226.164.226/api/";
-    //var basePath = "http://localhost:8088/api/";
+    var basePath = "http://localhost:8088/api/";
     var basePath2 = basePath.replace('api/','');
 	var $ = require('jquery');
 	
@@ -451,11 +451,13 @@ define( function(require){
                             update:basePath +'releases/{rlsId}/iterations/{iterId}/features/{ftrId}/testcases/{tstId}'
                         },
 
-                        fetch: function (releaseId, iterationid, featureId) {
+                        fetch: function (releaseId, iterationid, featureId, username) {
+                            
+                            var geturl = this.url.get.replace('{rlsId}', releaseId).replace('{iterId}', iterationid).replace('{ftrId}',featureId)
                             return $.ajax({
                                 type: "GET",
                                 
-                                url: this.url.get.replace('{rlsId}', releaseId).replace('{iterId}', iterationid).replace('{ftrId}',featureId),
+                                url: geturl + '?userName=' + $.cookie('usrname'),
                                 dataType: "json"
                             });
                         },

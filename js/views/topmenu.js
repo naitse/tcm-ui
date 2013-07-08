@@ -21,6 +21,30 @@ define(function(require){
             
             this.attachEvents();
 
+            // global.channelSubscribe('being-seen');
+            // global.channelBind('being-seen','item-selected',function(data){
+
+            //   if($.cookie('usrname') !== data.userName && $.cookie('projectId') === data.projectId){
+            //     var previous = global.users[data.userName];
+            //     var current = data.itemId
+
+            //     if( $('.feature[feature-id='+previous+']').size() > 0 ){
+            //         notBeingSeen( $('.feature[feature-id='+previous+']'),data.userName );
+            //     } else if( $('.item.suite[item-id='+previous+']').size() > 0 ){
+            //         notBeingSeen( $('.item.suite[item-id='+previous+']'),data.userName );
+            //     }
+
+            //     if( $('.feature[feature-id='+current+']').size() > 0 ){
+            //         beingSeen($('.feature[feature-id='+current+']'),data.userName );
+            //     }else if($('.item.suite[item-id='+current+']').size() > 0){
+            //         beingSeen($('.item.suite[item-id='+current+']'),data.userName);
+            //     }
+            //     global.users[data.userName] = current;
+
+            //   }
+
+            // });
+
         },
 
         renderBar: function(){
@@ -92,6 +116,19 @@ define(function(require){
          
     };
 
+    function beingSeen(element,userName){
+        if(element.data('users').length == 0){
+          element.find('.icon-user').css('visibility','visible');
+        }
+        element.data('users').push(userName);
+
+    }
+    function notBeingSeen(element,userName){
+        element.data('users').shift(userName);
+        if(element.data('users').length == 0){
+           element.find('.icon-user').css('visibility','hidden');
+        }
+    }
     return TopMenuView;
 
 });

@@ -78,9 +78,11 @@ require.config({
       exports: 'Handlebars'
     },
     pusher: {
+        deps: ['jquery'],
       exports: 'Pusher'
     },
     PusherNotifier: {
+        deps: ['pusher'],
         exports: 'PusherNotifier'
     }
 

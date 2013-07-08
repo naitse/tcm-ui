@@ -52,7 +52,7 @@ define(function (require) {
 		},
 
 		events: {
-			'click .wrapper': function () {
+			'click .tc': function () {
 				console.log('clicked', this);
 			},
 			'click .edit-tc': function(e){

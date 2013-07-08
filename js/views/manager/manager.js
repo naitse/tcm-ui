@@ -161,6 +161,7 @@ define(function(require){
                    var self = this;
                    $(this).parents('.item-control-buttons').find('.wrapper').stop(true,true).hide("slide", { direction: "right"},100,function(){
                     $(self).parents('.feature').find('.summary').css('margin-right','0px');
+                    $(self).parents('.feature').find('.icon-user').css('margin-right','0px');
                    })
                    // $(this).parents('.item-control-buttons').stop(true, true).animate({"width":"-=55"});
                 }
@@ -181,6 +182,7 @@ define(function(require){
 
                    $(this).removeClass('close').addClass('open')
                    $(self).parents('.feature').find('.summary').css('margin-right','30px');
+                   $(self).parents('.feature').find('.icon-user').css('margin-right','24px');
                    $(this).parents('.item-control-buttons').find('.wrapper').stop(true,true).show("slide", { direction: "right"},100,function(){
                    })
                 }

@@ -38,7 +38,7 @@ define(function(require){
     		return feature;
     	},
     	render: function(container,feature){
-    		$(container).append(feature);
+    		$(container).append(feature.data('users',[]));
               if ($.browser.mozilla ) {
                 $(feature).find('.summary').css({
                     'margin-right': $(feature).find('.title-bar').width() + 2,

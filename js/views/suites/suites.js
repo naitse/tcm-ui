@@ -433,13 +433,13 @@ function editTc(tcObject){
 			$(this).each(function(){
 				// var option = $('<option>').attr('value', this.name).text(this.name).data('tagId',this.id);
 				// $('#suitesViewer #tags-select').append(option)
-				var suite = itemsModule.createItem(this.name,this.id,this.count)
+				var suite = itemsModule.createItem(this.name,this.id,this.count,'suite')
 
 				var instance_suite = '<div id="suite-instance" title="Instance suite" type="button" class="" style=""><i class="icon-share-alt"></i></div>';
 
 				$(suite).find('.item-control-buttons .wrapper').prepend(instance_suite);
 
-                itemsModule.renderItem('#suitesViewer  #feature-container',suite);
+                itemsModule.renderItem('#suitesViewer  #feature-container',suite.data('users',[]));
 			})
 		})
 		// $('#suitesViewer #tags-select').trigger("liszt:updated")
@@ -513,7 +513,7 @@ function editTc(tcObject){
     function addSuiteToUI(data){
     	var data = data[0];
 
-		var suite = itemsModule.createItem(data.name,data.id,0)
+		var suite = itemsModule.createItem(data.name,data.id,0,'suite')
 
 		var instance_suite = '<button id="suite-instance" title="Instance suite" type="button" class="btn btn-mini" style=""><i class="icon-share-alt"></i></button>';
 
