@@ -18,7 +18,9 @@ define(function(require){
             if(!this.hotLink){
               this.renderBar();
             }
-            
+
+            this.renderPluginsMenu();
+
             this.attachEvents();
 
             // global.channelSubscribe('being-seen');
@@ -44,6 +46,29 @@ define(function(require){
             //   }
 
             // });
+
+        },
+
+        renderPluginsMenu: function(){
+
+            tcmModel.plugins.fetch().done(function(data){
+
+                _.each(data, function(p){
+                    switch( p.name ){
+                        case "Jira":
+
+                            if(p["properties"]["enabled"].indexOf("true") > -1){
+                                $("#link-sync").show();
+                            }
+                            break;
+                        case "Import_Export":
+                            if(p["properties"]["enabled"].indexOf("true") > -1){
+                                $("#link-export-import").show();
+                            }
+                            break;
+                    }
+                });
+            });
 
         },
 

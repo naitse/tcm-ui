@@ -6,7 +6,7 @@ margin-right: auto;
 .page-container {
     position: relative;
     min-height: 100%;
-    background: url(../images/cloud_background2.png) repeat-x left bottom;
+
     margin-bottom: -205px;
 }
 .page-container .main-container {
@@ -43,7 +43,7 @@ margin-right: auto;
 }
 .page-container .main-container > .header .logo a {
     display: block;
-    background: url("../images/logo-cloudhub-190x58.png") no-repeat scroll left top transparent;
+
     height: 58px;
     margin: 10px 0 30px;
     text-indent: -9999px;
