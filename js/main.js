@@ -24,7 +24,8 @@ require.config({
     handlebars: 'libs/handlebars/handlebars',
     pusher:  '//js.pusher.com/2.1/pusher.min',
     PusherNotifier: 'libs/PusherNotifier/PusherNotifier',
-    gritter: 'libs/gritter/js/jquery.gritter.min'
+    gritter: 'libs/gritter/js/jquery.gritter.min',
+    notificator: 'modules/notificator/notificator'
   },
 
   shim: {

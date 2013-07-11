@@ -21,8 +21,8 @@ define([
     'gritter'
 ], function($, _, TopMenuView, managerView, syncView, planView, MetricsView, RlsMetricsView, SuitesView, PluginsSettingsView, InteropView, ProjectView,ReleaseImplementationView){
 
-    window.pusher=new Pusher('17eb9ecb711bee47d32d');
-    
+    window.pusher = new Pusher('17eb9ecb711bee47d32d');
+
     var releaseUpdates = PusherNotifier(pusher.subscribe($.cookie('usrname')),
          {
             eventName: 'release-updates',

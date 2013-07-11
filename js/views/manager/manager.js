@@ -9,7 +9,9 @@ define(function(require){
         itemsModule = require('modules/item/item'),
         featuresModule = require('modules/feature/feature'),
         PM = require('panelsManager'),
-        _ = require('underscore');
+        _ = require('underscore'),
+        jquerycookie = require('jquery.cookie'),
+        notificator = require('notificator');
 
         var view_container = "#tcViewer";
    var prefix = '';
@@ -22,6 +24,8 @@ define(function(require){
     var monitoring = true;
     var newBug = '';
     var jiraLink = 'http://www.mulesoft.org/jira/browse/';//http://www.mulesoft.org/jira/secure/CreateIssue.jspa?pid=10462&issuetype=1
+
+    var channel = new notificator();
 
 
     var ManagerView = {
@@ -68,6 +72,56 @@ define(function(require){
 
 
         attachEvents: function(){
+
+            channel.onMessageReceived = function(mensaje){
+
+                if(mensaje.event.indexOf("leaves-channel") >=0){
+                    $('.feature').each(function(){
+                        if($(this).data('users').length > 0){
+
+                            for (var i = 0; i < $(this).data('users').length; i++) {
+                                if( $(this).data('users')[i].indexOf(mensaje.data.user) >= 0  ){
+                                    $(this).data('users').shift(mensaje.data.user);
+                                    if($(this).data('users').length ==0){
+                                        $(this).find('.icon-user').css('visibility','hidden');
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+
+                if(mensaje.event.indexOf("set-position") >=0){
+                    //console.log('Removing');
+                    $('.feature').each(function(){
+                        if($(this).data('users').length > 0){
+
+                            for (var i = 0; i < $(this).data('users').length; i++) {
+                                if( $(this).data('users')[i].indexOf(mensaje.data.user) >= 0  ){
+                                    $(this).data('users').shift(mensaje.data.user);
+                                    if($(this).data('users').length ==0){
+                                      $(this).find('.icon-user').css('visibility','hidden');
+                                    }
+                                }
+                            }
+                        }
+                    });
+
+                    //console.log('adding');
+                    if($('.feature[feature-id='+mensaje.data.itemId+']').data('users') == null){
+                        var users = new Array();
+                        users.push(mensaje.data.user);
+                        $('.feature[feature-id='+mensaje.data.itemId+']').data('users', users);
+                    }else{
+                        $('.feature[feature-id='+mensaje.data.itemId+']').data('users').push(mensaje.data.user);
+                    }
+
+                    $('.feature[feature-id='+mensaje.data.itemId+ '] .icon-user').css('visibility','visible');
+
+                };
+
+
+            }
 
         $(window).resize(function() {
             var wc = 100 - ((($('#desc-wrapper').outerWidth() * 100) / ($('#description').outerWidth() - 20)) - 100);
@@ -140,6 +194,11 @@ define(function(require){
                 }
 
                 displayed = true
+
+                channel.sendMessage("set-position", {"user":$.cookie('usrname'), "itemId":parseInt($(this).attr('feature-id'))})
+
+
+
             }
           // mouseenter: function(e){
           //   e.stopPropagation();
@@ -763,7 +822,8 @@ function itSelected(iterationId, iterationName) {
                     $('#filter-completed-features').addClass('enabled').attr("disabled",false);
                      $('#add-feature').addClass('enabled').attr('disabled',false);
                     $('#tcViewer #holder').attr('class', 'features').find('.iteration-holder-name').text(releaseName+'/'+iterationName);
-                 
+
+                     channel.sendMessage("get-history", {"userId":"sdfaasdfasdf", "itemId":parseInt($(this).attr('feature-id'))})
               });
         });
     })
@@ -1183,7 +1243,21 @@ function removeTestCase(tcId,feature){
 
     function loadingOff(){
         $('#tcViewer  #feature-container').find('.loading-big-block').remove();
-    } 
+    }
+
+    function beingSeen(element,userName){
+        if(element.data('users').length == 0){
+            element.find('.icon-user').css('visibility','visible');
+        }
+        element.data('users').push(userName);
+
+    }
+    function notBeingSeen(element,userName){
+        element.data('users').shift(userName);
+        if(element.data('users').length == 0){
+            element.find('.icon-user').css('visibility','hidden');
+        }
+    }
 
     return ManagerView;
 
