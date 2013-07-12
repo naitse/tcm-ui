@@ -11,6 +11,7 @@ define(function(require){
     var permalinkIterId = '';
     var iterName = '';
     var monitoring_interval = 60000;
+    var monitoring = false;
 
     var MetricsView = {
         moduleId: "Metrics",
@@ -28,7 +29,7 @@ define(function(require){
                     $("#pannel-wrapper").append(template);
                     $('#tcMetrics #metrics-release-select').releases_iterations_dd(null,function(){
                         iterName = $('#tcMetrics #metrics-release-select option[value='+iterId+']').text();
-                        MetricsView.loadMetrics(0,iterId,true);
+                        MetricsView.loadMetrics(0,iterId,false);
                         $('#tcMetrics .graph-previews').css('top','-36px');
                     })
                 }else{
@@ -41,7 +42,7 @@ define(function(require){
                     $('#tcMetrics .graph-previews').css('top','-114px');
 
                 }
-
+                $('#tcMetrics #tc-container').css('visibility','hidden');
                 adjustChartHeight()
                 this.rendered = true;
             }
@@ -65,7 +66,54 @@ define(function(require){
            })
 
         },
+        fetchTCsbyStatus:function(statusName){
 
+
+            switch(statusName)
+            {
+                case 0:
+                    statusId = 0
+                    break;
+                case 1:
+                    statusId = 1
+                    break;
+                case 2:
+                    statusId = 4
+                    break;
+                case 3:
+                    statusId = 3
+                    break;
+                case 4:
+                    statusId = 2
+                    break;
+                default:
+                    statusId = 3
+            }
+
+            tcmModel.metrics.getFBTCS(permalinkIterId, statusId).done(function(data){
+            $('#tcMetrics #tc-container').children().remove();
+                if(data.length > 0){
+                    $(data).each(function(){
+                        var tc_html = tcsModule.createTcHTML(this,null,false);
+                        $(tc_html).find('.btn-group').remove();
+                        $(tc_html).find('.tc-suites').remove();
+                        $(tc_html).find('.suites-label').remove();
+                        $(tc_html).data('sort',this.statusId);
+                        $(tc_html).attr('title',this.name)
+                        // if(this.statusId == 2){
+                        //     $(tc_html).find('.detailsIcon').addClass('blocked');
+                        // }else {
+                        //     $(tc_html).find('.detailsIcon').addClass('fail');
+                        // }
+                        tcsModule.renderTC(tc_html, '#tcMetrics',false); //REMOVE THE PARSER
+                    })
+                    $('#tcMetrics #tc-container > div').each(function () {
+                        if($(this).data('sort') == 3){
+                            $('#tcMetrics #tc-container').prepend(this)}
+                    })
+                }
+            });
+        },
         loadMetrics: function(rlsId,iterId,monitoring){
             var self = this;
             $("#tcMetrics #alertNoMetrics").addClass('hide');
@@ -75,8 +123,7 @@ define(function(require){
             $('#tcMetrics .link-exposer').text('')
 
             $.when( tcmModel.releases.iterations.metrics_executed(rlsId, iterId),
-                    tcmModel.releases.iterations.metrics_dailyexecuted(rlsId, iterId),
-                    tcmModel.metrics.getFBTCS(iterId)).done(function( metricsExecuted, metricsDaily, metricsFBTCS ){
+                    tcmModel.releases.iterations.metrics_dailyexecuted(rlsId, iterId)).done(function( metricsExecuted, metricsDaily ){
 
 
                 if(metricsExecuted[0].length > 0){
@@ -114,28 +161,6 @@ define(function(require){
                     renderDailyExec();
                 }
 
-                $('#tcMetrics #tc-container').children().remove();
-                if(metricsFBTCS[0].length > 0){
-                    $(metricsFBTCS[0]).each(function(){
-                        var tc_html = tcsModule.createTcHTML(this,null,false);
-                        $(tc_html).find('.btn-group').remove();
-                        $(tc_html).find('.tc-suites').remove();
-                        $(tc_html).find('.suites-label').remove();
-                        $(tc_html).data('sort',this.statusId);
-                        $(tc_html).attr('title',this.name)
-                        if(this.statusId == 2){
-                            $(tc_html).find('.detailsIcon').addClass('blocked');
-                        }else {
-                            $(tc_html).find('.detailsIcon').addClass('fail');
-                        }
-                        tcsModule.renderTC(tc_html, '#tcMetrics',false); //REMOVE THE PARSER
-                    })
-                    $('#tcMetrics #tc-container > div').each(function () {
-                        if($(this).data('sort') == 3){
-                            $('#tcMetrics #tc-container').prepend(this)}
-                    })
-                }
-
                 $("#tcMetrics #loading-indicator").hide();
                 $("#tcMetrics #metricsContainer").show();
 
@@ -166,7 +191,7 @@ define(function(require){
                 // plotBorderWidth: null,
                 // plotShadow: false,
                 margin: [40, 0, 0, 0],
-                animation:false,
+                animation:true,
                 events: {
                     click: function(event) {
                         toggleChartFocus($this);
@@ -188,6 +213,21 @@ define(function(require){
                         connectorColor: '#000000',
                         formatter: function() {
                             return '<b>'+ this.point.name +'</b>: '+ Math.round(this.percentage) +' %';
+                        }
+                    }
+                },
+                series: {
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    point: {
+                        events: {
+                            select: function() {
+                                $('#tcMetrics #tc-container').css('visibility','visible');
+                                MetricsView.fetchTCsbyStatus(this.x);
+                            },
+                            unselect: function() {
+                                $('#tcMetrics #tc-container').children().remove();
+                            }
                         }
                     }
                 }

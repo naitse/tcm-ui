@@ -118,7 +118,13 @@ define(function(require){
 
                     $('.feature[feature-id='+mensaje.data.itemId+ '] .icon-user').css('visibility','visible');
 
-                };
+                //     .popover({animation: true,
+                //             trigger:'click',
+                //             placement:'top',
+                //             title:'Present in Iterations',
+                //             content: $(this).parents('.feature').data('users')});
+
+                }
 
 
             }

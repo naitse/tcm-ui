@@ -132,6 +132,6 @@ pre{white-space:pre-wrap;white-space:-moz-pre-wrap;white-space:-pre-wrap;white-s
 #tcViewer #copy-tc-modal {	width:50% !important;	left: 44% !important;	height: 500px;}#tcViewer #copy-tc-modal .modal-body{	height: 370;}#tcViewer #copy-tc-modal .panel{	width:49%;	border:1px solid;	float: left;height: 346px;}.multi-active{border: 1px solid #d2e9fa;box-shadow: #d2e9fa 0 0 50px inset;-moz-box-shadow: #d2e9fa 0 0 50px inset;-webkit-box-shadow: #d2e9fa 0 0 50px inset;}.panel#feature-cont {	overflow: hidden;	overflow-y:auto; }#release_selector_chzn {	right: 25px;position: absolute;}.panels {	margin-top: 30px;}#copy-tc-modal .modal-body {	overflow: hidden;}
 .feature .icon-user{position: absolute !important;right: 0px !important;bottom: 2px !important;z-index: 999 !important; left:inherit !important;top: inherit !important;visibility:hidden;}
 .suite .icon-user{position: absolute !important;right: 0px !important;bottom: 2px !important;z-index: 999 !important;}
-
+.popover {z-index:9999 !important;}
 
 

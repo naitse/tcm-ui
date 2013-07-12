@@ -1,7 +1,7 @@
 
 define( function(require){
-    //var basePath = "http://tcm-backend.cloudhub.io/api/";
-    var basePath = "http://tcm-backend-qa.cloudhub.io/api/";
+    var basePath = "http://tcm-backend.cloudhub.io/api/";
+    //var basePath = "http://tcm-backend-qa.cloudhub.io/api/";
     //var basePath = "http://54.226.164.226/api/";
     //var basePath = "http://localhost:8088/api/";
     var basePath2 = basePath.replace('api/','');
@@ -190,11 +190,11 @@ define( function(require){
         },
         metrics:{
                 url: basePath2 + 'getFBTCS?iterationId=',
-            getFBTCS:function(iterId){
+            getFBTCS:function(iterId,statusId){
 
                 return $.ajax({
                     type: "GET",
-                    url: this.url + iterId,
+                    url: this.url + iterId +"&statusId=" + statusId,
                     dataType: "json"
                 });
             }
