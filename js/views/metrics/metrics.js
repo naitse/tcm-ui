@@ -27,11 +27,8 @@ define(function(require){
                     $(template).find('#metrics-controls').hide();
                     $(template).find('.permalink').remove();
                     $("#pannel-wrapper").append(template);
-                    $('#tcMetrics #metrics-release-select').releases_iterations_dd(null,function(){
-                        iterName = $('#tcMetrics #metrics-release-select option[value='+iterId+']').text();
                         MetricsView.loadMetrics(0,iterId,false);
                         $('#tcMetrics .graph-previews').css('top','-36px');
-                    })
                 }else{
 
                     $("#pannel-wrapper").append(template);
@@ -129,7 +126,9 @@ define(function(require){
                 if(metricsExecuted[0].length > 0){
                     var chartData = new Array();
 
+                    iterName = metricsExecuted[0][0].iterName
 
+                    delete metricsExecuted[0][0]['iterName'];
                     _.each(metricsExecuted[0][0], function(value, key, list){
 
                         chartData.push(new Array( key, value));

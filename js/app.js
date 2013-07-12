@@ -67,8 +67,9 @@ define([
 
     function loadModule(module, queryParam){
 
-        if(window.location.hash.indexOf('itmhl') < 0 || window.location.hash.indexOf('ris') < 0 || window.location.hash.indexOf('planhl') < 0){
+        if(window.location.hash.indexOf('itmhl') >= 0 || window.location.hash.indexOf('ris') >= 0 || window.location.hash.indexOf('planhl') >= 0){
 
+        }else{
                 window.pusher = new Pusher('17eb9ecb711bee47d32d');
 
         var releaseUpdates = PusherNotifier(pusher.subscribe($.cookie('usrname')),
