@@ -69,7 +69,7 @@ define([
 
         if(window.location.hash.indexOf('itmhl') >= 0 || window.location.hash.indexOf('ris') >= 0 || window.location.hash.indexOf('planhl') >= 0){
 
-        }else{
+        }else if($.cookie('apiKey') && $.cookie('apiKey') != null && $.cookie('apiKey') != "null"){
                 window.pusher = new Pusher('17eb9ecb711bee47d32d');
 
         var releaseUpdates = PusherNotifier(pusher.subscribe($.cookie('usrname')),
@@ -78,6 +78,8 @@ define([
                 titleEventProperty: 'title',
                 gritterOptions: {sticky:true}
             });
+        }else{
+            window.location = "login.html" + window.location.hash;
         }
 
 
