@@ -389,7 +389,9 @@ define(function(require){
 function processTCstatusInfo(data){
 
                     $('#tcMetrics #tc-container').children().remove();
-                            $('#info-tc-modal').modal();
+                            $('#info-tc-modal').modal({
+                                  keyboard: false
+                                })
                         var cont = $('<div class="tc-pop-info" />')
                         if(data.length > 0){
                             $(data).each(function(){
