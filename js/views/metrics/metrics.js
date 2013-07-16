@@ -42,7 +42,7 @@ define(function(require){
 
 
                     attachEvents();
-                    $('#tcMetrics .graph-previews').css('top','-114px');
+                    $('#tcMetrics .graph-previews').css('top','-30px');
 
                 }
                 $('#tcMetrics #tc-container').css('visibility','hidden');
