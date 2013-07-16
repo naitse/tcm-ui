@@ -10,6 +10,7 @@ define(function(require){
     require('exporting');
     var permalinkIterId = '';
     var iterName = '';
+    var iterId;
     var monitoring_interval = 60000;
     var monitoring = false;
 
@@ -18,17 +19,19 @@ define(function(require){
 
         rendered: false,
 
-        render: function(iterId){
+        render: function(iterIdR){
             if(!this.rendered){
 
                  var template = $(planTemplate)
 
-                if (typeof iterId != 'undefined'){
+                if (typeof iterIdR != 'undefined'){
                     $(template).find('#metrics-controls').hide();
                     $(template).find('.permalink').remove();
                     $("#pannel-wrapper").append(template);
-                        MetricsView.loadMetrics(0,iterId,false);
-                        $('#tcMetrics .graph-previews').css('top','-36px');
+                    iterId = iterIdR
+                        MetricsView.loadMetrics(0,iterIdR,false);
+                        $('#tcMetrics .graph-previews').css('top','0');
+                        attachEvents();
                 }else{
 
                     $("#pannel-wrapper").append(template);
@@ -52,9 +55,9 @@ define(function(require){
         loadIterations: function(){
 
            $('#tcMetrics #metrics-release-select').releases_iterations_dd(function(){
-                var iterId =  $("#tcMetrics #metrics-release-select option:selected").val();
+                iterId =  $("#tcMetrics #metrics-release-select option:selected").val();
                 iterName =  $("#tcMetrics #metrics-release-select option:selected").text();
-
+                // MetricsView.loadFeatureMetrics(iterId);
                 MetricsView.loadMetrics(0,iterId);
 
            },function(){
@@ -111,11 +114,49 @@ define(function(require){
                 }
             });
         },
+        loadFeatureMetrics:function(iterId){
+            
+            $('#tcMetrics .main-container').hide()
+            $('#tcMetrics .graph-previews').hide()
+            var maincontainer = $('<div class="graph-feature-cont" style="width=100%; height=100%;" />')
+            $('#tcMetrics .graph-container').append(maincontainer);
+           
+           tcmModel.releases.iterations.features.fetch(0,iterId).done(function(data){
+
+                $(data).each(function(){
+                        featureId= this.featureId
+                        console.log(featureId)
+                        var self = this;
+
+                    tcmModel.metrics.executedbyfeature(featureId).done(function(data){
+                        var container = $('<div class="graph-feature" style="width=300px; height=200px;" id="'+self.featureId+'" />')
+                        $('#tcMetrics .graph-feature-cont').append(container);
+
+                        var chartData = new Array();
+
+                        iterName = data[0].iterName
+
+                        delete data[0]['iterName'];
+                        _.each(data[0], function(value, key, list){
+
+                            chartData.push(new Array( key, value));
+                        });
+                        console.log(chartData)
+                        renderExecutionPie(chartData, container)
+                    })
+
+
+                })
+
+            })
+
+        },
         loadMetrics: function(rlsId,iterId,monitoring){
             var self = this;
             $("#tcMetrics #alertNoMetrics").addClass('hide');
             $("#tcMetrics #metricsContainer").hide();
             $("#tcMetrics #loading-indicator").show();
+
 
             $('#tcMetrics .link-exposer').text('')
 
@@ -165,6 +206,8 @@ define(function(require){
 
                 fixBorder();
                 adjustChartHeight();
+                $("#tcMetrics #global").attr('disabled',false);
+                $("#tcMetrics #byitem").attr('disabled',false);
             });
 
         }
@@ -176,15 +219,32 @@ define(function(require){
              var permalink =  wl.protocol + '//' + wl.hostname + wl.pathname + '#itmhl/'+ permalinkIterId;
              $('#tcMetrics .link-exposer').text(permalink);
         })
+
+        $('#tcMetrics #byitem').live({
+            click:function(){
+                MetricsView.loadFeatureMetrics(iterId);
+            }
+        })
+
+        $('#tcMetrics #global').live({
+            click:function(){
+                // console.log('lalal')
+                $('#tcMetrics .main-container').show()
+                $('#tcMetrics .graph-previews').show()
+                $('#tcMetrics .graph-feature-cont').remove()
+                MetricsView.loadMetrics(0,iterId);
+            }
+        })
+
     }
 
-    function renderExecutionPie(data){
+    function renderExecutionPie(dataIN, container){
 
-        var data = $('#executionContainer').data('data');
-        var $this = $('#executionContainer');
+        var setSize = (typeof dataIN === 'undefined')? false : true;
+        var data = (typeof dataIN === 'undefined')? $('#executionContainer').data('data') : dataIN;
+        var $this = (typeof container  === 'undefined')? $('#executionContainer') : $(container);
 
-
-        $('#executionContainer').highcharts({
+        $this.highcharts({
             chart: {
                 plotBackgroundColor: null,
                 // plotBorderWidth: null,
@@ -200,7 +260,7 @@ define(function(require){
             //'[{"Not Run":6,"In Progress":0,"Passed":10,"Failed":0,"Blocked":0}]'
             colors: ['#c6c6c6','#46ACCA', '#5DB95D', '#CD433D', '#FAA328'],
             title: {
-                text: 'Test plan execution of ' + iterName
+                text: iterName
             },
             plotOptions: {
                 pie: {
@@ -236,7 +296,11 @@ define(function(require){
                 name: 'Test Cases',
                 data: data
             }]
-        });
+        })
+
+    if(setSize){
+        $this.highcharts().setSize(400, 300);
+    }
         
         //adjustChartHeight()
 

@@ -129,6 +129,24 @@ define( function(require){
                 });
             },
 
+            subSuites:{
+                add:function(label,pId){
+                    return   $.ajax({
+                          type:'POST',
+                          
+                          url: basePath2 + "addSubSuite?label="+label +"&parentId="+pId,
+                          dataType: "json"
+                    });
+                },
+                  fetch:function(pId){
+                    return   $.ajax({
+                          type:'GET',
+                          url: basePath2 + "getSubSuite?parentId="+pId,
+                          dataType: "json"
+                    });
+                }
+            },
+
             testcases:{
 
                 fetch: function(label){
@@ -195,6 +213,13 @@ define( function(require){
                 return $.ajax({
                     type: "GET",
                     url: this.url + iterId +"&statusId=" + statusId,
+                    dataType: "json"
+                });
+            },
+            executedbyfeature: function(featureId){
+                return $.ajax({
+                    type: "GET",
+                    url: basePath2 + 'metricsExecutedFeature?featureId=' + featureId,
                     dataType: "json"
                 });
             }

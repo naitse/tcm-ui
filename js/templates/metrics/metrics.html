@@ -28,7 +28,13 @@ min-height: 580px;
 
 /*margin-bottom: 20px;*/
 }
+#tcMetrics .graph-container{
+width: 100%;
+}
 
+#tcMetrics .graph-feature{
+    display:inline-block;
+}
 #metricsContainer{
     margin-top: 30px;
 }
@@ -60,6 +66,13 @@ border: 1px solid #E65C56;
 box-shadow: #E65C56 0 25px inset
 -moz-box-shadow: #E65C56 0 25px inset;
 -webkit-box-shadow: #E65C56 0 25px inset;
+}
+
+#tcMetrics .btn-group {
+float: right;
+position: relative;
+top: -34px;
+margin-right: 400px;
 }
 
 #tcMetrics .tc .detailsIcon.blocked {
@@ -95,6 +108,10 @@ box-shadow: #FFBC41 0 25px inset;
                 There was an error pulling metrics
             </div>
         </div>
+    </div>
+     <div class="btn-group" data-toggle="buttons-radio">
+      <button type="button" id="global" class="btn btn-primary active" disabled>Global</button>
+      <button type="button" id="byitem" class="btn btn-primary" disabled>By Item</button>
     </div>
     <img src="assets/images/loading.gif" id="loading-indicator" style="margin-top: 10%; margin-left: 40%; display:none; position: absolute; z-index: 1000;" />
     <div id="metricsContainer" class="startup" >
