@@ -13,6 +13,9 @@ define(function(require){
     var iterId;
     var monitoring_interval = 60000;
     var monitoring = false;
+    var chart;
+    var series;
+    var globalGraph= true;
 
     var MetricsView = {
         moduleId: "Metrics",
@@ -66,7 +69,7 @@ define(function(require){
            })
 
         },
-        fetchTCsbyStatus:function(statusName){
+        fetchTCsbyStatus:function(statusName,chartObject){
 
 
             switch(statusName)
@@ -90,29 +93,18 @@ define(function(require){
                     statusId = 3
             }
 
-            tcmModel.metrics.getFBTCS(permalinkIterId, statusId).done(function(data){
-            $('#tcMetrics #tc-container').children().remove();
-                if(data.length > 0){
-                    $(data).each(function(){
-                        var tc_html = tcsModule.createTcHTML(this,null,false);
-                        $(tc_html).find('.btn-group').remove();
-                        $(tc_html).find('.tc-suites').remove();
-                        $(tc_html).find('.suites-label').remove();
-                        $(tc_html).data('sort',this.statusId);
-                        $(tc_html).attr('title',this.name)
-                        // if(this.statusId == 2){
-                        //     $(tc_html).find('.detailsIcon').addClass('blocked');
-                        // }else {
-                        //     $(tc_html).find('.detailsIcon').addClass('fail');
-                        // }
-                        tcsModule.renderTC(tc_html, '#tcMetrics',false); //REMOVE THE PARSER
-                    })
-                    $('#tcMetrics #tc-container > div').each(function () {
-                        if($(this).data('sort') == 3){
-                            $('#tcMetrics #tc-container').prepend(this)}
-                    })
-                }
-            });
+            featureId= chartObject.attr('id')
+
+            
+            if(globalGraph){
+                tcmModel.metrics.getFBTCS(permalinkIterId, statusId).done(function(data){
+                        processTCstatusInfo(data)
+                    });
+            }else{
+                tcmModel.metrics.getTcStatusByFeature(featureId, statusId).done(function(data){
+                        processTCstatusInfo(data)
+                    });
+            }
         },
         loadFeatureMetrics:function(iterId){
             
@@ -125,11 +117,11 @@ define(function(require){
 
                 $(data).each(function(){
                         featureId= this.featureId
-                        console.log(featureId)
                         var self = this;
 
                     tcmModel.metrics.executedbyfeature(featureId).done(function(data){
                         var container = $('<div class="graph-feature" style="width=300px; height=200px;" id="'+self.featureId+'" />')
+
                         $('#tcMetrics .graph-feature-cont').append(container);
 
                         var chartData = new Array();
@@ -141,7 +133,6 @@ define(function(require){
 
                             chartData.push(new Array( key, value));
                         });
-                        console.log(chartData)
                         renderExecutionPie(chartData, container)
                     })
 
@@ -222,6 +213,8 @@ define(function(require){
 
         $('#tcMetrics #byitem').live({
             click:function(){
+                globalGraph = false
+                $('#tcMetrics #feature-filter').show()
                 MetricsView.loadFeatureMetrics(iterId);
             }
         })
@@ -229,12 +222,28 @@ define(function(require){
         $('#tcMetrics #global').live({
             click:function(){
                 // console.log('lalal')
+                globalGraph = true
+                $('#tcMetrics #feature-filter').hide()
                 $('#tcMetrics .main-container').show()
                 $('#tcMetrics .graph-previews').show()
                 $('#tcMetrics .graph-feature-cont').remove()
                 MetricsView.loadMetrics(0,iterId);
             }
         })
+
+        $('#info-tc-modal .close-info-tc-modal').live({
+            click:function(){
+                // console.log('the chart container', chart, chart.attr('id'))
+                chart.highcharts().series[0].data[chart.data('series')].firePointEvent('click', event);
+                $('#info-tc-modal').modal('hide')
+            }
+        })
+
+        $(' #tcMetrics #feature-filter').live({
+          keyup:function() {
+            filterFeatures($(this).val());
+          }
+        });
 
     }
 
@@ -243,6 +252,8 @@ define(function(require){
         var setSize = (typeof dataIN === 'undefined')? false : true;
         var data = (typeof dataIN === 'undefined')? $('#executionContainer').data('data') : dataIN;
         var $this = (typeof container  === 'undefined')? $('#executionContainer') : $(container);
+
+        container = $this
 
         $this.highcharts({
             chart: {
@@ -271,6 +282,7 @@ define(function(require){
                         color: '#000000',
                         connectorColor: '#000000',
                         formatter: function() {
+                            // return MetricsView.fetchTCsbyStatus(this.x);
                             return '<b>'+ this.point.name +'</b>: '+ Math.round(this.percentage) +' %';
                         }
                     }
@@ -282,7 +294,19 @@ define(function(require){
                         events: {
                             select: function() {
                                 $('#tcMetrics #tc-container').css('visibility','visible');
-                                MetricsView.fetchTCsbyStatus(this.x);
+                                // console.log(this)
+                                $(container).data('series',this.x);
+                                $(container).data('name',iterName);
+
+                                chart = $(container);
+                                
+                                // console.log(chart)
+
+                                $('#info-tc-modal #tc-container').children().remove();
+
+                                $('#info-tc-modal').find('.feature-title').text($(container).find('.highcharts-title tspan').text() +'  - '+ this.name + ' test cases')
+                                // console.log(this,$(container))
+                                MetricsView.fetchTCsbyStatus(this.x,chart);
                             },
                             unselect: function() {
                                 $('#tcMetrics #tc-container').children().remove();
@@ -302,7 +326,7 @@ define(function(require){
         $this.highcharts().setSize(400, 300);
     }
         
-        //adjustChartHeight()
+        adjustChartHeight()
 
     }
 
@@ -362,6 +386,27 @@ define(function(require){
         }
     }
 
+function processTCstatusInfo(data){
+
+                    $('#tcMetrics #tc-container').children().remove();
+                            $('#info-tc-modal').modal();
+                        var cont = $('<div class="tc-pop-info" />')
+                        if(data.length > 0){
+                            $(data).each(function(){
+                                var node = $('<div class="tc-node" />').text(this.name);
+                                $(cont).append(node);
+                                var tc_html = tcsModule.createTcHTML(this,null,false);
+                                $(tc_html).find('.btn-group').remove();
+                                $(tc_html).find('.tc-suites').remove();
+                                $(tc_html).find('.suites-label').remove();
+                                $(tc_html).data('sort',this.statusId);
+                                $(tc_html).attr('title',this.name)
+                                tcsModule.renderTC(tc_html, '#info-tc-modal',false); //REMOVE THE PARSER
+                            })
+                        }
+
+
+}
 
     function fixBorder(){
         $('#tcMetrics .main-container #container').children().css({
@@ -387,6 +432,7 @@ define(function(require){
             var newChartWidth = parentWidth - previewsWidth;
             var newChartHeight = parentHeight - metrics_controls -100;
             $('#tcMetrics .graph-container').find('#container').children().highcharts().setSize(newChartWidth, newChartHeight)
+            $('#tcMetrics .graph-feature-cont').css('max-height', parentHeight - 100)
             $('#tcMetrics .graph-previews').css('height',parentHeight -20);
             $('#tcMetrics #tc-container').css('height',parentHeight - 280)
 
@@ -394,6 +440,20 @@ define(function(require){
     }
 
     $(window).resize(adjustChartHeight);
+
+    function filterFeatures(value){
+                 $(".highcharts-title tspan").each(function() {
+                // If the list item does not contain the text phrase fade it out
+                if ($(this).text().search(new RegExp(value, "i")) < 0) {
+                    // Show the list item if the phrase matches and increase the count by 1
+                    $(this).parents('.graph-feature').fadeOut();
+                } 
+                else {
+                    $(this).parents('.graph-feature').show();
+                }
+            });
+    }
+
 
     function positionTCs(){
                     $('#tcMetrics #tc-container').position({

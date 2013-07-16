@@ -222,6 +222,14 @@ define( function(require){
                     url: basePath2 + 'metricsExecutedFeature?featureId=' + featureId,
                     dataType: "json"
                 });
+            },
+            getTcStatusByFeature:function(featureId,statusId){
+
+                return $.ajax({
+                    type: "GET",
+                    url: basePath2 + 'getTcStatusByFeature?featureId=' + featureId + "&statusId=" + statusId,
+                    dataType: "json"
+                });
             }
         },
         testcases:{
