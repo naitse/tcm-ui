@@ -7,7 +7,7 @@ define(function(require){
     var Notificator = barman.Class.create({
        channel: "default-channel",
        //socketHost: "ws://localhost:8089/ws/notificator/",
-       socketHost: "ws://50.16.102.175:8081/ws/notificator",
+       socketHost: "ws://54.226.76.211:8081/ws/notificator",
        identifier: Math.floor(Math.random()*10000),
        socket: null,
        debug: false,
