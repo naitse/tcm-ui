@@ -13,22 +13,20 @@ define([
     'views/interop/interop',
     'views/project/project',
     'views/ris/ris', //release state, hotlik page to show the curren implementation qa progress
-    // 'tcm2',
+    'notificator',
     'backbone',
     'jquery.cookie',
-    'pusher',
     'PusherNotifier',
     'gritter'
-], function($, _, TopMenuView, managerView, syncView, planView, MetricsView, RlsMetricsView, SuitesView, PluginsSettingsView, InteropView, ProjectView,ReleaseImplementationView){
+], function($, _, TopMenuView, managerView, syncView, planView, MetricsView, RlsMetricsView, SuitesView, PluginsSettingsView, InteropView, ProjectView,ReleaseImplementationView, notificator){
 
-    window.pusher = new Pusher('17eb9ecb711bee47d32d');
+    var channel = new notificator('releases-updates');
 
-    var releaseUpdates = PusherNotifier(pusher.subscribe($.cookie('usrname')),
-         {
+    PusherNotifier(channel, {
             eventName: 'release-updates',
             titleEventProperty: 'title',
             gritterOptions: {sticky:true}
-        });
+       });
 
     var modules = [
         {

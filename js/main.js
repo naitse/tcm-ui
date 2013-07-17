@@ -22,7 +22,6 @@ require.config({
     'jquery.grid': 'libs/jquery.grid/jquery.handsontable.full',
     barman: 'libs/barman/barman.min',
     handlebars: 'libs/handlebars/handlebars',
-    pusher:  '//js.pusher.com/2.1/pusher.min',
     PusherNotifier: 'libs/PusherNotifier/PusherNotifier',
     gritter: 'libs/gritter/js/jquery.gritter.min',
     notificator: 'modules/notificator/notificator'
@@ -78,12 +77,7 @@ require.config({
     handlebars: {
       exports: 'Handlebars'
     },
-    pusher: {
-        deps: ['jquery'],
-      exports: 'Pusher'
-    },
     PusherNotifier: {
-        deps: ['pusher'],
         exports: 'PusherNotifier'
     }
 

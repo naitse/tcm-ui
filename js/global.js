@@ -1,7 +1,5 @@
 define(function(require){
-    require('pusher');
-    require('PusherNotifier');
-    
+
     var global = {
         channels:{},
         users:{},
@@ -41,15 +39,8 @@ define(function(require){
             }else{
                 $(container).unblock()
             }
-        },
-        channelSubscribe:function(channelName){
-        
-            this.channels[channelName] = (pusher.subscribe(channelName));
-
-        },
-        channelBind:function(channel, evnt, action){
-            this.channels[channel].bind(evnt,action);
         }
+
     }
 
 

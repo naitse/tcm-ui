@@ -14,8 +14,8 @@ function PusherNotifier(channel, options) {
     $.extend(this.settings, options);
 
 
-    channel.bind(this.settings.eventName, function(data){
-        console.log(data);
+    channel.onMessageReceived = function(evt){
+        var data = evt.data;
         var gritterOptions = {
             title: (self.settings.titleEventProperty? data[self.settings.titleEventProperty] : self.settings.title),
             text: data[self.settings.eventTextProperty].replace(/\\/g, ''),
@@ -26,5 +26,5 @@ function PusherNotifier(channel, options) {
 
         $.gritter.add(gritterOptions);
 
-    });
+    };
 };

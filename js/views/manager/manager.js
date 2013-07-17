@@ -25,7 +25,7 @@ define(function(require){
     var newBug = '';
     var jiraLink = 'http://www.mulesoft.org/jira/browse/';//http://www.mulesoft.org/jira/secure/CreateIssue.jspa?pid=10462&issuetype=1
 
-    var channel = new notificator();
+    var channel;
 
 
     var ManagerView = {
@@ -37,7 +37,7 @@ define(function(require){
         render: function(){
             if(!this.rendered){
                 $("#pannel-wrapper").append(managerTemplate);
-
+                channel = new notificator('features-position-tracking');
                 this.rendered = true;
             }
             $('.tcm-top-menu-container a').removeClass('active');
@@ -823,7 +823,7 @@ function itSelected(iterationId, iterationName) {
                      $('#add-feature').addClass('enabled').attr('disabled',false);
                     $('#tcViewer #holder').attr('class', 'features').find('.iteration-holder-name').text(releaseName+'/'+iterationName);
 
-                     channel.sendMessage("get-history", {"userId":"sdfaasdfasdf", "itemId":parseInt($(this).attr('feature-id'))})
+                     channel.sendMessage("get-history")
               });
         });
     })
