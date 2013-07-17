@@ -1,7 +1,7 @@
 define(function(require){
     //var basePath = "http://tcm-backend-qa.cloudhub.io";
-    //var basePath = "http://tcm-backend.cloudhub.io";
-    var basePath = "http://localhost:8088";
+    var basePath = "http://tcm-backend.cloudhub.io";
+    //var basePath = "http://localhost:8088";
 
 	var $ = require('jquery');
 	

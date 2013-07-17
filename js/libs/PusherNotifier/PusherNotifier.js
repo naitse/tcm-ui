@@ -16,6 +16,7 @@ function PusherNotifier(channel, options) {
 
     channel.onMessageReceived = function(evt){
         var data = evt.data;
+        if(data == null){return;};
         var gritterOptions = {
             title: (self.settings.titleEventProperty? data[self.settings.titleEventProperty] : self.settings.title),
             text: data[self.settings.eventTextProperty].replace(/\\/g, ''),

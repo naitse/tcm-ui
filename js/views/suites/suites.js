@@ -9,6 +9,7 @@ define(function(require){
         tcsModule = require('modules/tc/tc'),
         itemsModule = require('modules/item/item'),
         _ = require('underscore');
+        var parentSuiteId;
 
     var SuitesView = {
         moduleId: "Suites",
@@ -66,12 +67,18 @@ define(function(require){
 						tagsChanged();
 
 					}else{
-						if(!$(this).hasClass('selected')){
+						if(!$(this).hasClass('selected') && !$(this).hasClass('sub-suite')){
 							$('#suitesViewer .item').removeClass('selected');
+							$('#suitesViewer .item').parents('.suite-wrapp').find('.sub-suite').hide();
 							$(this).toggleClass('selected');
-							$('#suitesViewer #tags-select').find('option').attr('selected',false);
-							$('#suitesViewer #tags-select').find('option[value="'+$(this).find('.summary').text()+'"]').attr('selected',true);
-						}else{
+							getSubSuites(this);
+							// $(this).parents('.suite-wrapp').find('.sub-suite').show();
+
+						}else if($(this).hasClass('sub-suite')){
+							$('#suitesViewer .item').removeClass('selected');
+							// $('#suitesViewer .item .sub-suite').removeClass('selected');
+							$(this).toggleClass('selected');
+							getSubSuites(this);
 							// $('#suitesViewer #tags-select').find('option[value="'+$(this).find('.summary').text()+'"]').attr('selected',false);
 						}
 						$('#suitesViewer #tags-select').trigger("liszt:updated")
@@ -93,14 +100,29 @@ define(function(require){
 
 			$(pV+' #suite-save').live({
 				click:function(){
-					tcmModel.suites.add($(pV+ '#suite-name').val(),$.cookie("projectId")).done(function(data){
-						if(data[0].FALSE == 0){
-							$(pV+ ' #suite-name').parent().addClass('alert-error');
-						} else {
-							$(pV+ ' #suite-close').click();
-							addSuiteToUI(data);
-						}
-					})
+
+					if($(pV+'#myModal').data('subsuite') != true){
+
+						tcmModel.suites.add($(pV+ '#suite-name').val(),$.cookie("projectId")).done(function(data){
+							if(data[0].FALSE == 0){
+								$(pV+ ' #suite-name').parent().addClass('alert-error');
+							} else {
+								$(pV+ ' #suite-close').click();
+								addSuiteToUI(data);
+							}
+						})
+
+						
+					}else{
+						tcmModel.suites.subSuites.add($(pV+ '#suite-name').val(),parentSuiteId).done(function(data){
+								data = data[0]
+								addSubSuiteToUI(data,parentSuiteId);
+							
+						})
+
+					}
+
+
 				}
 			});
 
@@ -321,6 +343,15 @@ define(function(require){
                 }
             })
 
+		$(pV +' #item-add').live({
+          click: function(e){
+            e.stopPropagation();
+            parentSuiteId = $(this).parents('.item').attr('item-id');
+            $(pV+' #myModalLabel').text('Add Subsuite');
+            $(pV+' #myModal').data('subsuite',true);
+            $(pV+' #myModal').modal();
+          }
+      	})
 
         $(pV + ' .del-tc').live({
           click: function(e){
@@ -356,8 +387,9 @@ define(function(require){
 
     function attachObjects(){
 
-		var add_suite = $('<div id="add-suite" type="button" title="Add Suite"class="" ><i class="icon-plus-sign icon-white"></i></div>').click(function(e){
-			
+		var add_suite = $('<div id="add-suite" type="" title="Add Suite"class="" ><i class="icon-plus-sign icon-white"></i></div>').click(function(e){
+			$(pV+' #myModalLabel').text('Add Suite');
+			$(pV+'#myModal').data('subsuite',false);
 			$(pV+'#myModal').modal();
 
 		});
@@ -433,13 +465,15 @@ function editTc(tcObject){
 			$(this).each(function(){
 				// var option = $('<option>').attr('value', this.name).text(this.name).data('tagId',this.id);
 				// $('#suitesViewer #tags-select').append(option)
-				var suite = itemsModule.createItem(this.name,this.id,this.count,'suite')
+				var suite = itemsModule.createItem(this.name,this.id,this.count,0,'suite')
 
 				var instance_suite = '<div id="suite-instance" title="Instance suite" type="button" class="" style=""><i class="icon-share-alt"></i></div>';
 
 				$(suite).find('.item-control-buttons .wrapper').prepend(instance_suite);
-
-                itemsModule.renderItem('#suitesViewer  #feature-container',suite.data('users',[]));
+				suite.data('users',[])
+				var suite_wrap = $('<div class="suite-wrapp"/>').attr('suite-id',$(suite).attr('item-id'));
+				$(suite_wrap).append(suite);
+                itemsModule.renderItem('#suitesViewer  #feature-container',suite_wrap);
 			})
 		})
 		// $('#suitesViewer #tags-select').trigger("liszt:updated")
@@ -513,20 +547,55 @@ function editTc(tcObject){
     function addSuiteToUI(data){
     	var data = data[0];
 
-		var suite = itemsModule.createItem(data.name,data.id,0,'suite')
+		var suite = itemsModule.createItem(data.name,data.id,0,0,'suite')
 
 		var instance_suite = '<button id="suite-instance" title="Instance suite" type="button" class="btn btn-mini" style=""><i class="icon-share-alt"></i></button>';
 
-		$(suite).find('#item-add').remove();
+		// $(suite).find('#item-add').remove();
 
 		$(suite).find('.item-control-buttons .wrapper').prepend(instance_suite);
 
         itemsModule.renderItem('#suitesViewer  #feature-container',suite);
 
+		$(suite).wrap('<div class="suite-wrapp"/>').attr('suite-id',$(suite).attr('item-id'));
 
 		var option = $('<option>').attr('value', data.name).text(data.name).data('tagId',data.id,0);
 		$('#suitesViewer #tags-select').append(option)
 		$('#suitesViewer #tags-select').trigger("liszt:updated")
+    }
+
+    function getSubSuites(item){
+
+    	var parentId = $(item).attr('item-id');
+
+    	tcmModel.suites.subSuites.fetch(parentId).done(function(data){
+    		if (data.length > 0){
+
+    			$(data).each(function(){
+    				// console.log(this)
+    				addSubSuiteToUI(this,parentId);
+    			})
+
+    		}
+    	})
+
+
+    }
+
+    function addSubSuiteToUI(data,parentSuiteId){
+
+		var suite = itemsModule.createItem(data.name,data.id,0,0,'sub-suite')
+
+		var instance_suite = '<button id="suite-instance" title="Instance suite" type="button" class="btn btn-mini" style=""><i class="icon-share-alt"></i></button>';
+		
+		$(suite).find('#item-add').remove();
+
+		$(suite).find('.item-control-buttons .wrapper').prepend(instance_suite);
+
+		$('#suitesViewer  #feature-container .sub-suite[item-id='+data.id+']').remove();
+
+        itemsModule.renderItem('#suitesViewer  #feature-container .suite-wrapp[suite-id='+parentSuiteId+']',suite);
+
     }
 
     function removeSuiteFromUI(item){

@@ -1,7 +1,7 @@
 
 define( function(require){
-    //var basePath = "http://tcm-backend.cloudhub.io/api/";
-    var basePath = "http://tcm-backend-qa.cloudhub.io/api/";
+    var basePath = "http://tcm-backend.cloudhub.io/api/";
+    //var basePath = "http://tcm-backend-qa.cloudhub.io/api/";
     //var basePath = "http://54.226.164.226/api/";
     //var basePath = "http://localhost:8088/api/";
     var basePath2 = basePath.replace('api/','');
@@ -129,6 +129,24 @@ define( function(require){
                 });
             },
 
+            subSuites:{
+                add:function(label,pId){
+                    return   $.ajax({
+                          type:'POST',
+                          
+                          url: basePath2 + "addSubSuite?label="+label +"&parentId="+pId,
+                          dataType: "json"
+                    });
+                },
+                  fetch:function(pId){
+                    return   $.ajax({
+                          type:'GET',
+                          url: basePath2 + "getSubSuite?parentId="+pId,
+                          dataType: "json"
+                    });
+                }
+            },
+
             testcases:{
 
                 fetch: function(label){
@@ -190,11 +208,26 @@ define( function(require){
         },
         metrics:{
                 url: basePath2 + 'getFBTCS?iterationId=',
-            getFBTCS:function(iterId){
+            getFBTCS:function(iterId,statusId){
 
                 return $.ajax({
                     type: "GET",
-                    url: this.url + iterId,
+                    url: this.url + iterId +"&statusId=" + statusId,
+                    dataType: "json"
+                });
+            },
+            executedbyfeature: function(featureId){
+                return $.ajax({
+                    type: "GET",
+                    url: basePath2 + 'metricsExecutedFeature?featureId=' + featureId,
+                    dataType: "json"
+                });
+            },
+            getTcStatusByFeature:function(featureId,statusId){
+
+                return $.ajax({
+                    type: "GET",
+                    url: basePath2 + 'getTcStatusByFeature?featureId=' + featureId + "&statusId=" + statusId,
                     dataType: "json"
                 });
             }

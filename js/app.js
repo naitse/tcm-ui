@@ -20,14 +20,6 @@ define([
     'gritter'
 ], function($, _, TopMenuView, managerView, syncView, planView, MetricsView, RlsMetricsView, SuitesView, PluginsSettingsView, InteropView, ProjectView,ReleaseImplementationView, notificator){
 
-    var channel = new notificator('releases-updates');
-
-    PusherNotifier(channel, {
-            eventName: 'release-updates',
-            titleEventProperty: 'title',
-            gritterOptions: {sticky:true}
-       });
-
     var modules = [
         {
         'id': 'Sync',
@@ -73,6 +65,21 @@ define([
     ];
 
     function loadModule(module, queryParam){
+
+        if(window.location.hash.indexOf('itmhl') >= 0 || window.location.hash.indexOf('ris') >= 0 || window.location.hash.indexOf('planhl') >= 0){
+
+        }else if($.cookie('apiKey') && $.cookie('apiKey') != null && $.cookie('apiKey') != "null"){
+
+            PusherNotifier(new notificator('releases-updates'), {
+                eventName: 'release-updates',
+                titleEventProperty: 'title',
+                gritterOptions: {sticky:true}
+            });
+
+        }else{
+            window.location = "login.html" + window.location.hash;
+        }
+
 
 
         if( window.location.hash.indexOf('itmhl') >= 0 || window.location.hash.indexOf('ris') >= 0 || window.location.hash.indexOf('planhl') >= 0 || ($.cookie('apiKey') && $.cookie('apiKey') != null && $.cookie('apiKey') != "null")){

@@ -67,7 +67,7 @@ define(function(require){
 
            var message = $.parseJSON(e.data);
            if(message != null){
-               if(message.id ==null || message.id.toString().indexOf(self.identifier) < 0){
+               if(message.id ==null || message.id.toString().indexOf(this.identifier) < 0){
                 this.log("message received: " + e.data );
                 this.onMessageReceived(message);
                }

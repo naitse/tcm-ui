@@ -10,27 +10,31 @@ define(function(require){
     require('exporting');
     var permalinkIterId = '';
     var iterName = '';
+    var iterId;
     var monitoring_interval = 60000;
+    var monitoring = false;
+    var chart;
+    var series;
+    var globalGraph= true;
 
     var MetricsView = {
         moduleId: "Metrics",
 
         rendered: false,
 
-        render: function(iterId){
+        render: function(iterIdR){
             if(!this.rendered){
 
                  var template = $(planTemplate)
 
-                if (typeof iterId != 'undefined'){
+                if (typeof iterIdR != 'undefined'){
                     $(template).find('#metrics-controls').hide();
                     $(template).find('.permalink').remove();
                     $("#pannel-wrapper").append(template);
-                    $('#tcMetrics #metrics-release-select').releases_iterations_dd(null,function(){
-                        iterName = $('#tcMetrics #metrics-release-select option[value='+iterId+']').text();
-                        MetricsView.loadMetrics(0,iterId,true);
-                        $('#tcMetrics .graph-previews').css('top','-36px');
-                    })
+                    iterId = iterIdR
+                        MetricsView.loadMetrics(0,iterIdR,false);
+                        $('#tcMetrics .graph-previews').css('top','0');
+                        attachEvents();
                 }else{
 
                     $("#pannel-wrapper").append(template);
@@ -38,10 +42,10 @@ define(function(require){
 
 
                     attachEvents();
-                    $('#tcMetrics .graph-previews').css('top','-114px');
+                    $('#tcMetrics .graph-previews').css('top','-30px');
 
                 }
-
+                $('#tcMetrics #tc-container').css('visibility','hidden');
                 adjustChartHeight()
                 this.rendered = true;
             }
@@ -54,9 +58,9 @@ define(function(require){
         loadIterations: function(){
 
            $('#tcMetrics #metrics-release-select').releases_iterations_dd(function(){
-                var iterId =  $("#tcMetrics #metrics-release-select option:selected").val();
+                iterId =  $("#tcMetrics #metrics-release-select option:selected").val();
                 iterName =  $("#tcMetrics #metrics-release-select option:selected").text();
-
+                // MetricsView.loadFeatureMetrics(iterId);
                 MetricsView.loadMetrics(0,iterId);
 
            },function(){
@@ -65,24 +69,98 @@ define(function(require){
            })
 
         },
+        fetchTCsbyStatus:function(statusName,chartObject){
 
+
+            switch(statusName)
+            {
+                case 0:
+                    statusId = 0
+                    break;
+                case 1:
+                    statusId = 1
+                    break;
+                case 2:
+                    statusId = 4
+                    break;
+                case 3:
+                    statusId = 3
+                    break;
+                case 4:
+                    statusId = 2
+                    break;
+                default:
+                    statusId = 3
+            }
+
+            featureId= chartObject.attr('id')
+
+            
+            if(globalGraph){
+                tcmModel.metrics.getFBTCS(permalinkIterId, statusId).done(function(data){
+                        processTCstatusInfo(data)
+                    });
+            }else{
+                tcmModel.metrics.getTcStatusByFeature(featureId, statusId).done(function(data){
+                        processTCstatusInfo(data)
+                    });
+            }
+        },
+        loadFeatureMetrics:function(iterId){
+            
+            $('#tcMetrics .main-container').hide()
+            $('#tcMetrics .graph-previews').hide()
+            var maincontainer = $('<div class="graph-feature-cont" style="width=100%; height=100%;" />')
+            $('#tcMetrics .graph-container').append(maincontainer);
+           
+           tcmModel.releases.iterations.features.fetch(0,iterId).done(function(data){
+
+                $(data).each(function(){
+                        featureId= this.featureId
+                        var self = this;
+
+                    tcmModel.metrics.executedbyfeature(featureId).done(function(data){
+                        var container = $('<div class="graph-feature" style="width=300px; height=200px;" id="'+self.featureId+'" />')
+
+                        $('#tcMetrics .graph-feature-cont').append(container);
+
+                        var chartData = new Array();
+
+                        iterName = data[0].iterName
+
+                        delete data[0]['iterName'];
+                        _.each(data[0], function(value, key, list){
+
+                            chartData.push(new Array( key, value));
+                        });
+                        renderExecutionPie(chartData, container)
+                    })
+
+
+                })
+
+            })
+
+        },
         loadMetrics: function(rlsId,iterId,monitoring){
             var self = this;
             $("#tcMetrics #alertNoMetrics").addClass('hide');
             $("#tcMetrics #metricsContainer").hide();
             $("#tcMetrics #loading-indicator").show();
 
+
             $('#tcMetrics .link-exposer').text('')
 
             $.when( tcmModel.releases.iterations.metrics_executed(rlsId, iterId),
-                    tcmModel.releases.iterations.metrics_dailyexecuted(rlsId, iterId),
-                    tcmModel.metrics.getFBTCS(iterId)).done(function( metricsExecuted, metricsDaily, metricsFBTCS ){
+                    tcmModel.releases.iterations.metrics_dailyexecuted(rlsId, iterId)).done(function( metricsExecuted, metricsDaily ){
 
 
                 if(metricsExecuted[0].length > 0){
                     var chartData = new Array();
 
+                    iterName = metricsExecuted[0][0].iterName
 
+                    delete metricsExecuted[0][0]['iterName'];
                     _.each(metricsExecuted[0][0], function(value, key, list){
 
                         chartData.push(new Array( key, value));
@@ -114,33 +192,13 @@ define(function(require){
                     renderDailyExec();
                 }
 
-                $('#tcMetrics #tc-container').children().remove();
-                if(metricsFBTCS[0].length > 0){
-                    $(metricsFBTCS[0]).each(function(){
-                        var tc_html = tcsModule.createTcHTML(this,null,false);
-                        $(tc_html).find('.btn-group').remove();
-                        $(tc_html).find('.tc-suites').remove();
-                        $(tc_html).find('.suites-label').remove();
-                        $(tc_html).data('sort',this.statusId);
-                        $(tc_html).attr('title',this.name)
-                        if(this.statusId == 2){
-                            $(tc_html).find('.detailsIcon').addClass('blocked');
-                        }else {
-                            $(tc_html).find('.detailsIcon').addClass('fail');
-                        }
-                        tcsModule.renderTC(tc_html, '#tcMetrics',false); //REMOVE THE PARSER
-                    })
-                    $('#tcMetrics #tc-container > div').each(function () {
-                        if($(this).data('sort') == 3){
-                            $('#tcMetrics #tc-container').prepend(this)}
-                    })
-                }
-
                 $("#tcMetrics #loading-indicator").hide();
                 $("#tcMetrics #metricsContainer").show();
 
                 fixBorder();
                 adjustChartHeight();
+                $("#tcMetrics #global").attr('disabled',false);
+                $("#tcMetrics #byitem").attr('disabled',false);
             });
 
         }
@@ -152,21 +210,58 @@ define(function(require){
              var permalink =  wl.protocol + '//' + wl.hostname + wl.pathname + '#itmhl/'+ permalinkIterId;
              $('#tcMetrics .link-exposer').text(permalink);
         })
+
+        $('#tcMetrics #byitem').live({
+            click:function(){
+                globalGraph = false
+                $('#tcMetrics #feature-filter').show()
+                MetricsView.loadFeatureMetrics(iterId);
+            }
+        })
+
+        $('#tcMetrics #global').live({
+            click:function(){
+                // console.log('lalal')
+                globalGraph = true
+                $('#tcMetrics #feature-filter').hide()
+                $('#tcMetrics .main-container').show()
+                $('#tcMetrics .graph-previews').show()
+                $('#tcMetrics .graph-feature-cont').remove()
+                MetricsView.loadMetrics(0,iterId);
+            }
+        })
+
+        $('#info-tc-modal .close-info-tc-modal').live({
+            click:function(){
+                // console.log('the chart container', chart, chart.attr('id'))
+                chart.highcharts().series[0].data[chart.data('series')].firePointEvent('click', event);
+                $('#info-tc-modal').modal('hide')
+            }
+        })
+
+        $(' #tcMetrics #feature-filter').live({
+          keyup:function() {
+            filterFeatures($(this).val());
+          }
+        });
+
     }
 
-    function renderExecutionPie(data){
+    function renderExecutionPie(dataIN, container){
 
-        var data = $('#executionContainer').data('data');
-        var $this = $('#executionContainer');
+        var setSize = (typeof dataIN === 'undefined')? false : true;
+        var data = (typeof dataIN === 'undefined')? $('#executionContainer').data('data') : dataIN;
+        var $this = (typeof container  === 'undefined')? $('#executionContainer') : $(container);
 
+        container = $this
 
-        $('#executionContainer').highcharts({
+        $this.highcharts({
             chart: {
                 plotBackgroundColor: null,
                 // plotBorderWidth: null,
                 // plotShadow: false,
                 margin: [40, 0, 0, 0],
-                animation:false,
+                animation:true,
                 events: {
                     click: function(event) {
                         toggleChartFocus($this);
@@ -176,7 +271,7 @@ define(function(require){
             //'[{"Not Run":6,"In Progress":0,"Passed":10,"Failed":0,"Blocked":0}]'
             colors: ['#c6c6c6','#46ACCA', '#5DB95D', '#CD433D', '#FAA328'],
             title: {
-                text: 'Test plan execution of ' + iterName
+                text: iterName
             },
             plotOptions: {
                 pie: {
@@ -187,7 +282,35 @@ define(function(require){
                         color: '#000000',
                         connectorColor: '#000000',
                         formatter: function() {
+                            // return MetricsView.fetchTCsbyStatus(this.x);
                             return '<b>'+ this.point.name +'</b>: '+ Math.round(this.percentage) +' %';
+                        }
+                    }
+                },
+                series: {
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    point: {
+                        events: {
+                            select: function() {
+                                $('#tcMetrics #tc-container').css('visibility','visible');
+                                // console.log(this)
+                                $(container).data('series',this.x);
+                                $(container).data('name',iterName);
+
+                                chart = $(container);
+                                
+                                // console.log(chart)
+
+                                $('#info-tc-modal #tc-container').children().remove();
+
+                                $('#info-tc-modal').find('.feature-title').text($(container).find('.highcharts-title tspan').text() +'  - '+ this.name + ' test cases')
+                                // console.log(this,$(container))
+                                MetricsView.fetchTCsbyStatus(this.x,chart);
+                            },
+                            unselect: function() {
+                                $('#tcMetrics #tc-container').children().remove();
+                            }
                         }
                     }
                 }
@@ -197,9 +320,13 @@ define(function(require){
                 name: 'Test Cases',
                 data: data
             }]
-        });
+        })
+
+    if(setSize){
+        $this.highcharts().setSize(400, 300);
+    }
         
-        //adjustChartHeight()
+        adjustChartHeight()
 
     }
 
@@ -259,6 +386,29 @@ define(function(require){
         }
     }
 
+function processTCstatusInfo(data){
+
+                    $('#tcMetrics #tc-container').children().remove();
+                            $('#info-tc-modal').modal({
+                                  keyboard: false
+                                })
+                        var cont = $('<div class="tc-pop-info" />')
+                        if(data.length > 0){
+                            $(data).each(function(){
+                                var node = $('<div class="tc-node" />').text(this.name);
+                                $(cont).append(node);
+                                var tc_html = tcsModule.createTcHTML(this,null,false);
+                                $(tc_html).find('.btn-group').remove();
+                                $(tc_html).find('.tc-suites').remove();
+                                $(tc_html).find('.suites-label').remove();
+                                $(tc_html).data('sort',this.statusId);
+                                $(tc_html).attr('title',this.name)
+                                tcsModule.renderTC(tc_html, '#info-tc-modal',false); //REMOVE THE PARSER
+                            })
+                        }
+
+
+}
 
     function fixBorder(){
         $('#tcMetrics .main-container #container').children().css({
@@ -284,6 +434,7 @@ define(function(require){
             var newChartWidth = parentWidth - previewsWidth;
             var newChartHeight = parentHeight - metrics_controls -100;
             $('#tcMetrics .graph-container').find('#container').children().highcharts().setSize(newChartWidth, newChartHeight)
+            $('#tcMetrics .graph-feature-cont').css('max-height', parentHeight - 100)
             $('#tcMetrics .graph-previews').css('height',parentHeight -20);
             $('#tcMetrics #tc-container').css('height',parentHeight - 280)
 
@@ -291,6 +442,20 @@ define(function(require){
     }
 
     $(window).resize(adjustChartHeight);
+
+    function filterFeatures(value){
+                 $(".highcharts-title tspan").each(function() {
+                // If the list item does not contain the text phrase fade it out
+                if ($(this).text().search(new RegExp(value, "i")) < 0) {
+                    // Show the list item if the phrase matches and increase the count by 1
+                    $(this).parents('.graph-feature').fadeOut();
+                } 
+                else {
+                    $(this).parents('.graph-feature').show();
+                }
+            });
+    }
+
 
     function positionTCs(){
                     $('#tcMetrics #tc-container').position({

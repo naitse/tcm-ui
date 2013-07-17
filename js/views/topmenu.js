@@ -17,9 +17,8 @@ define(function(require){
             $("#username").text($.cookie('usrname'));
             if(!this.hotLink){
               this.renderBar();
+              this.renderPluginsMenu();
             }
-
-            this.renderPluginsMenu();
 
             this.attachEvents();
 
