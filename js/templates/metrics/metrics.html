@@ -76,8 +76,16 @@ box-shadow: #E65C56 0 25px inset
 float: right;
 position: relative;
 top: -34px;
+margin-right: 20px;
+}
+
+#tcMetrics #refresh-graph {
+float: right;
+position: relative;
+top: -34px;
 margin-right: 40px;
 }
+
 
 #tcMetrics .tc .detailsIcon.blocked {
    border: 1px solid #FFBC41;
@@ -113,6 +121,7 @@ box-shadow: #FFBC41 0 25px inset;
             </div>
         </div>
     </div>
+    <button type="button" id="refresh-graph" class="btn" disabled><i class="icon-refresh"></i></button>
      <div class="btn-group" data-toggle="buttons-radio">
       <button type="button" id="global" class="btn btn-primary active" disabled>Global</button>
       <button type="button" id="byitem" class="btn btn-primary" disabled>By Item</button>
