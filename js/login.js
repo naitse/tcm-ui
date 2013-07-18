@@ -73,6 +73,7 @@ require(['jquery', 'tcm_model', 'jquery.cookie', 'jquery.base64','bootstrap','ch
 
                      $('#login-form #login-button').hide();
                      $('#projectsContainer').show('fast');
+                     $('#login-block').css('height',310)
                      $("#projects_dd").chosen();
                      afterLogin('User authenticated, Please select a project','alert-success');
                      
