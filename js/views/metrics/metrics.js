@@ -199,6 +199,9 @@ define(function(require){
                 adjustChartHeight();
                 $("#tcMetrics #global").attr('disabled',false);
                 $("#tcMetrics #byitem").attr('disabled',false);
+                $("#tcMetrics #refresh-graph").attr('disabled',false);
+
+                
             });
 
         }
@@ -228,6 +231,15 @@ define(function(require){
                 $('#tcMetrics .graph-previews').show()
                 $('#tcMetrics .graph-feature-cont').remove()
                 MetricsView.loadMetrics(0,iterId);
+            }
+        })
+
+        $('#tcMetrics #refresh-graph').click(function(){
+            if(globalGraph){
+                MetricsView.loadMetrics(0,iterId);
+            }else{
+                $('#tcMetrics .graph-feature-cont').remove()
+               MetricsView.loadFeatureMetrics(iterId);
             }
         })
 
@@ -325,11 +337,16 @@ define(function(require){
     if(setSize){
         $this.highcharts().setSize(400, 300);
     }
-        
+        $(".graph-feature-cont .graph-feature").sort(asc_sort).appendTo('.graph-feature-cont');
         adjustChartHeight()
 
     }
-
+    
+    //$("#debug").text("Output:");
+    // accending sort
+    function asc_sort(a, b){
+        return ($(b).find('.highcharts-title').text()) < ($(a).find('.highcharts-title').text()) ? 1 : -1;    
+    }
     function renderDailyExec(days, tcs){
 
         var $this = $('#dailyExecutionContainer');
