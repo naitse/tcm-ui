@@ -1,4 +1,4 @@
-<style type="text/css">
+<style sof="feature" type="text/css">
 .feature{position:relative;font-size:13;padding:0 5px 0 3px;background-color:white;border-bottom:1px solid #6c7885;height:51px;overflow:hidden;margin-left:2px;padding-left:0;font-weight:bold;margin-bottom:1px}
 .feature .title-bar{background:#f7f7f7;height:100%;z-index:2;position:relative;box-shadow:-4px 0 10px 2px;display: inline-block;padding-right: 6px;}
 .feature .summary{margin-top:3px;position:absolute;z-index:0;border-radius:6px;padding-left:10px;font-size:11;display: inline;word-wrap: break-word;line-height: 1;}

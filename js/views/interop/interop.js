@@ -105,7 +105,16 @@ define(function(require){
 
     function attachStyles(){
 
-        $('body').append($(styles));
+                loaded= false;
+        
+        $('style').each(function(){
+            if($(this).attr('sof') == "interop"){
+                loaded = true;
+            }
+        })
+        if(!loaded){
+            $('body').append($(styles));
+        }
 
     }
 
