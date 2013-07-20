@@ -1,4 +1,4 @@
-<style type="text/css">
+<style sof="project" type="text/css">
 #projectView .config {width: 49%;}
 #projectView #release_select_project_chzn {width: 210px !important; float:right;}
 #projectView #release_select_project_chzn .chzn-results{width: 200px !important;}

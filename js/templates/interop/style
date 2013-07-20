@@ -1,4 +1,4 @@
-<style type="text/css">
+<style sof="interop" type="text/css">
 #interOp {height:100%;position:relative;}
 #interOp #tc-container {width: 50%;height:100%;position: absolute;right: 20px;top: 20px;}
 </style>

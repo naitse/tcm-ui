@@ -1,4 +1,4 @@
-<style type="text/css">
+<style sof="items" type="text/css">
 .item{position:relative;font-size:13;padding:0 5px 0 3px;background-color:white;border-bottom:1px solid #ccc;border-top:1px solid #ccc;height:38px;overflow:hidden;margin-left:2px;padding-left:0;font-weight:bold;margin-bottom:1px}
 .item .title-bar{background:transparent;height:100%;z-index:2;position:relative;/*box-shadow:-4px 0 10px 2px*/;display: inline-block;padding-right: 6px;}
 .item .summary{top:0px;left:24px;font-weight: normal;margin-top:3px;position:absolute;z-index:0;border-radius:6px;padding-left:10px;font-size:17;display: inline-table;word-wrap: break-word;line-height: 1.8em;}

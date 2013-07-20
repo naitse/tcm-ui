@@ -61,8 +61,11 @@ define(function(require){
                     if(metrics.length > 0){
                         var chartData = new Array();
 
-                        _.each(metrics[0], function(value, key, list){
+                        // iterName = data[0].iterName
 
+                        delete metrics[0]['iterName'];
+       
+                        _.each(metrics[0], function(value, key, list){
 
                             chartData.push([ key, value]);
 
@@ -71,6 +74,7 @@ define(function(require){
                         $('#ReleaseImplementation #executionContainer').data('data',chartData);
 
                         renderExecutionPie();
+                        adjustChartHeight()
                     }
 
                 });
@@ -165,8 +169,16 @@ define(function(require){
     $(window).resize(adjustChartHeight);
 
     function attachStyles(){
-
-        $('body').append($(styles));
+        loaded= false;
+        
+        $('style').each(function(){
+            if($(this).attr('sof') == "ReleaseImplementation"){
+                loaded = true;
+            }
+        })
+        if(!loaded){
+            $('body').append($(styles));
+        }
 
     }
 
