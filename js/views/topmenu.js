@@ -56,12 +56,12 @@ define(function(require){
                     switch( p.name ){
                         case "Jira":
 
-                            if(p["properties"]["enabled"].indexOf("true") > -1){
+                            if(p["properties"]["enabled"].indexOf("1") > -1){
                                 $("#link-sync").show();
                             }
                             break;
                         case "Import_Export":
-                            if(p["properties"]["enabled"].indexOf("true") > -1){
+                            if(p["properties"]["enabled"].indexOf("1") > -1){
                                 $("#link-export-import").show();
                             }
                             break;

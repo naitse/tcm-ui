@@ -22,19 +22,20 @@ border-radius: 6px 0px 0px 6px;
     top: 14;
 }
 
-#suitesViewer .intance-suite{
+/*#suitesViewer .intance-suite{
     height: 76px;
     width: 188px;
     background-color: #0f5a7f;
     z-index: 999999;
     border: 3px solid #03415f;
-}
+}*/
 
 #suitesViewer .intance-suite .chzn-container{
     width: 170px !important;
-    position: absolute;
+    margin-left: 25px;
+/*    position: absolute;
     top: 10px;
-    left: 10px;
+    left: 10px;*/
 }
 
 #suitesViewer .intance-suite #suite-instance-itration {
@@ -169,10 +170,25 @@ body #suitesViewer #myModal.fade.in {
   </div>
 </div>
 
-<div class="intance-suite round-corner-all" style="display:none;">
+<div id="instance-suite" class="modal hide fade intance-suite" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h6 id="myModalLabel">Instance Suite</h6>
+  </div>
+  <div class="modal-body" style="overflow:inherit !important;">
+    <p style=" margin-left: 50px; /* line-height: 1.2; */ ">Instance as: <input type="text" id="instance-name" style=" margin-left: 25px; "></input></p>
+    <p style=" margin-left: 50px;">Instance into: <select class="iterdd"></select></p>
+  </div>
+  <div class="modal-footer">
+    <button id="instance-close" class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+    <button id="suite-instance-itration" class="btn btn-primary"  data-loading-text="working...">Instance</button>
+  </div>
+</div>
+
+<!-- <div class="intance-suite round-corner-all" style="display:none;">
     <select class="iterdd"></select>
     <button id="suite-instance-itration" class="btn btn-primary"  data-loading-text="working...">Instance</button>
-</div>
+</div> -->
 
 
 </div>

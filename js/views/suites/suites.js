@@ -292,47 +292,50 @@ define(function(require){
         $(pV + ' .item #suite-instance').live({
           click: function(e){
               
-			$('.intance-suite').stop(true,true).show(0,function(){
+			$('.intance-suite').modal()
 
-			}).position({
-				my: 'center top',
-				at: 'center bottom',
-				of: $(this),
-				collision: 'fit fit'
-			});
+			// stop(true,true).show(0,function(){
+
+			// }).position({
+			// 	my: 'center top',
+			// 	at: 'center bottom',
+			// 	of: $(this),
+			// 	collision: 'fit fit'
+			// });
           }
         });
 
-		$('.intance-suite').live({
-			// mouseenter:function(e){
-			// 	 e.stopPropagation();
-			// },
-			mouseleave:function(e){
-		            e.stopPropagation();
-		        if($('.intance-suite').data('clicked') != true){
-		            $('.intance-suite').stop(true,true).hide();
-		        }
-		  }
-		})
+		// $('.intance-suite').live({
+		// 	// mouseenter:function(e){
+		// 	// 	 e.stopPropagation();
+		// 	// },
+		// 	mouseleave:function(e){
+		//             e.stopPropagation();
+		//         if($('.intance-suite').data('clicked') != true){
+		//             $('.intance-suite').stop(true,true).hide();
+		//         }
+		//   }
+		// })
 
-		$('#suitesViewer .intance-suite .active-result').live({
-			click: function(){
-				$('.intance-suite').data('clicked',true);
-				setTimeout(function(){
-				    	$('.intance-suite').data('clicked',false);
-	            },2000)
-			}
-		})
+		// $('#suitesViewer .intance-suite .active-result').live({
+		// 	click: function(){
+		// 		$('.intance-suite').data('clicked',true);
+		// 		setTimeout(function(){
+		// 		    	$('.intance-suite').data('clicked',false);
+	 //            },2000)
+		// 	}
+		// })
 
 		$('#suitesViewer .intance-suite #suite-instance-itration').click(function(e){
 			e.stopPropagation();
 			var iterationId = $('#suitesViewer .iterdd').find('option:selected').val();
 			var suiteId = $('#suitesViewer #feature-container .selected').attr('item-id');
+			var instance_name = ($('#suitesViewer #instance-name').val() != '')?$('#suitesViewer #instance-name').val():$('#suitesViewer #feature-container .selected').find('.summary').text();
 			$(this).button('loading');
 
 			var self = this;
 
-			tcmModel.suites.instance(iterationId, suiteId).done(function(data){
+			tcmModel.suites.instance(iterationId, suiteId, instance_name).done(function(data){
 				$(self).button('reset');
 			})
 		})
