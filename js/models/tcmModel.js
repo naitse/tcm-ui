@@ -113,11 +113,12 @@ define( function(require){
                     dataType: "json"
                   });
             },
-           instance:function(iterId,suiteId){
+           instance:function(iterId,suiteId,instance_name){
 
                 req = {
                     iterationId:iterId,
-                    suiteId:suiteId
+                    suiteId:suiteId,
+                    instanceName:instance_name
                 }
 
                 return   $.ajax({
