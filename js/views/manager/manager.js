@@ -21,11 +21,12 @@ define(function(require){
    var FuckRequireJS = 0;
     var statCheck;
     var monitoring_interval = 15000;
-    var monitoring = true;
+    var monitoring = false;
     var newBug = '';
     var jiraLink = 'http://www.mulesoft.org/jira/browse/';//http://www.mulesoft.org/jira/secure/CreateIssue.jspa?pid=10462&issuetype=1
 
     var channel;
+    var channel_monitoring;
 
 
     var ManagerView = {
@@ -38,6 +39,8 @@ define(function(require){
             if(!this.rendered){
                 $("#pannel-wrapper").append(managerTemplate);
                 channel = new notificator('features-position-tracking');
+                channel_monitoring = new notificator('features-position-tracking');
+                channel_monitoring.debug = true;
                 this.rendered = true;
             }
             $('.tcm-top-menu-container a').removeClass('active');
@@ -72,6 +75,17 @@ define(function(require){
 
 
         attachEvents: function(){
+
+
+            channel_monitoring.onMessageReceived = function(message){
+
+                if(message.event.indexOf("feature-tcs-state-updated") >=0){
+                    featuresModule.updateFeatureTestStats($('.left-pannel .feature[feature-id='+message.data.featureId+']'), message.data.states);
+                }
+
+
+            }
+
 
             channel.onMessageReceived = function(mensaje){
 
@@ -1054,7 +1068,8 @@ function updateTCstatusNotPass(tcId,statusId,feature,modal){
 function updateTCstatus(tcId,statusId,feature){
 
   tcmModel.releases.iterations.features.test_cases.status.updateStatus(global.currentSS.releaseId, global.currentSS.iterationId, global.currentSS.featureId,tcId, statusId, '').done(function(){
-      featuresModule.updateFeatureTestStats(feature);
+      featuresModule.updateFeatureTestStats(feature, null,channel_monitoring);
+      
   })
 
 }
