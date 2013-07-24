@@ -49,16 +49,19 @@ define(function(require){
             featuresModule.updateFeatureTestStats(feature)
     	},
 
-        updateFeatureTestStats: function(feature, singleData){
+        updateFeatureTestStats: function(feature, singleData,channel_monitoring){
 
             featuresModule.resetFeatureTestStats(feature)
             $(feature).find('.stats').addClass('loading-small');
 
-            if (typeof singleData === 'undefined') {
+            if (typeof singleData === 'undefined' || singleData == null) {
 
                 var feature_id = $(feature).attr('feature-id');
                 tcmModel.releases.iterations.features.executedTestCases.fetch(global.currentSS.releaseId, global.currentSS.iterationId, feature_id).done(function(data){
                     data = data[0]
+                    if (typeof channel_monitoring !== 'undefined'){
+                        channel_monitoring.sendMessage("feature-tcs-state-updated", {"user":$.cookie('usrname'), "featureId":feature_id,"states":data})
+                    }
                     featuresModule.processStats(feature, data)
                 })
             }
