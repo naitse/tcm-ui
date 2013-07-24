@@ -19,10 +19,10 @@ define(function (require) {
 
 		viewStates: {
 			normal:'',
-			notloading:  function () { this.unblock(); },
-			loading: function () { 
-				console.log('jkajksa')
-				this.block({
+			notloading:  function () { element.unblock(); },
+			loading: function (element) { 
+				console.log('jkajksa', element)
+				element.block({
 				message:'<div class="loading-small-block"></div>',
 				overlayCSS:  { 
 					backgroundColor: '#000', 
@@ -72,9 +72,9 @@ define(function (require) {
 		},
 
 		updateState: function (testCaseId, state) {
-
 			if (this.testCase.tcId === testCaseId) {
-				eval('this.viewStates.'+state+'.bind(this)');
+				console.log(testCaseId)
+				this.viewStates.loading(this.testCase)
 			}
 
 		}
@@ -97,7 +97,13 @@ define(function (require) {
 
 				self.views = testCases.map(function (testCase) { return new TestCaseView(testCase, self.options); });
 
-				self.container.html(self.views.map(function (testCaseView) { return (testCaseView.element().children().data('tcObject',testCaseView.testCase)); }));
+				self.container.html(self.views.map(function (testCaseView) { 
+
+					parent_node = testCaseView.element()
+					node = parent_node.children();
+					node.data('tcObject',testCaseView.testCase)
+
+					return (parent_node); }));
 
 			});
 
@@ -108,6 +114,7 @@ define(function (require) {
 		},
 
 		toggleState: function(testCaseId, state) {
+			console.log(testCaseId)
 			this.views.forEach(function (testCaseView) { testCaseView.updateState(testCaseId, state); });	
 		}
 
