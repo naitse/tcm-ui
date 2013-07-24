@@ -165,7 +165,7 @@ define(function(require){
                 PM.colapseExpandRightPanel('#tcViewer','none');
                 global.currentSS.featureId = parseInt($(this).attr('feature-id'));
                 global.currentSS.feature = $(this);
-
+                $('.desc-collapser').click()
                 var jiraKey = $(this).find('.jira-key').data('jiraKey');
 
                 if(jiraKey != "N0k31" && jiraKey != "suite" ){

@@ -10,6 +10,8 @@ define(function(require){
         itemsModule = require('modules/item/item'),
         _ = require('underscore');
         var parentSuiteId;
+        var s_channel;
+        notificator = require('notificator');
 
     var SuitesView = {
         moduleId: "Suites",
@@ -20,6 +22,8 @@ define(function(require){
         render: function(){
             if(!this.rendered){
                 $("#pannel-wrapper").append(suitesTemplate);
+                s_channel = new notificator('suites-position-tracking');
+                s_channel.debug = true;
                 this.attachEvents();
                 PM.makeResizable("#suitesViewer",[550,100,313,700]);
                 PM.colapseExpandRightPanel("#suitesViewer",'none');
@@ -37,6 +41,58 @@ define(function(require){
         },
 
         attachEvents: function(){
+
+
+            s_channel.onMessageReceived = function(mensaje){
+
+                if(mensaje.event.indexOf("leaves-channel") >=0){
+                    $('.item.suite').each(function(){
+                        if($(this).data('users').length > 0){
+
+                            for (var i = 0; i < $(this).data('users').length; i++) {
+                                if( $(this).data('users')[i].indexOf(mensaje.data.user) >= 0  ){
+                                    $(this).data('users').shift(mensaje.data.user);
+                                    if($(this).data('users').length ==0){
+                                        $(this).find('.icon-user').css('visibility','hidden');
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+
+                if(mensaje.event.indexOf("set-position") >=0){
+                    //console.log('Removing');
+                    $('.item.suite').each(function(){
+                        if($(this).data('users').length > 0){
+
+                            for (var i = 0; i < $(this).data('users').length; i++) {
+                                if( $(this).data('users')[i].indexOf(mensaje.data.user) >= 0  ){
+                                    $(this).data('users').shift(mensaje.data.user);
+                                    if($(this).data('users').length ==0){
+                                      $(this).find('.icon-user').css('visibility','hidden');
+                                    }
+                                }
+                            }
+                        }
+                    });
+
+                    //console.log('adding');
+                    if($('.item.suite[item-id='+mensaje.data.itemId+']').data('users') == null){
+                        var users = new Array();
+                        users.push(mensaje.data.user);
+                        $('.item.suite[item-id='+mensaje.data.itemId+']').data('users', users);
+                    }else{
+                        $('.item.suite[item-id='+mensaje.data.itemId+']').data('users').push(mensaje.data.user);
+                    }
+
+                    $('.item.suite[item-id='+mensaje.data.itemId+ '] .icon-user').css('visibility','visible');
+
+
+                }
+
+
+            }
 
    //      	$('#suitesViewer #tags-select').chosen({
    //      		no_results_text: "No results matched"
@@ -72,6 +128,7 @@ define(function(require){
 							$('#suitesViewer .item').parents('.suite-wrapp').find('.sub-suite').hide();
 							$(this).toggleClass('selected');
 							getSubSuites(this);
+							s_channel.sendMessage("set-position", {"user":$.cookie('usrname'), "itemId":parseInt($(this).attr('item-id'))})
 							// $(this).parents('.suite-wrapp').find('.sub-suite').show();
 
 						}else if($(this).hasClass('sub-suite')){
