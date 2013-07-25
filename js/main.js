@@ -25,7 +25,8 @@ require.config({
     PusherNotifier: 'libs/PusherNotifier/PusherNotifier',
     gritter: 'libs/gritter/js/jquery.gritter.min',
     notificator: 'modules/notificator/notificator',
-    tcEditor: 'modules/tc-edit/tc-edit'
+    tcEditor: 'modules/tc-edit/tc-edit',
+    copytc: 'modules/copy-tc/copy-tc'
   },
 
   shim: {
