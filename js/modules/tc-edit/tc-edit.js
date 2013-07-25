@@ -130,14 +130,15 @@ define(function(require){
         },
 
         afterCreate: function(data){
-
+            console.log("default afterCreate");
         },
 
         afterUpdate: function(data){
-
+            console.log("default afterUpdate");
         },
-        afterRun: function(){
 
+        afterRun: function(data){
+          console.log("default afterRun");
         },
 
         save: function(){
@@ -212,9 +213,10 @@ define(function(require){
                     }).addClass(editorWrapper.find('.stat').attr('class')).append(newState, caret)
 
                     $('#tcViewer #rp-wrapper').find('.save').button('reset');
+                    self.afterRun(self.context);
                     PM.colapseExpandRightPanel('#tcViewer','none');
                     self.clearTCModal();
-                    self.afterRun();
+
                 })
 
 

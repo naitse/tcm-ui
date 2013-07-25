@@ -345,7 +345,7 @@ define(function(require){
 
             tcEditor.render({create:true}, global.currentSS);
 
-              tcEditor.afterCreate = function(context){
+            tcEditor.afterCreate = function(context){
 
                 tcmModel.releases.iterations.features.test_cases.fetch(context.releaseId, context.iterationId, context.featureId).done(function(data){
                     $(data).each(function(){
@@ -422,6 +422,10 @@ define(function(require){
           }
         });
 
+        tcEditor.afterRun = function(context){
+            featuresModule.updateFeatureTestStats(global.currentSS.feature);
+        };
+
         $('#tcViewer .run-tc').live({
           click: function(e){
             e.stopPropagation();
@@ -429,13 +433,11 @@ define(function(require){
             $('#tcViewer .tc .wrapper').removeClass('active');
             $(this).parents('.wrapper').addClass('active');
 
-            tcEditor({run:true}, global.currentSS, $(this).parents('.tc').data('tcObject'))
-            tcEditor.afterRun = function(){
-                featuresModule.updateFeatureTestStats(global.currentSS.feature)
-            }
+            tcEditor({run:true}, global.currentSS, $(this).parents('.tc').data('tcObject'));
 
           }    
         });
+
 
         $('#tcViewer .run-status-tc').live({
           click: function(e){
