@@ -34,8 +34,6 @@ define(function(require){
                             afterRender();
                     }
 
-                    $this.prepend($('<option value=""/>'));
-
                 });
             }
         }
