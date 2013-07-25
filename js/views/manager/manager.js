@@ -430,7 +430,7 @@ define(function(require){
             $(this).parents('.wrapper').addClass('active');
 
             tcEditor({run:true}, global.currentSS, $(this).parents('.tc').data('tcObject'))
-
+            featuresModule.updateFeatureTestStats(global.currentSS.feature)
           }    
         });
 
