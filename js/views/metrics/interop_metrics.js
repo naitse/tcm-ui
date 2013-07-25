@@ -41,8 +41,8 @@ define(function(require){
                 }else{
 
                     $("#pannel-wrapper").append(template);
-                    this.loadIterations();
-                    this.loadReleases();
+                    this.loadRlsIter();
+                    // this.loadReleases();
 
 
                     attachEvents();
@@ -58,14 +58,24 @@ define(function(require){
             $('.brand').removeClass('active');
             adjustChartHeight()
         },
-        loadReleases: function(){
-            
-
-        },
-        loadIterations: function(){
-
+        loadRlsIter: function(){
           tcmModel.releases_iterations.fetch().done(function(data){
                 $(data).each(function(){
+
+                    // $(this.iterations).each(function(){
+                        var node = $('<li class=""><a href="" data-toggle="tab" iterid="'+this.id+'">'+this.name+'</a></li>').click(function(){
+                            rlsId =  $(this).find('a').attr('iterid');
+                            rlsName =  $(this).find('a').text();
+                            
+                            // if(teamLoaded != iterId){
+                                InteropMetricsView.loadRlsMetrics(rlsId);
+                            // }
+                            $('#rlscontrol .btn-pill').css('visibility','visible');
+                        
+
+                        })
+                        $('#InteropMetrics .iorls ul').append(node)
+                    // })
 
                     $(this.iterations).each(function(){
                         var node = $('<li class=""><a href="#xteams" data-toggle="tab" iterid="'+this.id+'">'+this.name+'</a></li>').click(function(){
@@ -75,6 +85,8 @@ define(function(require){
                             if(teamLoaded != iterId){
                                 InteropMetricsView.loadIterMetrics(0,iterId);
                             }
+
+                            $('#xteams .btn-pill').css('visibility','visible');
                         
 
                         })
@@ -86,6 +98,18 @@ define(function(require){
             })
 
         },
+        // loadRlsIter: function(){
+
+        //   tcmModel.releases_iterations.fetch().done(function(data){
+        //         $(data).each(function(){
+
+
+
+        //         })
+
+        //     })
+
+        // },
         fetchTCsbyStatus:function(statusName,chartObject){
 
 
@@ -186,10 +210,10 @@ define(function(require){
                     });
 
 
-                    $('#xteams #executionContainer').data('data',chartData);
+                    $('#xteams #executionContainerr').data('data',chartData);
                     $('#InteropMetrics #xteams .permalink').attr('disabled',false)
                     permalinkIterId = iterId
-                    renderExecutionPie($('#xteams #executionContainer'));
+                    renderExecutionPie($('#xteams #executionContainerr'));
                     if(monitoring == true ){
                         statCheck=setTimeout(function(){InteropMetricsView.loadMetrics(0,iterId);}, monitoring_interval);
                     }
@@ -205,10 +229,10 @@ define(function(require){
                         testcases.push(value.testcases);
                     });
 
-                    $('#xteams #dailyExecutionContainer').data('data',[days,testcases]);
+                    $('#xteams #dailyExecutionContainerr').data('data',[days,testcases]);
                     // $('#dailyExecutionContainer').data('testcases',testcases);
 
-                    renderDailyExec($('#xteams #dailyExecutionContainer'));
+                    renderDailyExec($('#xteams #dailyExecutionContainerr'));
                 }
 
                 $("#InteropMetrics #xteams #loading-indicator").hide();
@@ -235,45 +259,29 @@ define(function(require){
 
             $('#InteropMetrics .link-exposer').text('')
 
-            $.when( tcmModel.releases.iterations.metrics_executed(rlsId, iterId),
-                    tcmModel.releases.iterations.metrics_dailyexecuted(rlsId, iterId)).done(function( metricsExecuted, metricsDaily ){
+            $.when( tcmModel.metrics.metricsExecutedRls(rlsId)
+                    /*, tcmModel.releases.iterations.metrics_dailyexecuted(rlsId, iterId)*/).done(function( metricsExecuted/*, metricsDaily*/ ){
 
 
-                if(metricsExecuted[0].length > 0){
+                if(metricsExecuted.length > 0){
                     var chartData = new Array();
 
-                    iterName = metricsExecuted[0][0].iterName
+                    iterName = metricsExecuted[0].iterName
 
-                    delete metricsExecuted[0][0]['iterName'];
-                    _.each(metricsExecuted[0][0], function(value, key, list){
+                    delete metricsExecuted[0]['iterName'];
+                    _.each(metricsExecuted[0], function(value, key, list){
 
                         chartData.push(new Array( key, value));
                     });
 
 
-                    $('#rlscontrol #executionContainer').data('data',chartData);
+                    $('#rlscontrol #executionContainerr').data('data',chartData);
                     $('#InteropMetrics #rlscontrol .permalink').attr('disabled',false)
-                    permalinkIterId = iterId
-                    renderExecutionPie($('#rlscontrol #executionContainer'));
+                    permalinkIterId = rlsId
+                    renderExecutionPie($('#rlscontrol #executionContainerr'));
                     if(monitoring == true ){
                         statCheck=setTimeout(function(){InteropMetricsView.loadRlsMetrics(0,iterId);}, monitoring_interval);
                     }
-                }
-
-                if(metricsDaily[0].length > 0){
-                    var days = new Array();
-                    var testcases = new Array();
-
-
-                    _.each(metricsDaily[0], function(value, key, list){
-                        days.push(value.day);
-                        testcases.push(value.testcases);
-                    });
-
-                    $('#rlscontrol #dailyExecutionContainer').data('data',[days,testcases]);
-                    // $('#dailyExecutionContainer').data('testcases',testcases);
-
-                    renderDailyExec($('#rlscontrol #dailyExecutionContainer'));
                 }
 
                 $("#InteropMetrics #rlscontrol #loading-indicator").hide();
@@ -281,6 +289,7 @@ define(function(require){
 
                 fixBorder();
                 adjustChartHeight();
+                showPillRefresh('#rlscontrol')
                 $("#InteropMetrics #rlscontrol #global").attr('disabled',false);
                 $("#InteropMetrics #rlscontrol #byitem").attr('disabled',false);
                 $('#InteropMetrics #rlscontrol').data('globalGraph',true)
@@ -288,6 +297,26 @@ define(function(require){
 
                 
             });
+
+
+                tcmModel.metrics.metricsDailyExecutedRls(rlsId).done(function(data){
+                var metricsDaily = data;
+                if(metricsDaily.length > 0){
+                    var days = new Array();
+                    var testcases = new Array();
+
+
+                    _.each(metricsDaily, function(value, key, list){
+                        days.push(value.day);
+                        testcases.push(value.testcases);
+                    });
+
+                    $('#rlscontrol #dailyExecutionContainerr').data('data',[days,testcases]);
+                    // $('#dailyExecutionContainer').data('testcases',testcases);
+
+                    renderDailyExec($('#rlscontrol #dailyExecutionContainerr'));
+                }
+                })
 
         }
 
@@ -300,6 +329,7 @@ define(function(require){
         $('#interopTabs a').click(function (e) {
           e.preventDefault();
           $(this).tab('show');
+          adjustChartHeight();
         })
 
 
@@ -370,7 +400,7 @@ define(function(require){
         $('#InteropMetrics #rlscontrol #refresh-graph').click(function(){
             var globalGraph = $('#InteropMetrics #rlscontrol').data('globalGraph')
             if(globalGraph){
-                InteropMetricsView.loadRlsMetrics(0,iterId);
+                InteropMetricsView.loadRlsMetrics(rlsId);
             }else{
                 $('#InteropMetrics #rlscontrol .graph-feature-cont').remove()
                InteropMetricsView.loadFeatureMetrics(iterId);
@@ -378,11 +408,11 @@ define(function(require){
         })
 
 
-        $('#info-tc-modal .close-info-tc-modal').live({
+        $('#info-tc-modal-io .close-info-tc-modal').live({
             click:function(){
                 // console.log('the chart container', chart, chart.attr('id'))
                 chart.highcharts().series[0].data[chart.data('series')].firePointEvent('click', event);
-                $('#info-tc-modal').modal('hide')
+                $('#info-tc-modal-io').modal('hide')
             }
         })
 
@@ -461,9 +491,9 @@ function showPillRefresh(parent){
                                 
                                 // console.log(chart)
 
-                                $('#info-tc-modal #tc-container').children().remove();
+                                $('#info-tc-modal-io #tc-container').children().remove();
 
-                                $('#info-tc-modal').find('.feature-title').text($(container).find('.highcharts-title tspan').text() +'  - '+ this.name + ' test cases')
+                                $('#info-tc-modal-io').find('.feature-title').text($(container).find('.highcharts-title tspan').text() +'  - '+ this.name + ' test cases')
                                 // console.log(this,$(container))
                                 InteropMetricsView.fetchTCsbyStatus(this.x,chart);
                             },
@@ -553,7 +583,7 @@ function showPillRefresh(parent){
 function processTCstatusInfo(data){
 
                     $('#InteropMetrics #tc-container').children().remove();
-                            $('#info-tc-modal').modal({
+                            $('#info-tc-modal-io').modal({
                                   keyboard: false
                                 })
                         var cont = $('<div class="tc-pop-info" />')
@@ -567,7 +597,7 @@ function processTCstatusInfo(data){
                                 $(tc_html).find('.suites-label').remove();
                                 $(tc_html).data('sort',this.statusId);
                                 $(tc_html).attr('title',this.name)
-                                tcsModule.renderTC(tc_html, '#info-tc-modal',false); //REMOVE THE PARSER
+                                tcsModule.renderTC(tc_html, '#info-tc-modal-io',false); //REMOVE THE PARSER
                             })
                         }
 
