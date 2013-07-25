@@ -24,7 +24,8 @@ require.config({
     handlebars: 'libs/handlebars/handlebars',
     PusherNotifier: 'libs/PusherNotifier/PusherNotifier',
     gritter: 'libs/gritter/js/jquery.gritter.min',
-    notificator: 'modules/notificator/notificator'
+    notificator: 'modules/notificator/notificator',
+    tcEditor: 'modules/tc-edit/tc-edit'
   },
 
   shim: {
