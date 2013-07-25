@@ -15,7 +15,7 @@ define(function(require){
                 tcmModel.releases_iterations.fetch().done(function(data){
                     $this.find('optgroup').remove();
                     $this.find('option').remove();
-
+                    
                     $(data).each(function(){
                         var optionG = $('<optgroup>').attr('label', "Release "+this.name).attr('rel-id',this.id);
 
@@ -38,6 +38,8 @@ define(function(require){
                     if(typeof afterRender != 'undefined'){
                             afterRender();
                     }
+
+                    $this.prepend($('<option value=""/>'));
 
                 });
             }

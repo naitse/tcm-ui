@@ -8,6 +8,7 @@ define([
     'views/plan/plan',
     'views/metrics/metrics',
     'views/metrics/release_metrics',
+    'views/metrics/interop_metrics',
     'views/suites/suites',
     'views/plugins/plugins-settings',
     'views/interop/interop',
@@ -18,7 +19,7 @@ define([
     'jquery.cookie',
     'PusherNotifier',
     'gritter'
-], function($, _, TopMenuView, managerView, syncView, planView, MetricsView, RlsMetricsView, SuitesView, PluginsSettingsView, InteropView, ProjectView,ReleaseImplementationView, notificator){
+], function($, _, TopMenuView, managerView, syncView, planView, MetricsView, RlsMetricsView, InteropMetricsView, SuitesView, PluginsSettingsView, InteropView, ProjectView,ReleaseImplementationView, notificator){
 
     var modules = [
         {
@@ -40,6 +41,10 @@ define([
         {
             'id': 'RlsMetrics',
             'divContainer': '#tcRlsMetrics'
+        },        
+        {
+            'id': 'InteropMetrics',
+            'divContainer': '#InteropMetrics'
         },
         {
             'id': 'Suites',
@@ -146,6 +151,8 @@ define([
                     "metrics": "metrics",
                     "itmhl/:iterId": "metricshl",
                     "rlsmetrics": "rlsmetrics",
+                    "iometricshl/:iterId": "iometricshl",
+                    "iometrics": "iometrics",
                     "suites": "suites",
                     "plugins-settings": "plugins-settings",
                     "interop":"interop",
@@ -185,6 +192,14 @@ define([
 
             app_router.on('route:metricshl', function(iterId) {
                 loadModule(MetricsView,iterId);
+            });
+
+            app_router.on('route:iometrics', function(actions) {
+                loadModule(InteropMetricsView);
+            });
+            
+            app_router.on('route:iometricshl', function(iterId) {
+                loadModule(InteropMetricsView, iterId);
             });
 
             app_router.on('route:rlsmetrics', function(actions) {
