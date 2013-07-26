@@ -182,6 +182,86 @@ margin-left: -5px;
 -webkit-box-shadow: #d2e9fa 0 0 50px inset !important;
 }
 
+
+.teams {
+    overflow:hidden;
+    overflow-y:auto;
+}
+
+.team {
+padding: 10px;
+}
+
+.team-name {
+    font-size: 20px;
+margin: 0px 0px 9px 22px;
+}
+
+#InteropMetrics .progress {
+    display: inline-table;
+margin-bottom: 0px !important;
+margin-top: 15px;
+margin-left: 10px;
+}
+
+.feature-name {
+display: inline-table;
+font-weight: bold;
+}
+
+.report-feature-tcs {
+padding: 5px;
+box-shadow: 0px 0px 11px -3px inset;
+}
+.report-tc{
+    position:relative;
+    padding: 3px 0px 3px 9px;
+}
+.report-tc:nth-child(odd){
+    background:#ddd;
+}
+.report-tc:nth-child(even){
+    background:#eee;
+}
+.report-tc-status {
+    float: right;
+position: absolute;
+top: 4px;
+right:0px;
+width:80px;
+}
+.report-tc-status-inner {
+    margin-left: 6%;
+}
+
+#reportFilter{
+margin-right: 54px;
+position: absolute;
+right: 29px;
+top: 115px;
+}
+.report-filter input{
+margin-right: 10px;
+margin-left: 5px;
+margin-bottom: 5px;
+}
+.report-filter:hover {
+    background: #034869;
+    color:white;
+}
+
+#InteropMetrics #report #refresh {
+    margin-left: auto;
+margin-right: auto;
+width: 15px;
+border: 1px solid;
+padding: 5px;
+padding-bottom: 0px;
+cursor:pointer;
+}
+#InteropMetrics #report #refresh:hover {
+    background: #ddd;
+}
 </style>
 <div id="InteropMetrics">
 
@@ -190,7 +270,10 @@ margin-left: -5px;
             <a href="#rlscontrol">Release Overview</a>
          </li>
          <li class="">
-            <a href="#xteams">Teams Overview</a>
+            <a href="#xteams" style=" visibility: hidden; ">Teams Overview</a>
+         </li>
+          <li class="">
+            <a href="#report" style=" visibility: hidden; ">Report</a>
          </li>
     </ul>
 
@@ -199,7 +282,7 @@ margin-left: -5px;
 
                     <div id="metrics-controls">
                         <div>
-                                <ul class="nav nav-pills" id="interopTabs" style=" margin-bottom: 0px; ">
+                                <ul class="nav nav-pills ior" id="interopTabs" style=" margin-bottom: 0px; ">
                                     <li class="dropdown iorls">
                                         <a href="" class="dropdown-toggle" data-toggle="dropdown">Select a Release<b class="caret"></b></a>
                                         <ul class="dropdown-menu">
@@ -247,7 +330,7 @@ margin-left: -5px;
 
                     <div id="metrics-controls">
                         <div>
-                             <button type="button" id="get-perma-link" class="btn btn-mini permalink" disabled="true"><i class="icon-permalink"></i></button><div class="link-exposer"></div>
+                       <!--       <button type="button" id="get-perma-link" class="btn btn-mini permalink" disabled="true"><i class="icon-permalink"></i></button><div class="link-exposer"></div> -->
                                  <ul class="nav nav-pills" id="interopTabs" style=" margin-bottom: 0px; ">
                                      <li class="dropdown ioteams">
                                         <a href="" class="dropdown-toggle" data-toggle="dropdown">Select a Team <b class="caret"></b></a>
@@ -291,6 +374,23 @@ margin-left: -5px;
 
 
 
+      </div>
+      <div class="tab-pane" id="report">
+        <div class="" id="refresh"><i class="icon-refresh"></i></div>
+        <div class="teams" style="margin-top: 23px;">
+ <!--                                      <ul class="nav nav-pills" id="reportFilter" style=" margin-bottom: 0px; ">
+                                    <li class="dropdown reportFilter">
+                                        <a href="" class="dropdown-toggle" data-toggle="dropdown">Filter<b class="caret"></b></a>
+                                        <ul class="dropdown-menu pull-right" style="">
+                                            <li class="report-filter" style=""><input type="checkbox"/>Not Run</li>
+                                            <li class="report-filter"><input type="checkbox"/>In Progress</li>
+                                            <li class="report-filter"><input type="checkbox"/>Blocked</li>
+                                            <li class="report-filter"><input type="checkbox"/>Failed</li>
+                                            <li class="report-filter"><input type="checkbox"/>Pass</li>
+                                        </ul>
+                                      </li>
+                                </ul> -->
+        </div>
       </div>
       
     </div>

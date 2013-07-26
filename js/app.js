@@ -70,8 +70,7 @@ define([
     ];
 
     function loadModule(module, queryParam){
-
-        if(window.location.hash.indexOf('itmhl') >= 0 || window.location.hash.indexOf('ris') >= 0 || window.location.hash.indexOf('planhl') >= 0){
+        if(window.location.hash.indexOf('iometrics') >= 0 || window.location.hash.indexOf('itmhl') >= 0 || window.location.hash.indexOf('ris') >= 0 || window.location.hash.indexOf('planhl') >= 0){
 
         }else if($.cookie('apiKey') && $.cookie('apiKey') != null && $.cookie('apiKey') != "null"){
 
@@ -87,7 +86,7 @@ define([
 
 
 
-        if( window.location.hash.indexOf('itmhl') >= 0 || window.location.hash.indexOf('ris') >= 0 || window.location.hash.indexOf('planhl') >= 0 || ($.cookie('apiKey') && $.cookie('apiKey') != null && $.cookie('apiKey') != "null")){
+        if( window.location.hash.indexOf('iometrics') >= 0 || window.location.hash.indexOf('itmhl') >= 0 || window.location.hash.indexOf('ris') >= 0 || window.location.hash.indexOf('planhl') >= 0 || ($.cookie('apiKey') && $.cookie('apiKey') != null && $.cookie('apiKey') != "null")){
 
             _.each(modules, function(moduleItem){
 
@@ -132,7 +131,7 @@ define([
     var App = {
 
         initialize: function(){
-            TopMenuView.hotLink = window.location.hash.indexOf('planhl') >= 0 || window.location.hash.indexOf('itmhl') >= 0 || window.location.hash.indexOf('ris') >= 0 ;
+            TopMenuView.hotLink = window.location.hash.indexOf('iometrics') >= 0 || window.location.hash.indexOf('planhl') >= 0 || window.location.hash.indexOf('itmhl') >= 0 || window.location.hash.indexOf('ris') >= 0 ;
             TopMenuView.render();
 
             this.routePaths();
@@ -153,6 +152,7 @@ define([
                     "rlsmetrics": "rlsmetrics",
                     "iometricshl/:iterId": "iometricshl",
                     "iometrics": "iometrics",
+                    "iometrics/:rlsId": "iometricshl",
                     "suites": "suites",
                     "plugins-settings": "plugins-settings",
                     "interop":"interop",

@@ -1,7 +1,7 @@
 
 define( function(require){
-    //var basePath = "http://tcm-backend.cloudhub.io/api/";
-    var basePath = "http://tcm-backend-qa.cloudhub.io/api/";
+    var basePath = "http://tcm-backend.cloudhub.io/api/";
+    //var basePath = "http://tcm-backend-qa.cloudhub.io/api/";
     //var basePath = "http://54.226.164.226/api/";
     //var basePath = "http://localhost:8088/api/";
     var basePath2 = basePath.replace('api/','');
@@ -235,6 +235,14 @@ define( function(require){
                 return $.ajax({
                     type: "GET",
                     url: basePath2 + 'metricsDailyExecutedRls?rlsId=' + rlsId,
+                    dataType: "json"
+                });
+            },
+            getTcStatusByFeatureByRls:function(rlsId,statusId){
+
+                return $.ajax({
+                    type: "GET",
+                    url: basePath2 + 'getTcStatusByFeatureByRls?rlsId=' + rlsId +"&statusId=" + statusId,
                     dataType: "json"
                 });
             },

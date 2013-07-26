@@ -12,12 +12,18 @@ define(function(require){
     var permalinkIterId = '';
     var iterName = '';
     var iterId;
+    var rlsId;
+    var rlsName;
     var monitoring_interval = 60000;
     var monitoring = false;
     var chart;
     var series;
     var globalGraph= true;
     var teamLoaded = false;
+    var iterationsArray = [];
+    var rlsFeatures = false;
+    var rlsGlobalGraph = true;
+
 
     var InteropMetricsView = {
         moduleId: "InteropMetrics",
@@ -30,13 +36,14 @@ define(function(require){
                  var template = $(planTemplate)
 
                 if (typeof iterIdR != 'undefined'){
-                    $(template).find('#metrics-controls').hide();
+                    $.cookie('projectId',6)
+                    $(template).find('.ior').css('visibility','hidden');
                     $('.tcm-top-menu-container').hide();
                     $(template).find('.permalink').remove();
                     $("#pannel-wrapper").append(template);
-                    iterId = iterIdR
-                        InteropMetricsView.loadIterMetrics(0,iterIdR,false);
-                        $('#InteropMetrics .graph-previews').css('top','0');
+                    rlsId = iterIdR
+                    this.initialCall(rlsId);
+                    $('#InteropMetrics .graph-previews').css('top','-30px');
                         attachEvents();
                 }else{
 
@@ -68,30 +75,14 @@ define(function(require){
                             rlsName =  $(this).find('a').text();
                             
                             // if(teamLoaded != iterId){
-                                InteropMetricsView.loadRlsMetrics(rlsId);
-                            // }
-                            $('#rlscontrol .btn-pill').css('visibility','visible');
+                        InteropMetricsView.initialCall(rlsId);
                         
 
                         })
                         $('#InteropMetrics .iorls ul').append(node)
                     // })
 
-                    $(this.iterations).each(function(){
-                        var node = $('<li class=""><a href="#xteams" data-toggle="tab" iterid="'+this.id+'">'+this.name+'</a></li>').click(function(){
-                            iterId =  $(this).find('a').attr('iterid');
-                            iterName =  $(this).find('a').text();
-                            
-                            if(teamLoaded != iterId){
-                                InteropMetricsView.loadIterMetrics(0,iterId);
-                            }
 
-                            $('#xteams .btn-pill').css('visibility','visible');
-                        
-
-                        })
-                        $('#InteropMetrics .ioteams ul').append(node)
-                    })
 
                 })
 
@@ -110,6 +101,40 @@ define(function(require){
         //     })
 
         // },
+        initialCall:function(rlsId){
+                                            InteropMetricsView.loadRlsMetrics(rlsId);
+                                tcmModel.releases_iterations.fetch().done(function(data){
+                                    $(data).each(function(){
+                                        if(this.id == rlsId){
+                                            // console.log(this)
+                                            $('#InteropMetrics a[href=#report]').css("visibility","visible");
+                                            if(this.iterations.length > 0){
+                                                $('#InteropMetrics a[href=#xteams]').css("visibility","visible");
+                                            }
+                                            $('#InteropMetrics .ioteams ul').children().remove();
+                                            $(this.iterations).each(function(){
+
+                                                iterationsArray.push(this);
+                                                var node = $('<li class=""><a href="#xteams" data-toggle="tab" iterid="'+this.id+'">'+this.name+'</a></li>').click(function(){
+                                                    iterId =  $(this).find('a').attr('iterid');
+                                                    iterName =  $(this).find('a').text();
+                                                    
+                                                    if(teamLoaded != iterId){
+                                                        InteropMetricsView.loadIterMetrics(0,iterId);
+                                                    }
+
+                                                    $('#xteams .btn-pill').css('visibility','visible');
+                                                
+
+                                                })
+                                                $('#InteropMetrics .ioteams ul').append(node)
+                                            })
+                                        }
+                                    })
+                                })
+                            // }
+                            $('#rlscontrol .btn-pill').css('visibility','visible');
+        },
         fetchTCsbyStatus:function(statusName,chartObject){
 
 
@@ -136,21 +161,34 @@ define(function(require){
 
             featureId= chartObject.attr('id')
 
-            
-            if(globalGraph){
-                tcmModel.metrics.getFBTCS(permalinkIterId, statusId).done(function(data){
-                        processTCstatusInfo(data)
-                    });
-            }else{
-                tcmModel.metrics.getTcStatusByFeature(featureId, statusId).done(function(data){
-                        processTCstatusInfo(data)
-                    });
+
+            if($('#xteams').hasClass('active')){
+                if(globalGraph){
+                    tcmModel.metrics.getFBTCS(iterId, statusId).done(function(data){
+                            processTCstatusInfo(data)
+                        });
+                }else{
+                    console.log(featureId,statusId)
+                    tcmModel.metrics.getTcStatusByFeature(featureId, statusId).done(function(data){
+                            processTCstatusInfo(data)
+                        });
+                }
+            }else if($('#rlscontrol').hasClass('active')){
+                if(rlsGlobalGraph){
+                    var releaseId = $('#rlscontrol .dropdown-menu li.active a').attr('iterid');
+                    // console.log(releaseId)
+                    tcmModel.metrics.getTcStatusByFeatureByRls(rlsId, statusId).done(function(data){
+                            processTCstatusInfo(data)
+                        });
+                }else{
+                    tcmModel.metrics.getTcStatusByFeature(featureId, statusId).done(function(data){
+                            processTCstatusInfo(data)
+                        });
+                }
             }
         },
         loadIterFeatureMetrics:function(iterId){
-            
-            $('#InteropMetrics #xteams .main-container').hide()
-            $('#InteropMetrics #xteams .graph-previews').hide()
+            $('#InteropMetrics #xteams .graph-feature-cont').remove()
             var maincontainer = $('<div class="graph-feature-cont" style="width=100%; height=100%;" />')
             $('#InteropMetrics #xteams .graph-container').append(maincontainer);
            
@@ -250,6 +288,45 @@ define(function(require){
             });
 
         },
+        loadIterFeatureMetricsRls:function(){
+            $('#InteropMetrics #rlscontrol .graph-feature-cont').remove()
+            var maincontainer = $('<div class="graph-feature-cont rlscontrol" style="width=100%; height=100%;" />')
+            $('#InteropMetrics #rlscontrol .graph-container').append(maincontainer);
+           $(iterationsArray).each(function(){
+            // console.log(this)
+
+               tcmModel.releases.iterations.features.fetch(0,this.id).done(function(data){
+
+                    $(data).each(function(){
+                            var featureId= this.featureId
+                            var self = this;
+
+                        tcmModel.metrics.executedbyfeature(featureId).done(function(data){
+                            var container = $('<div class="graph-feature rlscontrol" style="width=300px; height=200px;" id="'+self.featureId+'" />')
+                            // console.log(self, data)
+                            $('#InteropMetrics #rlscontrol .graph-feature-cont').append(container);
+
+                            var chartData = new Array();
+
+                            iterName = data[0].iterName
+
+                            delete data[0]['iterName'];
+                            _.each(data[0], function(value, key, list){
+
+                                chartData.push(new Array( key, value));
+                            });
+
+                            $(container).data('data',chartData)
+                            renderExecutionPie(container,chartData)
+                        })
+                    })
+                })
+
+
+
+            })
+
+        },
         loadRlsMetrics: function(rlsId,iterId,monitoring){
             var self = this;
             $("#InteropMetrics #rlscontrol #alertNoMetrics").addClass('hide');
@@ -332,6 +409,17 @@ define(function(require){
           adjustChartHeight();
         })
 
+        $('#InteropMetrics a[href=#report]').click(function(){
+            if($('#InteropMetrics .teams').children().size() > 0){
+                return false;
+            }
+            fillReport();
+        });
+
+        $('#InteropMetrics #report #refresh').click(function(){
+            $('#InteropMetrics .teams').children().remove();
+            fillReport();
+        })
 
         $('#InteropMetrics .permalink').click(function(){
             var wl = window.location;
@@ -352,18 +440,28 @@ define(function(require){
         $('#InteropMetrics #xteams #byitem').live({
             click:function(e){
                 e.stopPropagation();
+                globalGraph = false;
                 $('#InteropMetrics #xteams').data('globalGraph',false)
-                InteropMetricsView.loadIterFeatureMetrics(iterId);
+                $('#InteropMetrics #xteams .main-container').hide()
+            $('#InteropMetrics #xteams .graph-previews').hide()
+                if($('#InteropMetrics #xteams').data('rendered') != true){
+                    $('#InteropMetrics #xteams').data('rendered',true)
+                    InteropMetricsView.loadIterFeatureMetrics(iterId);
+                }else{
+                    $('#InteropMetrics #xteams .graph-feature-cont').show()
+                }
             }
         })
 
         $('#InteropMetrics #xteams #global').live({
             click:function(e){
                 e.stopPropagation();
+                globalGraph = true;
+                $('#InteropMetrics #xteams .graph-feature-cont').hide()
                 $('#InteropMetrics #xteams').data('globalGraph',true)
                 $('#InteropMetrics #xteams .main-container').show()
                 $('#InteropMetrics #xteams .graph-previews').show()
-                $('#InteropMetrics #xteams .graph-feature-cont').remove()
+                // $('#InteropMetrics #xteams .graph-feature-cont').remove()
             }
         })
 
@@ -381,18 +479,27 @@ define(function(require){
        $('#InteropMetrics #rlscontrol #byitem').live({
             click:function(e){
                 e.stopPropagation();
-                $('#InteropMetrics #rlscontrol').data('globalGraph',false)
-                InteropMetricsView.loadFeatureMetrics(iterId);
+                rlsGlobalGraph = false;
+                $('#InteropMetrics #rlscontrol .main-container').hide()
+                $('#InteropMetrics #rlscontrol .graph-previews').hide()
+                if($('#InteropMetrics #rlscontrol').data('rendered') != true){
+                    $('#InteropMetrics #rlscontrol').data('rendered',true)
+                    InteropMetricsView.loadIterFeatureMetricsRls();
+                }else{
+                    $('#InteropMetrics #rlscontrol .graph-feature-cont').show()
+                }
             }
         })
 
         $('#InteropMetrics #rlscontrol #global').live({
             click:function(e){
                 e.stopPropagation();
+                rlsGlobalGraph = true
                 $('#InteropMetrics #rlscontrol').data('globalGraph',true)
+                $('#InteropMetrics #rlscontrol .graph-feature-cont').hide()
                 $('#InteropMetrics #rlscontrol .main-container').show()
                 $('#InteropMetrics #rlscontrol .graph-previews').show()
-                $('#InteropMetrics #rlscontrol .graph-feature-cont').remove()
+                // $('#InteropMetrics #rlscontrol .graph-feature-cont').remove()
             }
         })
 
@@ -403,7 +510,7 @@ define(function(require){
                 InteropMetricsView.loadRlsMetrics(rlsId);
             }else{
                 $('#InteropMetrics #rlscontrol .graph-feature-cont').remove()
-               InteropMetricsView.loadFeatureMetrics(iterId);
+               InteropMetricsView.loadIterFeatureMetricsRls();
             }
         })
 
@@ -436,8 +543,113 @@ function showPillRefresh(parent){
     // })
 }
 
-    function renderExecutionPie(container, dataIN){
+    function fillReport(){
 
+
+           $(iterationsArray).each(function(){
+            // console.log(this)
+                var team = $('<div class="team"></div>').attr('id',this.id).append('<div class="team-name">'+this.name+'</div>');
+
+               tcmModel.releases.iterations.features.fetch(0,this.id).done(function(data){
+
+                    $(data).each(function(){
+                            var featureId= this.featureId
+                            var featureName = this.featureName;
+                            var self = this;
+                            var feature = $('<div class="team-feature well" id="'+featureId+'"></div>')
+
+                            var featureData = $('<div class="feature-Info"></div>').append('<div class="feature-name">'+featureName+'</div>');
+
+                            tcmModel.releases.iterations.features.executedTestCases.fetch(0, 0, featureId).done(function(data){
+                                var data = data[0]
+                                $(data).each(function(){
+                                    var cellWidth = 100 / parseInt(this.total);
+
+                                    var propgressBar = $('<div class="progress" style="width: 40px; height: 12px; border: 1px solid rgb(108, 120, 133);">')
+
+                                    for(var i=0; i<parseInt(this.pass);i++){
+                                        var node = $('<div class="bar bar-success" style="width: '+cellWidth+'%;"></div>')
+                                        $(propgressBar).append(node)
+                                    }
+                                    for(var i=0; i<parseInt(this.blocked);i++){
+                                        var node = $('<div class="bar bar-warning" style="width: '+cellWidth+'%;"></div>')
+                                        $(propgressBar).append(node)
+                                    }
+                                    for(var i=0; i<parseInt(this.failed);i++){
+                                        var node = $('<div class="bar bar-danger" style="width: '+cellWidth+'%;"></div>')
+                                        $(propgressBar).append(node)
+                                    }
+                                    for(var i=0; i<parseInt(this.inprogress);i++){
+                                        var node = $('<div class="bar bar-info" style="width: '+cellWidth+'%;"></div>')
+                                        $(propgressBar).append(node)
+                                    }
+                                    for(var i=0; i<parseInt(this.notrun);i++){
+                                        var node = $('<div class="bar bar-notrun" style="width: '+cellWidth+'%;"></div>')
+                                        $(propgressBar).append(node)
+                                    }
+
+                                    $(featureData).append(propgressBar)
+                                    $(feature).append(featureData)
+                                })
+                                
+                                var tcs = $('<div class="report-feature-tcs round-corner-all"></div>');
+                                
+                                tcmModel.releases.iterations.features.test_cases.fetch(0, 0, featureId).done(function(data){
+                                     $(data).each(function(index){
+
+                                        switch(this.statusId)
+                                        {
+                                            case 0:
+                                                statusClass = 'label-inverse'
+                                                break;
+                                            case 1:
+                                                statusClass = 'label-info'
+                                                break;
+                                            case 2:
+                                                statusClass = 'label-warning'
+                                                break;
+                                            case 3:
+                                                statusClass = 'label-important'
+                                                break;
+                                            case 4:
+                                                statusClass = 'label-success'
+                                                break;
+                                            default:
+                                                statusClass = ''
+                                        }
+
+
+
+                                        var tc = $('<div class="report-tc"></div>').append('<div class="report-tc-name">'+this.name+'</div><div class="report-tc-status"><div class="report-tc-status-inner label '+statusClass+'">'+this.statusName+'</div></div>');
+                                        $(tcs).append(tc)
+                                        
+                                     })
+                                })
+                                $(feature).append(tcs);
+                            })
+
+                            $(team).append(feature)
+                    })
+                })
+
+                $('#report .teams').append(team);
+
+
+
+            })
+
+
+
+
+
+
+
+
+
+
+
+    }
+    function renderExecutionPie(container, dataIN){
         var setSize = (typeof dataIN === 'undefined')? false : true;
         var data = (typeof dataIN === 'undefined')? $(container).data('data') : dataIN;
         var $this = $(container);
@@ -512,9 +724,9 @@ function showPillRefresh(parent){
         })
 
     if(setSize){
-        $this.highcharts().setSize(400, 300);
+        container.highcharts().setSize(400, 300);
     }
-        $(".graph-feature-cont .graph-feature").sort(asc_sort).appendTo('.graph-feature-cont');
+        $(container).parents('.tab-pane').find(".graph-feature-cont .graph-feature").sort(asc_sort).appendTo('.graph-feature-cont');
         adjustChartHeight()
 
     }
@@ -633,6 +845,7 @@ function processTCstatusInfo(data){
                 $(this).find('.graph-feature-cont').css('max-height', parentHeight - 100)
                 $(this).find('.graph-previews').css('height',parentHeight -20);
                 $(this).find('#tc-container').css('height',parentHeight - 280)
+                $('#InteropMetrics .teams').css('height',parentHeight - 80)
             }catch(err){}
             
             })
