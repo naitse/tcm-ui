@@ -72,7 +72,7 @@ define([
     function loadModule(module, queryParam){
         if(window.location.hash.indexOf('itmhl') >= 0 || window.location.hash.indexOf('ris') >= 0 || window.location.hash.indexOf('planhl') >= 0){
 
-        }else if(window.location.hash.indexOf('iometricshl') < 0 && typeof $.cookie("username") === 'undefined'){
+        }else if(window.location.hash.indexOf('iometricshl') < 0 && typeof $.cookie("usrname") === 'undefined'){
             window.location = "login.html" + window.location.hash;
         }else if($.cookie('apiKey') && $.cookie('apiKey') != null && $.cookie('apiKey') != "null"){
 
