@@ -11,7 +11,9 @@ define(function(require){
         PM = require('panelsManager'),
         _ = require('underscore'),
         jquerycookie = require('jquery.cookie'),
-        notificator = require('notificator');
+        notificator = require('notificator'),
+        tcEditor = require('tcEditor'),
+        copytc = require('copytc');
 
         var view_container = "#tcViewer";
    var prefix = '';
@@ -326,55 +328,40 @@ define(function(require){
           click: function(e){
             e.stopPropagation();
             if($(this).hasClass('ddm-failed') ||  $(this).hasClass('ddm-block')){
-              clearTCModal();
-              runTC($(this).parents('.tc').data('tcObject'),this);
+              tcEditor.render({run:true}, global.currentSS, {runStatusElement: this, data: $(this).parents('.tc').data('tcObject')})
+
             }else{
               updateTCstatus($(this).parents('.tc').attr('tc-id'),$(this).attr('status-id'),global.currentSS.feature)
             }
           }
         });
 
-         $('.proposed').live('change', function(){
-            if($(this).is(':checked')){
-                proposed=1;
-            } else {
-              proposed=0;
-            }
-        });
-        
-        $('#tcViewer #rp-wrapper .cancel').live({
-          click: function(e){
-            e.stopPropagation();
-            
-            clearTCModal();
-            PM.colapseExpandRightPanel('#tcViewer','none')
 
-          }
-        });
-        
-         $('#tcViewer #rp-wrapper .save').live({
-          click: function(e){
-            e.stopPropagation();
-            saveTc($(this).parents('#rp-wrapper'), $('#tcViewer #rp-wrapper .modal-body').data('flag'), $('#tcViewer #rp-wrapper .modal-body').data('tcObject'),global.currentSS.feature)
-          }
-        });
-        
          $('#tcViewer .add-tc').live({
           click: function(e){
             e.stopPropagation();
             if($('#tcViewer .feature.active').size() == 0){
               return false;
             }
-            PM.colapseExpandRightPanel('#tcViewer','none');
-            PM.colapseExpandRightPanel('#tcViewer','block')
-            clearTCModal();
-            $('.rp-title').text('New Test Case')
-            
+
+            tcEditor.render({create:true}, global.currentSS);
+
+            tcEditor.afterCreate = function(context){
+
+                tcmModel.releases.iterations.features.test_cases.fetch(context.releaseId, context.iterationId, context.featureId).done(function(data){
+                    $(data).each(function(){
+                        if($('#tcViewer .tc[tc-id="'+this.tcId+'"]').size() == 0){
+                            var tc_html = tcsModule.createTcHTML(this,context.feature);
+                            tcsModule.renderTC(tc_html, view_container)
+                        }
+                    })
+                    featuresModule.updateFeatureTestStats(global.currentSS.feature)
+
+                });
+            }
           }
         });
 
-         
-        
         $('.del-tc-t.active').live({
           click: function(e){
             e.stopPropagation();
@@ -436,15 +423,22 @@ define(function(require){
           }
         });
 
+        tcEditor.afterRun = function(context){
+            featuresModule.updateFeatureTestStats(global.currentSS.feature);
+        };
+
         $('#tcViewer .run-tc').live({
           click: function(e){
             e.stopPropagation();
             PM.colapseExpandRightPanel('#tcViewer','none');
             $('#tcViewer .tc .wrapper').removeClass('active');
             $(this).parents('.wrapper').addClass('active');
-            runTC($(this).parents('.tc').data('tcObject'))
+
+            tcEditor({run:true}, global.currentSS, $(this).parents('.tc').data('tcObject'));
+
           }    
         });
+
 
         $('#tcViewer .run-status-tc').live({
           click: function(e){
@@ -463,10 +457,19 @@ define(function(require){
         $('#tcViewer .edit-tc').live({
           click: function(e){
             e.stopPropagation();
-            PM.colapseExpandRightPanel('#tcViewer','none');
+
             $('#tcViewer .tc .wrapper').removeClass('active');
             $(this).parents('.wrapper').addClass('active');
-            editTc($(this).parents('.tc').data('tcObject'))
+
+            tcEditor.render({update:true}, global.currentSS, $(this).parents('.tc').data('tcObject'));
+
+            tcEditor.afterUpdate = function(data){
+
+                $('#tcViewer .tc[tc-id="'+data.tcId+'"]').data('tcObject',data);
+                $('#tcViewer .tc[tc-id="'+data.tcId+'"]').find('.tc-description').text(data.name);
+                $('#tcViewer .tc[tc-id="'+data.tcId+'"]').find('.tc-steps').text(data.description);
+                PM.toggleLoading('#tcViewer',' .tc[tc-id="'+data.tcId+'"]',false)
+            };
           }
         });
 
@@ -658,100 +661,12 @@ define(function(require){
         })
 
 
-
-        //////////COPY MODAL
-        $('#tcViewer #copy-tc-modal #tc-container .tc').live({
-            click:function(e){
-              e.stopPropagation();
-              $(this).find('.wrapper').removeClass('active');
-              $(this).toggleClass('multi-active').find('.wrapper').toggleClass('multi-active');
-
-            }
-         })
-
         $('#tcViewer .copy-tc').live({
-          click: function(e){
-            e.stopPropagation();
-            if($('#tcViewer .feature.active').size() == 0 || $('#tcViewer #tc-container .tc').size() == 0){
-              return false;
+            click: function(e){
+                e.stopPropagation();
+                copytc.render();
             }
-            
-            $('#tcViewer .panels #tc-container').children().remove();
-
-            $('#tcViewer #tc-container .tc').each(function(){
-                var tc_html = tcsModule.createTcHTML($(this).data('tcObject'),null,false);
-                $(tc_html).find('.tc-stats').remove();
-                $(tc_html).find('.suites-label').remove();
-                $(tc_html).find('.tc-suites').remove();
-                $(tc_html).find('.tc-expander').remove();
-                tcsModule.renderTC(tc_html, '#tcViewer .panels')
-            })
-
-           $('#tcViewer #copy-tc-modal #release-selector').releases_iterations_dd(function(){
-                    
-              var iterId =  $("#copy-tc-modal #release-selector option:selected").val();
-                    // var rlsId =  $("#tcMetrics #metrics-release-select option:selected").parents('optgroup').attr('rel-id');
-                 tcmModel.releases.iterations.features.fetch(0, iterId).done(function(data){
-                    if (data.length > 0){
-                      $('.panels #feature-cont').children().remove();
-                      $(data).each(function(){
-                          featuresModule.render('.panels #feature-cont',featuresModule.create(this))
-                      })
-                    }
-                })
-
-           },function(){
-                // $("#tcMetrics #release-select").css('visibility','visible');
-           })
-            
-            $('#tcViewer #copy-tc-modal').modal();
-          }
         });
-
-        $('#tcViewer #copy-tc-modal .save-copy').on({
-          click:function(){
-            var elements = $('#tcViewer #copy-tc-modal #tc-container .tc.multi-active');
-
-            if($('.panels .feature.active').size() == 0 || $('.panels .tc.multi-active').size() == 0){
-              return false;
-            }
-            var req = {
-              featureId:$('.panels .feature.active').attr('feature-id'),
-              testcases:[]
-            }
-
-            $(elements).each(function(){
-                req.testcases.push($(this).attr('tc-id'));
-            })
-            $('#tcViewer #copy-tc-modal .save-copy').button('loading')
-            tcmModel.testcases.clone(req).done(function(){
-              $('#tcViewer #copy-tc-modal .save-copy').button('reset')
-            })
-          }
-        })
-
-
-        $('.panels .feature').live({
-          click:function(e){
-            e.stopPropagation();
-            $('.panels .feature').removeClass('active')
-            $(this).addClass('active');
-          }
-        })
-
-        $('#tcViewer .select-all-tc').on({
-          click:function(){
-            $('#tcViewer #copy-tc-modal #tc-container .tc').toggleClass('multi-active');
-            $('#tcViewer #copy-tc-modal #tc-container .tc .wrapper').toggleClass('multi-active');
-          }
-        })
-
-        $('#tcViewer #copy-tc-modal .cancel').on({
-          click:function(){
-            $('#tcViewer #copy-tc-modal').modal('hide');
-          }
-        })
-        //////////
 
         }
     };
@@ -896,26 +811,6 @@ function deleteFeatureInterceptor(feature){
 
 //######################################### TC ops
 
-function runTC(tcObject,selection){
-
-  var activeTest = $('#tcViewer .tc .wrapper.active').parents('.tc');
-  clearTCModal();
-  $('#tcViewer .run-tc-modal .run-status .stat').remove();
-  $('#tcViewer .proposed').parents('label').hide();
-  $('#tcViewer .tc-fields').hide();
-  $('#tcViewer .run-tc-modal .run-status').append($('<div class="'+$(selection).attr('class')+' stat round-corner-all" status-id="'+$(selection).attr('status-id')+'"><i class="'+$(selection).find('i').attr('class')+'"></i>'+$(selection).text()+'</div>'));
-  PM.colapseExpandRightPanel('#tcViewer','block');
-  $('#tcViewer .run-tc-modal').show()
-  $('#tcViewer .rp-title').text('Run Test Case')
-  $('#tcViewer #rp-wrapper .save').text('Save Run')
-  $('.new-tc-title').val(tcObject.name);
-  $('.new-tc-desc').val(tcObject.description);
-  $('#tcViewer #rp-wrapper .modal-body').data('runId',tcObject.tcId)
-  $('#tcViewer #rp-wrapper .modal-body').data('flag',2);
-  $('#tcViewer #rp-wrapper .modal-body').data('tcObject',tcObject);
-
-}
-
 function getTests(featureId){
 
 
@@ -949,120 +844,6 @@ function clearData(){
 
 function clearTCs(){
   $('#tcViewer #tc-container').children().remove()
-  clearTCModal()
-}
-
-function clearTCModal(){
-
-    $('#tcViewer #rp-wrapper').find('.dropdown-toggle').removeClass(function (index, css) {
-        return (css.match (/\bddm-\S+/g) || []).join(' ')
-    }).addClass('ddm-inprogress').text('').append('<i class="icon-hand-right " style="margin-top: 2px;"></i>',' In Progress ', '<span class="caret"></span>').attr('status-id',1);
-
-            $('#tcViewer .proposed').parents('label').show();
-            $('#tcViewer .tc-fields').show();
-            $('#tcViewer .rp-title').text('')
-            $('#tcViewer #rp-wrapper .save').text('Add')
-            $('#tcViewer .new-tc-title').val('').removeClass('title-error');
-            $('#tcViewer .new-tc-desc').val('');
-            $('#tcViewer .actual-result').val('')
-            $('#tcViewer #rp-wrapper .modal-body').data('flag',0);
-            $('#tcViewer #rp-wrapper .modal-body').data('tcObject','');
-            $('#tcViewer .proposed').attr('checked',false);
-            proposed = 0;
-
-}
-
-function saveTc(modal, flag, tcObject, featureReference){
-  
-  $(modal).find('.alert').addClass('hide')
-  
-  var title = $(modal).find('.new-tc-title').val()
-  var desc = $(modal).find('.new-tc-desc').val()
-  var feature= global.currentSS.featureId//$('.active').attr('feature-id')
-  
-  if (jQuery.trim($('#tcViewer #rp-wrapper').find('.new-tc-title').val()).length <= 0){
-    $(modal).find('.new-tc-title').addClass('title-error')
-    return false
-  }else{
-    $(modal).find('.new-tc-title').removeClass('title-error')
-  }
-  
-  var req = {
-    name:title,
-    description:desc,
-    proposed:proposed
-  }
-  
-  if (flag == 0){
-    $(modal).find('.save').button('loading');
-      tcmModel.releases.iterations.features.test_cases.add(global.currentSS.releaseId, global.currentSS.iterationId, global.currentSS.featureId, req).done(function(data){
-      
-      tcmModel.releases.iterations.features.test_cases.fetch(global.currentSS.releaseId, global.currentSS.iterationId, global.currentSS.featureId).done(function(data){
-        $(data).each(function(){
-          if($('#tcViewer .tc[tc-id="'+this.tcId+'"]').size() == 0){
-            var tc_html = tcsModule.createTcHTML(this,global.currentSS.featureId);
-            tcsModule.renderTC(tc_html, view_container)
-          }
-        })
-        featuresModule.updateFeatureTestStats(featureReference)
-        $(modal).find('.save').button('reset');
-      });
-
-    }).fail(function(){
-      $(modal).find('.alert').removeClass('hide')
-    })
-  }else if (flag == 1){
-
-  var updateReq = {
-    tcId:tcObject.tcId,
-    name:title,
-    description:desc,
-    proposed:proposed
-  }
-    PM.toggleLoading('#tcViewer',' .tc[tc-id="'+updateReq.tcId+'"]',true)
-  $(modal).find('.save').button('loading');
-    tcmModel.releases.iterations.features.test_cases.update(global.currentSS.releaseId, global.currentSS.iterationId, global.currentSS.featureId, updateReq).done(function(){
-
-      // tcmModel.releases.iterations.features.test_cases.fetch(global.currentSS.releaseId,global.currentSS.iterationId, global.currentSS.featureId).done(function(data){
-            $('#tcViewer .tc[tc-id="'+updateReq.tcId+'"]').data('tcObject',updateReq);
-            $('#tcViewer .tc[tc-id="'+updateReq.tcId+'"]').find('.tc-description').text(updateReq.name);
-            $('#tcViewer .tc[tc-id="'+updateReq.tcId+'"]').find('.tc-steps').text(updateReq.description);
-            PM.toggleLoading('#tcViewer',' .tc[tc-id="'+updateReq.tcId+'"]',false)
-            $(modal).find('.save').button('complete');
-      // })
-    }).fail(function(){
-      $(modal).find('.alert').removeClass('hide')
-    })
-  }else if(flag == 2){
-      $(modal).find('.save').button('loading');
-      var statusId = $(modal).find('.stat').attr('status-id');
-      updateTCstatusNotPass(tcObject.tcId,statusId,global.currentSS.feature,modal);
-
-  }
-  
-
-}
-
-function updateTCstatusNotPass(tcId,statusId,feature,modal){
-
-  var actualResult = $(modal).find('.actual-result').val();
-  tcmModel.releases.iterations.features.test_cases.status.updateStatus(global.currentSS.releaseId, global.currentSS.iterationId, global.currentSS.featureId,tcId, statusId, actualResult).done(function(){
-      var caret = $('<span class="caret"></span>')
-      var newState = $('<i class="'+$(modal).find('.stat i').attr('class')+'" style="margin-top: 2px;"></i>');
-      $('#tcViewer .tc[tc-id='+tcId+']').find('.tc-last-run-results-cont').show();
-      $('#tcViewer .tc[tc-id='+tcId+']').find('.tc-last-run-results').text($(modal).find('.actual-result').val());
-
-      $('#tcViewer .tc[tc-id='+tcId+'] .wrapper').find('.btn-group').find('.dropdown-toggle').children().remove();
-
-      $('#tcViewer .tc[tc-id='+tcId+'] .wrapper').find('.btn-group').find('.dropdown-toggle').removeClass(function (index, css) {
-          return (css.match (/\bddm-\S+/g) || []).join(' ')
-      }).addClass($(modal).find('.stat').attr('class')).append(newState, caret)
-
-      $('#tcViewer #rp-wrapper').find('.save').button('reset');
-      PM.colapseExpandRightPanel('#tcViewer','none');
-      clearTCModal();
-      featuresModule.updateFeatureTestStats(feature);
-  })
 }
 
 function updateTCstatus(tcId,statusId,feature){
@@ -1085,23 +866,7 @@ function updateTCprop(tcObject){
 }
 
 
-function editTc(tcObject){
-  PM.colapseExpandRightPanel('#tcViewer','block')
-  clearTCModal();
 
-  $('.rp-title').text('Update Test Case')
-  $('#tcViewer #rp-wrapper .save').text('Update')
-  $('.new-tc-title').val(tcObject.name);
-  $('.new-tc-desc').val(tcObject.description);
-
-  $('#tcViewer #rp-wrapper .modal-body').data('flag',1);
-  $('#tcViewer #rp-wrapper .modal-body').data('tcObject',tcObject);
-
-  if(tcObject.proposed == 1){
-    $('.proposed').attr('checked','checked')
-  }
-  
-}
 
 function deleteInterceptor(tcId,feature){
     removeTestCase(tcId,feature);

@@ -52,36 +52,7 @@
         </div>
     </div>
     <div id="rp-wrapper" style="display:none;">
-        <div id="tc-mod" style="">
-            <div class="modal-header">
-                <h5 class="rp-title"></h5>
-            </div>
-            <div class="modal-body">
-                <div class="tc-fields">
-                    <h7>Title:</h7>
-                    <input class="new-tc-title" type="text" style=" width: 100%; "></input>
-                    <br/>
-                    <h7>Description:</h7>
-                    <textarea class="new-tc-desc" style=" width: 100%; height:200px; resize: none;"></textarea>
-                </div>
-                <div class="run-tc-modal" style="display:none;">
-                    <div class="well well-small run-status">
-                        Run state: 
-                    </div>
-                    Actual result:
-                    <textarea class="actual-result" style=" width: 100%; height:200px; resize: none;"></textarea>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <div class="alert alert-error hide">
-                    There was an error, please try again...
-                </div>
-                <label class="checkbox inline" style="float:left;margin-left:5px;">
-                    <input type="checkbox" class="proposed" /> Save as proposed</label>
-                <a href="#" class="btn cancel"  >Cancel</a>
-                <a href="#" class="btn btn-primary save" data-complete-text="Update" data-loading-text="working...">Add</a>
-            </div>
-        </div>
+
         <div id="copy-tc-mod" style="display:none;">
 
         </div>
@@ -110,55 +81,6 @@
         </div>
     </div>
 
-    <div id="copy-tc-modal" class="modal" style="display:none;">
-        <div class="modal-header">
-            <h4 class="feature-title">Copy TCs</h4>
-        </div>
-        <div class="modal-body">
-                            <div type="button" title="Select All" class="select-all-tc" disabled="true">
-                        <i class="icon-align-justify"></i>
-                    </div>
-                        <select data-placeholder="Choose an Iteration..." id="release-selector" tabindex="3" >
-                <option></option>
-            </select>
-            <div class="panels">
-                <div id="tc-container" class="panel">
-                </div>
-                <div id="feature-cont" class="panel">
-                </div>  
-            </div>
-        </div>
-        <div class="modal-footer">
-            <div class="alert alert-error hide">
-                There was an error, please try again...
-            </div>
-            <a href="#" class="btn cancel"  >Cancel</a>
-            <a href="#" class="btn btn-primary save-copy" data-loading-text="working...">Copy</a>
-        </div>
-    </div>
-    <!-- <div class="spring-progress"></div> -->
 
-<!--         <div id="delete-tc-alert" class="modal hide fade" style="height: 20px;">
-          <div class="modal-body" style=" padding: 0px; ">
-           <div id="alert-delete-tc" class="alert alert-block alert-error fade in">
-                    <h4 class="alert-heading">Warning!</h4>
-                    <p>Are you sure you want to delete it?</p>
-                    <p>
-                      <a id="delete-tc-btn"class="btn btn-danger" href="#">Delete</a> <a class="btn" data-dismiss="modal" href="#">Nah!</a>
-                    </p>
-            </div>
-          </div>
-        </div>
 
-        <div id="close-feature-alert" class="modal hide fade" style="height: 20px;">
-          <div class="modal-body" style=" padding: 0px; ">
-           <div id="alert-delete-tc" class="alert alert-block alert-warning fade in">
-                    <h4 class="alert-heading">Warning!</h4>
-                    <p>Are you sure you want to close it?</p>
-                    <p>
-                      <a id="close-feature-btn"class="btn btn-warning" href="#">Close Issue at Jira</a> <a class="btn" data-dismiss="modal" href="#">Nah!</a>
-                    </p>
-            </div>
-          </div>
-        </div> -->
 </div>

@@ -224,6 +224,28 @@ define( function(require){
                     dataType: "json"
                 });
             },
+            metricsExecutedRls: function(rlsId){
+                return $.ajax({
+                    type: "GET",
+                    url: basePath2 + 'metricsExecutedRls?rlsId=' + rlsId,
+                    dataType: "json"
+                });
+            },
+            metricsDailyExecutedRls: function(rlsId){
+                return $.ajax({
+                    type: "GET",
+                    url: basePath2 + 'metricsDailyExecutedRls?rlsId=' + rlsId,
+                    dataType: "json"
+                });
+            },
+            getTcStatusByFeatureByRls:function(rlsId,statusId){
+
+                return $.ajax({
+                    type: "GET",
+                    url: basePath2 + 'getTcStatusByFeatureByRls?rlsId=' + rlsId +"&statusId=" + statusId,
+                    dataType: "json"
+                });
+            },
             getTcStatusByFeature:function(featureId,statusId){
 
                 return $.ajax({
