@@ -1,43 +1,90 @@
-<html>
-	<head>
-        <meta charset="utf-8">
+<html ng-app="tcm">
+<head>
+    <meta charset="utf-8">
 
-        <meta http-equiv="cache-control" content="no-cache">
-        <meta http-equiv="Expires" content="-1">
+    <meta http-equiv="cache-control" content="no-cache">
+    <meta http-equiv="Expires" content="-1">
 
-		<title>Test Case Manager</title>
-		<script data-main="js/main" src="js/libs/require/require.js"></script>
-        
-        <link href="js/libs/chosen/chosen.css" rel="stylesheet" />
-        <link href="assets/jqui/jquery-ui-1.10.2.custom.min.css" rel="stylesheet" />
-        <link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1/themes/flick/jquery-ui.css">
-        <link href="js/libs/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
-        <link rel="stylesheet" type="text/css" href="assets/tcm2.css" />
-        <link href="js/libs/textext/tagit.css" rel="stylesheet" type="text/css">
-        <link rel="stylesheet" type="text/css" media="screen" href="js/libs/jquery.grid/jquery.handsontable.full.css" />
-        <link href="js/libs/gritter/css/jquery.gritter.css"rel="stylesheet" type="text/css" />
-	</head>
-	<body>
-            <div class='tcm-top-menu-container'>
+    <title>Test Case Manager</title>
 
+    <script src="http://code.angularjs.org/1.0.6/angular.min.js"></script>
+    <script src="app/js/app.js"></script>
+    <script src="app/js/controllers.js"></script>
+
+
+    <link href="js/libs/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link rel="stylesheet" type="text/css" href="assets/tcm2.css" />
+
+    <!--<link href="js/libs/chosen/chosen.css" rel="stylesheet" />
+    <link href="assets/jqui/jquery-ui-1.10.2.custom.min.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1/themes/flick/jquery-ui.css">
+    <link href="js/libs/textext/tagit.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" type="text/css" media="screen" href="js/libs/jquery.grid/jquery.handsontable.full.css" />
+    <link href="js/libs/gritter/css/jquery.gritter.css"rel="stylesheet" type="text/css" />-->
+</head>
+<body>
+    <div class='tcm-top-menu-container' ng-controller="TopMenuCntl">
+        <div id="navbar-top-menu" class="navbar navbar-mule">
+            <div class="navbar-inner">
+                <div class="container" style="width: auto;">
+
+                    <ul class="nav" role="navigation">
+                        <li class="dropdown">
+                            <a href="#" role="button" class="dropdown-toggle brand" data-toggle="dropdown">TCM <b class="caret"></b></a>
+                            <ul class="dropdown-menu pull-left" role="menu" aria-labelledby="drop2">
+                                <li role="presentation">
+                                    <a id="link-iterations" role="menuitem" tabindex="-1" href="#/manager">Iterations</a>
+                                </li>
+                                <li role="presentation">
+                                    <a id="link-suites" role="menuitem" tabindex="-1" href="#/suites">Suites</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#" role="button" class="dropdown-toggle" data-toggle="dropdown">Metrics <b class="caret"></b></a>
+                            <ul class="dropdown-menu pull-right" role="menu" aria-labelledby="drop2">
+                                <li role="presentation"><a id="link-plan" role="menuitem" tabindex="-1" href="#/plan">Test Plan</a></li>
+                                <li role="presentation"><a id="link-rls-metrics" role="menuitem" tabindex="-1" href="#/rlsmetrics">Release</a></li>
+                                <li role="presentation"><a id="link-metrics" role="menuitem" tabindex="-1" href="#/metrics">Iteration</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown" id="pluginMenu">
+                            <a href="#" role="button" class="dropdown-toggle" data-toggle="dropdown">Plugins <b class="caret"></b></a>
+                            <ul class="dropdown-menu pull-right" role="menu" aria-labelledby="drop2">
+                                <li role="presentation"><a id="link-sync" role="menuitem" tabindex="-1" href="#/sync" style="display: none;">JIRA Sync</a></li>
+                                <li role="presentation"><a id="link-export-import" role="menuitem" tabindex="-1" href="#/import-export" style="display: none;">Import/Export</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+
+                    <ul id="user-menu" class="nav pull-right">
+                        <li id="fat-menu" class="dropdown">
+                            <a href="#" id="usrdrop" role="button" class="dropdown-toggle" data-toggle="dropdown"><span id="username"></span> <b class="caret"></b></a>
+                            <ul class="dropdown-menu" role="menu" aria-labelledby="drop3">
+                                <li role="presentation"><a role="menuitem" tabindex="-1" id="switchProject" >Switch Project</a></li>
+                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#project">Project Settings</a></li>
+                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#plugins-settings">Project Plugins Settings</a></li>
+                                <li role="presentation" class="divider"></li>
+                                <li role="presentation"><a role="menuitem" id="logout" tabindex="-1" href="login.html">Log out</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
             </div>
-        <div class='tcm-container'>
-			<div id="pannel-wrapper">
-
-			</div>
+            <div class="spring-progress"></div>
         </div>
-        <script>
-            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-                    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-            })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    </div>
+  <div class='tcm-container' ng-view>
 
-            ga('create', 'UA-41997146-1', 'naitse.github.io');
-            ga('send', 'pageview');
-        </script>
-    </body>
+  </div>
+    <!--  <script>
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+              (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+          ga('create', 'UA-41997146-1', 'naitse.github.io');
+          ga('send', 'pageview');
+      </script>-->
+</body>
 </html>
-
-
-
-

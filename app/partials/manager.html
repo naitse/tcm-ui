@@ -1,0 +1,153 @@
+<style sof="items" type="text/css">
+    .item{position:relative;font-size:13;padding:0 5px 0 3px;background-color:white;border-bottom:1px solid #ccc;border-top:1px solid #ccc;height:38px;overflow:hidden;margin-left:2px;padding-left:0;font-weight:bold;margin-bottom:1px}
+    .item .title-bar{background:transparent;height:100%;z-index:2;position:relative;/*box-shadow:-4px 0 10px 2px*/;display: inline-block;padding-right: 6px;}
+    .item .summary{top:0px;left:24px;font-weight: normal;margin-top:3px;position:absolute;z-index:0;border-radius:6px;padding-left:10px;font-size:17;display: inline-table;word-wrap: break-word;line-height: 1.8em;}
+    .item .stats {
+        width:14px;
+        border: 2px solid #03415f;
+        box-shadow: 0px 0px 9px -5px black;
+        border-radius: 12px;
+    }
+    .item .jira-key{width:100px;margin-left:5px;position:relative;top:6px;font-size:12}
+    .item .stats .count{width:14px;text-align:center;position:relative;top:-3px;font-size:11}
+    .item:hover{color:black;box-shadow:yellow 0px 0px 40px -17px inset;-webkit-box-shadow:yellow 0px 0px 40px -17px inset;-moz-box-shadow:yellow 0px 0px 40px -17px inset;}
+    .item.selected:hover{border: 1px solid #d2e9fa;box-shadow: #d2e9fa 0 0 50px inset;-moz-box-shadow: #d2e9fa 0 0 50px inset;-webkit-box-shadow: #d2e9fa 0 0 50px inset;}
+    .item.selected {border: 1px solid #d2e9fa;box-shadow: #d2e9fa 0 0 50px inset;-moz-box-shadow: #d2e9fa 0 0 50px inset;-webkit-box-shadow: #d2e9fa 0 0 50px inset;}
+    .item #item-remove {visibility:visible; float: right;}
+    .item #item-add {visibility:visible; float: right;}
+    .item.iteration .title-bar {visibility:hidden;}
+    .item.iteration {height:28px;}
+    .item.iteration .summary {margin-right: 0px;font-size: 15;line-height: 1.4em;margin-left: -26px;top: 0px;
+        left: 22px;}
+    .item .item-control-buttons {
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        width: auto;
+        height: 44px;
+        border-left: 1px solid #ccc;
+        max-width:27px;
+    }
+    .item .item-control-buttons .wrapper{
+        display:none;
+        padding-right:4px;
+    }
+
+    .item .item-control-buttons .wrapper button{
+        width: 20px;
+        padding: 0px;
+    }
+    .item .bt-ctrl{
+        width:9px;
+    }
+
+    .item-control-buttons .wrapper div:hover {border:1px solid;}
+</style>
+
+
+<div id="pannel-wrapper">
+    <div id="tcViewer">
+        <div class="left-center-panel">
+            <div id="lp-wrapper">
+                <div class='left-pannel round-corner-all'>
+                    <div class="toolbar iteration-holder-name">
+                        <div id="holder"class="release-holder"><i class=" icon-chevron-left icon-white" style="visibility:hidden"></i><div class="iteration-holder-name">Releases</div></div>
+                    </div>
+                    <div id="releases-container">
+                        <div class="release-iterations-wrapper" ng-repeat="release in releases" id="{{release.id}}">
+                            <div class="item release" item-id="{{release.id}}" style="display: block;">
+                            <div class="title-bar">
+                                <div class="stats">
+                                    <div class="count">{{release.iterations.length}}</div>
+                                </div>
+                            </div>
+                            <div class="summary" title="" style="margin-right: 0px;">Release {{release.name}}</div>
+                            <i class="icon-user" style="visibility:hidden;"></i>
+
+
+                        </div>
+                        <div ng-repeat="iteration in release.iterations" class="iteration-holder" style="display: none;" rlsid="{{iteration.id}}">
+                            <div class="item iteration" item-id="{{iteration.id}}" style="display: block;">
+                                <div class="title-bar">
+                                    <div class="stats">
+                                        <div class="count">???</div>
+                                    </div>
+                                </div>
+                                <div class="summary" title="" style="margin-right: 0px;">{{iteration.name}}</div>
+                                <i class="icon-user" style="visibility:hidden;"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="feature-container" style="display:none;">
+                    <div class="feature-actions">
+                        <div class="feature-buttons">
+                            <input type="text" id="feature-filter" />
+                                 <div id="add-feature" type="button" title="Add new Item" class="" disabled="true">
+                                    <i class="icon-plus-sign icon-white"></i>
+                                </div>
+                             <div id="filter-completed-features" title="Filter completed features" type="button" class="" data-toggle="button" disabled="true">
+                                    <i class="icon-filter icon-white"></i>
+                                </div>
+                        </div>
+                    </div>
+                        <div class="theFeatures">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class='right-pannel round-corner-all'>
+                <div id="description">
+                    <div class="desc-header">
+                        <div id="desc-expander" class="desc-expander detailsIcon ds"></div>
+                        <div type="button" title="Add new Item" class="add-tc" disabled="true">
+                            <i class="icon-plus-sign"></i>
+                        </div>
+                        <div type="button" title="Clone tcs" class="copy-tc" disabled="true">
+                            <i class="icon-copy"></i>
+                        </div>
+                        <!-- <button type="button" class="btn btn-mini add-tc" disabled="disabled">Add TC</button> -->
+                        <div class="desc-header-text ds"></div>
+                        <!-- <div id="tc-refresh" class="icon-refresh"></div> -->
+                    </div>
+                    <div id="desc-wrapper" style="display: none; width:100%;">
+                        <pre id="desc-container"  class=""></pre>
+                    </div>
+                </div>
+
+                <div id="tc-container" class="round-corner-all">
+                <ul id="demo3"></ul>
+                </div>
+            </div>
+        </div>
+        <div id="rp-wrapper" style="display:none;">
+
+            <div id="copy-tc-mod" style="display:none;">
+
+            </div>
+        </div>
+
+
+        <div id="new-feature-modal" class="modal" style="display:none;">
+            <div class="modal-header">
+                <h4 class="feature-title">Create Item</h4>
+            </div>
+            <div class="modal-body">
+                <div class="feature-fields">
+                    <h7>Title:</h7>
+                    <input class="new-feature-title" type="text" style=" width: 100%; "></input>
+                    <br/>
+                    <h7>Description:</h7>
+                    <textarea class="new-feature-desc" style=" width: 100%; height:200px; resize: none;"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="alert alert-error hide">
+                    There was an error, please try again...
+                </div>
+                <a href="#" class="btn cancel"  >Close</a>
+                <a href="#" class="btn btn-primary save-feature" data-loading-text="working...">Add</a>
+            </div>
+        </div>
+    </div>
+</div>
