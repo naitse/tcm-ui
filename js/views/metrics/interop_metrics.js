@@ -726,7 +726,8 @@ function showPillRefresh(parent){
     if(setSize){
         container.highcharts().setSize(400, 300);
     }
-        $(container).parents('.tab-pane').find(".graph-feature-cont .graph-feature").sort(asc_sort).appendTo('.graph-feature-cont');
+        var sor = $(container).parents('.tab-pane.active').find(".graph-feature-cont");
+        $(container).parents('.tab-pane.active').find(".graph-feature-cont .graph-feature").sort(asc_sort).appendTo(sor);
         adjustChartHeight()
 
     }
