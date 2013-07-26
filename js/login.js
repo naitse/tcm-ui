@@ -61,12 +61,12 @@ require(['jquery', 'tcm_model', 'jquery.cookie', 'jquery.base64','bootstrap','ch
             $('#login-button').button('loading');
             $.when(tcm_model.login($('#username').val(), $('#password').val())).done(function(data){
 
+
+                $.cookie('apiKey', data.apiKey, { expires:1, path: '/' });
                 if(window.location.hash.indexOf('iometricshl') >= 0){
                     window.location.href = window.location.href.replace('login.html','');
                     return false;
                 }
-
-                $.cookie('apiKey', data.apiKey, { expires:1, path: '/' });
 
                 $.when(tcm_model.users.projects.fetch($('#username').val())).done(function(projects){
 

@@ -20,6 +20,11 @@ define( function(require){
             }else{
                 this.url += '?' + $.param(params);
             }
+            console.log($.cookie("username"),window.location.hash.indexOf('iometricshl'))
+            // if($.cookie("username") == 'reports' && window.location.hash.indexOf('iometricshl') < 0){
+            //     var wl = window.location;
+            //         wl.href = wl.protocol + '//' + wl.hostname + wl.pathname + 'login.html'
+            // }
 
         },
         statusCode: {
