@@ -829,8 +829,7 @@ function processTCstatusInfo(data){
     }
 
     function adjustChartHeight(){
-
-            $('#InteropMetrics').css('height',(($('.tcm-container').height() - 30)*100)/$('.tcm-container').height()+'%')
+            $('#InteropMetrics').css('height',($('.tcm-container').height() - 0))
 
             $('#InteropMetrics .tab-pane').each(function(){
 
@@ -841,12 +840,13 @@ function processTCstatusInfo(data){
                 var previewsWidth = 420;
                 var currentChartWidth = $(this).find('.graph-container').find('#container').children().width();
                 var newChartWidth = parentWidth - previewsWidth;
-                var newChartHeight = parentHeight - metrics_controls -100;
+                var newChartHeight = parentHeight - metrics_controls -60;
                 $(this).find('.graph-container').find('#container').children().highcharts().setSize(newChartWidth, newChartHeight)
-                $(this).find('.graph-feature-cont').css('max-height', parentHeight - 100)
+                $(this).find('.graph-feature-cont').css('max-height', parentHeight - 60)
                 $(this).find('.graph-previews').css('height',parentHeight -20);
                 $(this).find('#tc-container').css('height',parentHeight - 280)
-                $('#InteropMetrics .teams').css('height',parentHeight - 80)
+                $('#InteropMetrics .teams').css('height',parentHeight - 30)
+                $('#InteropMetrics .tab-content').css('height',parentHeight - 20 + 'px')
             }catch(err){}
             
             })
