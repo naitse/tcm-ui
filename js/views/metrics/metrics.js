@@ -8,6 +8,8 @@ define(function(require){
     var dd = require('releases_iterations_dd');
     require('highcharts');
     require('exporting');
+    var Btnpill = require('widgets/btnpill');
+    var btnpill;
     var permalinkIterId = '';
     var iterName = '';
     var iterId;
@@ -49,6 +51,38 @@ define(function(require){
                 adjustChartHeight()
                 this.rendered = true;
             }
+
+            var pillConfig = {
+                left_btn:{
+                    action:function(){
+                        globalGraph = true
+                        $('#tcMetrics #feature-filter').hide()
+                        $('#tcMetrics .main-container').show()
+                        $('#tcMetrics .graph-previews').show()
+                        $('#tcMetrics .graph-feature-cont').remove()
+                        MetricsView.loadMetrics(0,iterId);
+                    }
+                },
+                refresh_btn:function(){
+                    console.log('lele')
+                    if(globalGraph){
+                        MetricsView.loadMetrics(0,iterId);
+                    }else{
+                        $('#tcMetrics .graph-feature-cont').remove()
+                       MetricsView.loadFeatureMetrics(iterId);
+                    }
+                },
+                right_btn:{
+                    action:function(){
+                        globalGraph = false
+                        $('#tcMetrics #feature-filter').show()
+                        MetricsView.loadFeatureMetrics(iterId);
+                    }
+                }
+            }
+
+            btnpill = new Btnpill('#tcMetrics #metrics-controls',pillConfig);
+
             $('.tcm-top-menu-container a').removeClass('active');
             $('#link-metrics').addClass('active').parents('.dropdown').find('a.dropdown-toggle').addClass('active');
             $('.brand').removeClass('active');
@@ -201,6 +235,8 @@ define(function(require){
                 $("#tcMetrics #byitem").attr('disabled',false);
                 $("#tcMetrics #refresh-graph").attr('disabled',false);
 
+                btnpill.show();
+                btnpill.showPillRefresh();
                 
             });
 
@@ -214,34 +250,6 @@ define(function(require){
              $('#tcMetrics .link-exposer').text(permalink);
         })
 
-        $('#tcMetrics #byitem').live({
-            click:function(){
-                globalGraph = false
-                $('#tcMetrics #feature-filter').show()
-                MetricsView.loadFeatureMetrics(iterId);
-            }
-        })
-
-        $('#tcMetrics #global').live({
-            click:function(){
-                // console.log('lalal')
-                globalGraph = true
-                $('#tcMetrics #feature-filter').hide()
-                $('#tcMetrics .main-container').show()
-                $('#tcMetrics .graph-previews').show()
-                $('#tcMetrics .graph-feature-cont').remove()
-                MetricsView.loadMetrics(0,iterId);
-            }
-        })
-
-        $('#tcMetrics #refresh-graph').click(function(){
-            if(globalGraph){
-                MetricsView.loadMetrics(0,iterId);
-            }else{
-                $('#tcMetrics .graph-feature-cont').remove()
-               MetricsView.loadFeatureMetrics(iterId);
-            }
-        })
 
         $('#info-tc-modal .close-info-tc-modal').live({
             click:function(){

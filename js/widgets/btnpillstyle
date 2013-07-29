@@ -1,60 +1,63 @@
 <style sof="btnpill">
-	.btn-pill #refresh-graph {
-	display:none;
-	padding: 7px 0px 7px 5px;
-	border-top: 1px solid #ddd;
-	margin-left: -5px;
-	border-bottom: 1px solid #ddd;
-	cursor:pointer;
-	}
+.btn-pill #pill-refresh-graph {
+/*float: right;
+position: relative;
+top: -34px;
+margin-right: 40px;*/
+display:none;
+padding: 7px 0px 7px 5px;
+border-top: 1px solid #ddd;
+margin-left: -5px;
+border-bottom: 1px solid #ddd;
+cursor:pointer;
+}
+.btn-pill #pill-refresh-graph:hover {
+background: #f5f5f5;
+}
+.btn-pill {
+    cursor:default;
+    width: 160px;
+position: relative;
+top: -15px;
+margin-left: auto;
+margin-right: auto;
+}
+.btn-pill div
+{
+display: inline-block;
+padding: 5px 14px;
+background-color: #fff;
+border: 1px solid #ddd;
+-webkit-border-radius: 15px;
+-moz-border-radius: 15px;
+border-radius: 15px;
+}
 
-	.btn-pill #refresh-graph:hover {
-	background: #f5f5f5;
-	}
-	.btn-pill {
-	    cursor:default;
-	    width: 160px;
-	position: relative;
-	top: -15px;
-	margin-left: auto;
-	margin-right: auto;
-	}
-	.btn-pill div
-	{
-	display: inline-block;
-	padding: 5px 14px;
-	background-color: #fff;
-	border: 1px solid #ddd;
-	-webkit-border-radius: 15px;
-	-moz-border-radius: 15px;
-	border-radius: 15px;
-	}
+.btn-pill div:first-child
+{
+-webkit-border-radius: 15px 0px 0px 15px;
+-moz-border-radius: 15px 0px 0px 15px;
+border-radius: 15px 0px 0px 15px;
+}
 
-	.btn-pill div:first-child
-	{
-	-webkit-border-radius: 15px 0px 0px 15px;
-	-moz-border-radius: 15px 0px 0px 15px;
-	border-radius: 15px 0px 0px 15px;
-	}
+.btn-pill div:last-child
+{
+-webkit-border-radius: 0px 15px 15px 0px;
+-moz-border-radius: 0px 15px 15px 0px;
+border-radius: 0px 15px 15px 0px;
+margin-left: -5px;
+}
 
-	.btn-pill div:last-child
-	{
-	-webkit-border-radius: 0px 15px 15px 0px;
-	-moz-border-radius: 0px 15px 15px 0px;
-	border-radius: 0px 15px 15px 0px;
-	margin-left: -5px;
-	}
+.btn-pill div:hover{
+    text-decoration: none;
+    background-color: #f5f5f5;
+    cursor:pointer;
+}
 
-	.btn-pill div:hover{
-	    text-decoration: none;
-	    background-color: #f5f5f5;
-	    cursor:pointer;
-	}
-
-	.btn-pill .active{
-	    border: 1px solid #ddd !important;
-	    box-shadow: #d2e9fa 0 0 50px inset !important;
-	-moz-box-shadow: #d2e9fa 0 0 50px inset !important;
-	-webkit-box-shadow: #d2e9fa 0 0 50px inset !important;
-	}
+.btn-pill .active{
+    border: 1px solid #ddd !important;
+    box-shadow: #d2e9fa 0 0 50px inset !important;
+-moz-box-shadow: #d2e9fa 0 0 50px inset !important;
+-webkit-box-shadow: #d2e9fa 0 0 50px inset !important;
+}
 </style>
