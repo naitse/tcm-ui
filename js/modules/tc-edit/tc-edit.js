@@ -95,7 +95,7 @@ define(function(require){
 
             var self = this;
             $('#tcViewer #rp-wrapper .cancel').on('click', function(){
-
+                $('#tcViewer #tc-container').find('.wrapper').removeClass('active');
                 self.clearTCModal();
                 PM.colapseExpandRightPanel('#tcViewer','none')
 

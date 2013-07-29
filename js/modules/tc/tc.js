@@ -241,9 +241,9 @@ define(function(require){
 	        $('.tc').live({
 	          click: function(e){
 	            // e.stopPropagation();  
-	            $(this).parents('#tc-container').find('.wrapper').removeClass('active');
+	            //$(this).parents('#tc-container').find('.wrapper').removeClass('active');
 	            $(this).find('.detailsIcon').click();
-	            $(this).find('.wrapper').addClass('active');
+	            //$(this).find('.wrapper').addClass('active');
 	          }
 	        });
 

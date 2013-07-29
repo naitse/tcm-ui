@@ -344,6 +344,8 @@ define(function(require){
               return false;
             }
 
+            $('#tcViewer #tc-container').find('.wrapper').removeClass('active');
+
             tcEditor.render({create:true}, global.currentSS);
 
             tcEditor.afterCreate = function(context){
@@ -457,8 +459,7 @@ define(function(require){
         $('#tcViewer .edit-tc').live({
           click: function(e){
             e.stopPropagation();
-
-            $('#tcViewer .tc .wrapper').removeClass('active');
+            $('#tcViewer #tc-container').find('.wrapper').removeClass('active');
             $(this).parents('.wrapper').addClass('active');
 
             tcEditor.render({update:true}, global.currentSS, $(this).parents('.tc').data('tcObject'));
@@ -475,8 +476,8 @@ define(function(require){
 
         $('#tcViewer .tc').live({
           click: function(e){
-            e.stopPropagation();
-            PM.colapseExpandRightPanel('#tcViewer','none');  
+            // e.stopPropagation();
+            // PM.colapseExpandRightPanel('#tcViewer','none');  
           }
         });
 
