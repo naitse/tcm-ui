@@ -1,0 +1,27 @@
+<div ng-repeat="release in releases">
+    <div class="release-iterations-wrapper"  id="{{release.id}}" ng-click="displayIterations($index)">
+        <div class="item release" item-id="{{release.id}}" style="display: block;">
+            <div class="title-bar">
+                <div class="stats">
+                    <div class="count">{{release.iterations.length}}</div>
+                </div>
+            </div>
+            <div class="summary" title="" style="margin-right: 0px;">Release {{release.name}}</div>
+            <i class="icon-user" style="visibility:hidden;"></i>
+        </div>
+    </div>
+
+    <div ng-repeat="iteration in release.iterations" class="iteration-holder" style="display: {{release.display}};" rlsid="{{iteration.id}}">
+
+        <div class="item iteration" item-id="{{iteration.id}}" style="display: block;"  ng-click="showFeatures(release, iteration)">
+            <div class="title-bar">
+                <div class="stats">
+                    <div class="count">???</div>
+                </div>
+            </div>
+            <div class="summary" title="" style="margin-right: 0px;">{{iteration.name}}</div>
+            <i class="icon-user" style="visibility:hidden;"></i>
+        </div>
+
+    </div>
+</div>

@@ -47,81 +47,27 @@
 
 <div id="pannel-wrapper">
     <div id="tcViewer">
-        <div class="left-center-panel">
+        <div class="left-center-panel" style="width: 60%;">
             <div id="lp-wrapper">
                 <div class='left-pannel round-corner-all'>
                     <div class="toolbar iteration-holder-name">
-                        <div id="holder"class="release-holder"><i class=" icon-chevron-left icon-white" style="visibility:hidden"></i><div class="iteration-holder-name">Releases</div></div>
-                    </div>
-                    <div id="releases-container">
-                        <div class="release-iterations-wrapper" ng-repeat="release in releases" id="{{release.id}}">
-                            <div class="item release" item-id="{{release.id}}" style="display: block;">
-                            <div class="title-bar">
-                                <div class="stats">
-                                    <div class="count">{{release.iterations.length}}</div>
-                                </div>
-                            </div>
-                            <div class="summary" title="" style="margin-right: 0px;">Release {{release.name}}</div>
-                            <i class="icon-user" style="visibility:hidden;"></i>
+                        <div id="holder"class="release-holder">
+                            <a href="#manager/{{params.projectId}}"><i class=" icon-chevron-left icon-white" style="display: {{backButton}}"></i></a>
+                            <div class="iteration-holder-name">{{releasesTitle}}</div>
+                        </div>
 
-
-                        </div>
-                        <div ng-repeat="iteration in release.iterations" class="iteration-holder" style="display: none;" rlsid="{{iteration.id}}">
-                            <div class="item iteration" item-id="{{iteration.id}}" style="display: block;">
-                                <div class="title-bar">
-                                    <div class="stats">
-                                        <div class="count">???</div>
-                                    </div>
-                                </div>
-                                <div class="summary" title="" style="margin-right: 0px;">{{iteration.name}}</div>
-                                <i class="icon-user" style="visibility:hidden;"></i>
-                            </div>
-                        </div>
                     </div>
-
-                    <div id="feature-container" style="display:none;">
-                    <div class="feature-actions">
-                        <div class="feature-buttons">
-                            <input type="text" id="feature-filter" />
-                                 <div id="add-feature" type="button" title="Add new Item" class="" disabled="true">
-                                    <i class="icon-plus-sign icon-white"></i>
-                                </div>
-                             <div id="filter-completed-features" title="Filter completed features" type="button" class="" data-toggle="button" disabled="true">
-                                    <i class="icon-filter icon-white"></i>
-                                </div>
-                        </div>
-                    </div>
-                        <div class="theFeatures">
-                        </div>
+                    <div id="releases-container" >
+                        <ng-include src="releasesView"></ng-include>
                     </div>
                 </div>
             </div>
-            <div class='right-pannel round-corner-all'>
-                <div id="description">
-                    <div class="desc-header">
-                        <div id="desc-expander" class="desc-expander detailsIcon ds"></div>
-                        <div type="button" title="Add new Item" class="add-tc" disabled="true">
-                            <i class="icon-plus-sign"></i>
-                        </div>
-                        <div type="button" title="Clone tcs" class="copy-tc" disabled="true">
-                            <i class="icon-copy"></i>
-                        </div>
-                        <!-- <button type="button" class="btn btn-mini add-tc" disabled="disabled">Add TC</button> -->
-                        <div class="desc-header-text ds"></div>
-                        <!-- <div id="tc-refresh" class="icon-refresh"></div> -->
-                    </div>
-                    <div id="desc-wrapper" style="display: none; width:100%;">
-                        <pre id="desc-container"  class=""></pre>
-                    </div>
-                </div>
-
-                <div id="tc-container" class="round-corner-all">
-                <ul id="demo3"></ul>
-                </div>
+            <div class='right-pannel round-corner-all' style="height: 100%; padding-bottom: 129px;">
+                <ng-include src="featuresDetailsView"></ng-include>
             </div>
         </div>
-        <div id="rp-wrapper" style="display:none;">
-
+        <div id="rp-wrapper" style="width: 500;">
+            <tc-editor selected="{{selectedTC}}"></tc-editor>
             <div id="copy-tc-mod" style="display:none;">
 
             </div>

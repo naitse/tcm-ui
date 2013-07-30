@@ -70,68 +70,52 @@ box-shadow: inherit;
 
 </style>
 
-<div>
-    <div id="navbar-top-menu" class="navbar navbar-mule">
-        <div class="navbar-inner">
-            <div class="container" style="width: auto;">
+<div id="navbar-top-menu" class="navbar navbar-mule">
+    <div class="navbar-inner">
+        <div class="container" style="width: auto;">
 
-                <ul class="nav" role="navigation">
+            <ul class="nav" role="navigation">
                 <li class="dropdown">
                     <a href="#" role="button" class="dropdown-toggle brand" data-toggle="dropdown">TCM <b class="caret"></b></a>
-                        <ul class="dropdown-menu pull-left" role="menu" aria-labelledby="drop2">
-                            <li role="presentation">
-                                <a id="link-iterations" role="menuitem" tabindex="-1" href="#/viewer">Iterations</a>
-                            </li>
-                            <li role="presentation">
-                                <a id="link-suites" role="menuitem" tabindex="-1" href="#/suites">Suites</a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="dropdown">
-                        <a href="#" role="button" class="dropdown-toggle" data-toggle="dropdown">Metrics <b class="caret"></b></a>
-                        <ul class="dropdown-menu pull-right" role="menu" aria-labelledby="drop2">
-                            <li role="presentation"><a id="link-plan" role="menuitem" tabindex="-1" href="#/plan">Test Plan</a></li>
-                            <li role="presentation"><a id="link-rls-metrics" role="menuitem" tabindex="-1" href="#/rlsmetrics">Release</a></li>
-                            <li role="presentation"><a id="link-metrics" role="menuitem" tabindex="-1" href="#/metrics">Iteration</a></li>
-                        </ul>
-                    </li>
-                    <li class="dropdown" id="pluginMenu">
-                        <a href="#" role="button" class="dropdown-toggle" data-toggle="dropdown">Plugins <b class="caret"></b></a>
-                        <ul class="dropdown-menu pull-right" role="menu" aria-labelledby="drop2">
-                            <li role="presentation"><a id="link-sync" role="menuitem" tabindex="-1" href="#/sync" style="display: none;">JIRA Sync</a></li>
-                            <li role="presentation"><a id="link-export-import" role="menuitem" tabindex="-1" href="#/import-export" style="display: none;">Import/Export</a></li>
-                        </ul>
-                    </li>
-                </ul>
+                    <ul class="dropdown-menu pull-left" role="menu" aria-labelledby="drop2">
+                        <li role="presentation">
+                            <a id="link-iterations" role="menuitem" tabindex="-1" href="#/manager">Iterations</a>
+                        </li>
+                        <li role="presentation">
+                            <a id="link-suites" role="menuitem" tabindex="-1" href="#/suites">Suites</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a href="#" role="button" class="dropdown-toggle" data-toggle="dropdown">Metrics <b class="caret"></b></a>
+                    <ul class="dropdown-menu pull-right" role="menu" aria-labelledby="drop2">
+                        <li role="presentation"><a id="link-plan" role="menuitem" tabindex="-1" href="#/plan">Test Plan</a></li>
+                        <li role="presentation"><a id="link-rls-metrics" role="menuitem" tabindex="-1" href="#/rlsmetrics">Release</a></li>
+                        <li role="presentation"><a id="link-metrics" role="menuitem" tabindex="-1" href="#/metrics">Iteration</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown" id="pluginMenu">
+                    <a href="#" role="button" class="dropdown-toggle" data-toggle="dropdown">Plugins <b class="caret"></b></a>
+                    <ul class="dropdown-menu pull-right" role="menu" aria-labelledby="drop2">
+                        <li role="presentation"><a id="link-sync" role="menuitem" tabindex="-1" href="#/sync" style="display: none;">JIRA Sync</a></li>
+                        <li role="presentation"><a id="link-export-import" role="menuitem" tabindex="-1" href="#/import-export" style="display: none;">Import/Export</a></li>
+                    </ul>
+                </li>
+            </ul>
 
-                <ul id="user-menu" class="nav pull-right">
-                    <li id="fat-menu" class="dropdown">
-                        <a href="#" id="usrdrop" role="button" class="dropdown-toggle" data-toggle="dropdown"><span id="username"></span> <b class="caret"></b></a>
-                        <ul class="dropdown-menu" role="menu" aria-labelledby="drop3">
-                            <li role="presentation"><a role="menuitem" tabindex="-1" id="switchProject" >Switch Project</a></li>
-                            <li role="presentation"><a role="menuitem" tabindex="-1" href="#project">Project Settings</a></li>
-                            <li role="presentation"><a role="menuitem" tabindex="-1" href="#plugins-settings">Project Plugins Settings</a></li>
-                            <li role="presentation" class="divider"></li>
-                            <li role="presentation"><a role="menuitem" id="logout" tabindex="-1" href="login.html">Log out</a></li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-        </div>
-        <div class="spring-progress"></div>
-    </div>
-
-    <div id="modal-switchProject" class="modal hide fade" style=" display: none">
-        <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            <h3>Switch Project</h3>
-        </div>
-        <div class="modal-body" style="overflow: visible">
-            <select id="modal-switch-projects_dd" />
-        </div>
-        <div class="modal-footer">
-            <a class="btn" data-dismiss="modal" aria-hidden="true">Close</a>
-            <a class="btn btn-primary">Switch</a>
+            <ul id="user-menu" class="nav pull-right">
+                <li id="fat-menu" class="dropdown">
+                    <a href="#" id="usrdrop" role="button" class="dropdown-toggle" data-toggle="dropdown"><span id="username"></span> <b class="caret"></b></a>
+                    <ul class="dropdown-menu" role="menu" aria-labelledby="drop3">
+                        <li role="presentation"><a role="menuitem" tabindex="-1" id="switchProject" >Switch Project</a></li>
+                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#project">Project Settings</a></li>
+                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#plugins-settings">Project Plugins Settings</a></li>
+                        <li role="presentation" class="divider"></li>
+                        <li role="presentation"><a role="menuitem" id="logout" tabindex="-1" href="login.html">Log out</a></li>
+                    </ul>
+                </li>
+            </ul>
         </div>
     </div>
+    <div class="spring-progress"></div>
 </div>
