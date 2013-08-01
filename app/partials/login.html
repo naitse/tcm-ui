@@ -77,7 +77,7 @@ margin-top: 10px;
             <div class="header">
                 <h1 class="logo"><a href="#">Test Cases Manager</a></h1>
             </div>
-            <div id="ion-main" class="login">
+            <div id="ion-main" >
                 <div id="login-block" class="round-corner-all" ng-style="loginFormStyle">
                     <h2>Login</h2>
                     <form id="login-form" method="post" class="form-horizontal" >
@@ -98,10 +98,7 @@ margin-top: 10px;
                         <input id="login-button" type="button" class="btn btn-primary " data-loading-text="Logging in..." value="Login" ng-click="login()" ng-show="displayButton"/>
                     </form>
                     <div ng-show="displayProjects" id="projectsContainer" class="form-horizontal">
-
-                        <select id="projects_dd" data-placeholder="Choose Project" chosen="projects" ng-model="project" ng-options="p.name for p in projects">
-
-                        </select>
+                        <project-select > </project-select>
                         <br />
                         <input id="project-button" type="button" class="btn btn-primary" value="Continue" ng-click="continueToManager()"/>
                     </div>

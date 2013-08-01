@@ -1,5 +1,3 @@
-define(function () {
-	
 String.prototype.trunc = function(n,useWordBoundary){
        var toLong = this.length>n,
            s_ = toLong ? this.substr(0,n-1) : this;
@@ -108,7 +106,7 @@ Date.daysBetween = function( date1, date2 ) {
     
   // Convert back to days and return
   return Math.round(difference_ms/one_day); 
-}
+};
 
 Date.bizdays= function(d1, d2){
  
@@ -124,7 +122,7 @@ Date.bizdays= function(d1, d2){
     if(wd2== 0) tem-= 1;
  
     return weeks*5+tem;
-}
+};
 
 String.guidGenerator= function() {
   var buf = new Uint16Array(8);
@@ -137,6 +135,4 @@ String.guidGenerator= function() {
      return ret;
    };
   return (S4(buf[0])+S4(buf[1])+"-"+S4(buf[2])+"-4"+S4(buf[3]).substring(1)+"-y"+S4(buf[4]).substring(1)+"-"+S4(buf[5])+S4(buf[6])+S4(buf[7]));
-}
-
-});
+};

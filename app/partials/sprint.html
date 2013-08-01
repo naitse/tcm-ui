@@ -1,0 +1,18 @@
+<style sof="sprint" type="text/css">
+    .time-line {position:relative;padding: 5px;box-shadow: #ccc 0px 0px 13px 1px inset;-moz-box-shadow: #ccc 0px 0px 13px 1px inset;-webkit-box-shadow: #ccc 0px 0px 13px 1px inset;}
+    .time-line .progress{display: inline-block;box-sizing: border-box;margin-left: 2px;height: 100%;border: 1px solid #ccc;top: 0px;}
+    .time-line .progress .bar {background-repeat: repeat !important;}
+    .time-line .config-panel {width:300px;position: absolute;top: 0px;right: 0px;margin-top: 12px;background: white;padding: 5px;}
+    .time-line .config-panel.visible {visibility:visible !important;}
+    .time-line .toggle-config-panel {position: absolute;}
+    .time-line .progress .iter-action {position: absolute;top: 5px;left: 5px;}
+</style>
+<div class="spring-progress">
+    <div class="time-line round-corner-all" style="width: 160px; height: 29px;" time-line-id="{{timeLineId}}">
+        <div ng-repeat="i in [] | range:springIterations" class="progress" ng-style="{width: ((100 / springIterations) - 1) + '%' }">
+            <div ng-repeat="j in [] | range:iterationDuration" class="bar" ng-class="barClass(i,j)" ng-style="{width: ((100 / iterationDuration) + '%') }">
+            </div>
+            <span class="iter-action round-corner-all"></span>
+        </div>
+    </div>
+</div>

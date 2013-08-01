@@ -19,11 +19,11 @@
                     <span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu pull-right">
-                    <li class="ddm-notrun" status-id="0"><i class="icon-off"></i> Not Run </li>
-                    <li class="ddm-inprogress" status-id="1"><i class="icon-hand-right"></i> In Progress </li>
-                    <li class="ddm-block" status-id="2"><i class="icon-exclamation-sign"></i> Blocked </li>
-                    <li class="ddm-failed" status-id="3"><i class="icon-thumbs-down"></i> Fail </li>
-                    <li class="ddm-pass" status-id="4"><i class="icon-thumbs-up"></i> Pass </li>
+                    <li class="ddm-notrun" status-id="0" ng-click="changeTCStatus(tc, 0)"><i class="icon-off"></i> Not Run </li>
+                    <li class="ddm-inprogress" status-id="1" ng-click="changeTCStatus(tc, 1)"><i class="icon-hand-right"></i> In Progress </li>
+                    <li class="ddm-block" status-id="2" ng-click="changeTCStatus(tc, 2)"><i class="icon-exclamation-sign"></i> Blocked </li>
+                    <li class="ddm-failed" status-id="3" ng-click="changeTCStatus(tc, 3)"><i class="icon-thumbs-down"></i> Fail </li>
+                    <li class="ddm-pass" status-id="4" ng-click="changeTCStatus(tc, 4)"><i class="icon-thumbs-up"></i> Pass </li>
                 </ul>
             </div>
         </div>

@@ -18,20 +18,14 @@ tcmModule.controller('LoginCtrl',
 
                     $cookieStore.put('user', res);
 
-                    tcm_model.getProjects(function(data){
-                            $scope.loginFormStyle = {height: "310"};
-                            $scope.loginErrorMessage = 'User authenticated, Please select a project';
-                            $scope.alertClass = 'login-alert alert alert-success';
+                    $scope.loginFormStyle = {height: "310"};
+                    $scope.loginErrorMessage = 'User authenticated, Please select a project';
+                    $scope.alertClass = 'login-alert alert alert-success';
+                    $scope.displayButton = false;
+                    $scope.displayProjects = true;
 
-                            $scope.projects = data;
-                            $scope.displayButton = false;
-                            $scope.displayProjects = true;
-                        },
-                        function(){
-                            $scope.loginErrorMessage ='Error retrieving projects';
-                            $scope.alertClass = 'login-alert alert alert-danger';
-                        }
-                    );
+                    $scope.$broadcast('loadProjectSelect', "kk");
+
                 },
                 function(err) {
                     $scope.loginErrorMessage ='Authentication error';
@@ -44,6 +38,12 @@ tcmModule.controller('LoginCtrl',
             if(Auth.isLoggedIn){
                 $location.path('/manager/' + $scope.project.id);
             }
+        };
+
+        $scope.loginOnEnter = function(event){
+
+            //console.log(event);
+
         };
 
     }]);

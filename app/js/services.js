@@ -68,6 +68,15 @@ tcmModule.factory('tcm_model', ['$http', '$routeParams', 'Auth', function($http,
             },
             getExecutedTestCases: function(featureId, success, error){
                 $http.get( basePath + 'api/releases/0/iterations/0/features/' + featureId + '/executedtestcases?apiKey='+Auth.user.apiKey+'&projectId='+$routeParams.projectId).success(success).error(error);
-            }
+            },
+
+           getProjectConfiguration: function(success, error){
+               $http.get( basePath + 'getProjectConfig?apiKey='+Auth.user.apiKey+'&projectId='+$routeParams.projectId).success(success).error(error);
+           },
+           updateTCStatus: function(tc, newStatus, success, error){
+               $http.put( basePath + 'api/releases/1/iterations/0/features/0/testcases/' + tc.tcId + '/status?apiKey='+Auth.user.apiKey+'&projectId='+$routeParams.projectId, newStatus).success(success).error(error);
+
+           }
+
         };
     }]);

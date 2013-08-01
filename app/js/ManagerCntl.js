@@ -170,10 +170,20 @@ function ManagerCntl($scope, $routeParams, $http, $rootScope, tcm_model) {
         $scope.editorWraperStyle = {width: "481px"};
         $scope.editorActiveMode = 1;
         $scope.displayEditor = true;
+    };
+
+    $scope.changeTCStatus = function(tc, statusId){
+        var newStatus={
+            statusId:statusId,
+            actualResult:''
+        };
+
+        tcm_model.updateTCStatus(tc, newStatus, function(){
+            //update all statuses
+            tc.statusId = statusId;
+        }, function(){});
+
     }
-
-
-
 
     $scope.releasesView = 'app/partials/releases_iterations.html';
     $scope.testCasesView = '';
