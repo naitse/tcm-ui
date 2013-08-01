@@ -10,7 +10,7 @@ pre{white-space:pre-wrap;white-space:-moz-pre-wrap;white-space:-pre-wrap;white-s
 .desc-header{height:28px;border-bottom:1px solid #ccc;background:#f7f7f7;font-weight:bold;overflow:hidden}
 .desc-expander{background:url("images/item_open.png");height:14px;width:14px;margin-left:5px;margin-top:7px}
 .desc-collapser{background:url("images/item_close.png");height:14px;width:14px;margin-left:5px;margin-top:7px}
-.desc-header-text{font-size:12;top:6px;position:absolute;margin-right:56px;margin-left: 4px;}
+.desc-header-text{font-size:12;top:6px;margin-right:56px;margin-left: 4px;}
 .ds{display:inline-block}
 #desc-wrapper{height:100px}
 #desc-container{overflow-y:auto;box-shadow:0 1px 12px 0 black inset;height:80px;margin:0;clear:both;-webkit-box-shadow:rgba(69,69,69,0.667) 0 0 6px inset;-moz-box-shadow:rgba(69,69,69,0.667) 0 0 6px inset;box-shadow:rgba(69,69,69,0.667) 0 0 6px inset;background:#f7f8f9;padding:10px;font-size:12}
@@ -135,14 +135,14 @@ font-weight: bold;
 .item.active:hover{border: 1px solid #d2e9fa;box-shadow: #d2e9fa 0 0 50px inset;-moz-box-shadow: #d2e9fa 0 0 50px inset;-webkit-box-shadow: #d2e9fa 0 0 50px inset;}
 .icon-permalink {background-image: url('images/icon-permalink.png')!important;background-position: 0!important;}
 #tcViewer #add-feature, #tcViewer .add-tc{  width: 21px;height: 19px; float: right;margin-right: 4px;margin-top: -1px;cursor: pointer;}
-#tcViewer .add-tc{position: absolute;right: 3px;top: 6px;}
+#tcViewer .add-tc{right: 3px;top: 6px;}
 #tcViewer #add-feature .icon-plus-sign,#tcViewer .add-tc .icon-plus-sign {width: 21px;height: 19px;background-size: 730px;background-position: 0px -151px;}
 #tcViewer #filter-completed-features {  width: 21px;height: 19px; float: right;margin-right: 4px;margin-top: -1px;cursor: pointer;}
 #tcViewer #filter-completed-features .icon-filter{width: 21px;height: 19px;background-size: 730px;background-position: -636px -225px;}
 .select-all-tc{	width: 21px;height: 19px;float: left;margin-left: 16px;margin-top: -1px;cursor: pointer;}
 #tcViewer .icon-align-justify{width: 21px;height: 19px;background-size: 730px;background-position: -524px -77px;}
 .icon-copy {	background-image: url('images/copy.png')!important;	background-position: 0px 0px;background-size: 100%;width: 20px;height: 20px;}
-#tcViewer .copy-tc {	position:absolute;	right: 33px;	top: 4px;	cursor:pointer;}
+#tcViewer .copy-tc {	right: 33px;	top: 4px;	cursor:pointer;}
 #tcViewer #copy-tc-modal {	width:50% !important;	left: 44% !important;	height: 500px;}#tcViewer #copy-tc-modal .modal-body{	height: 370;}#tcViewer #copy-tc-modal .panel{	width:49%;	border:1px solid;	float: left;height: 346px;}.multi-active{border: 1px solid #d2e9fa;box-shadow: #d2e9fa 0 0 50px inset;-moz-box-shadow: #d2e9fa 0 0 50px inset;-webkit-box-shadow: #d2e9fa 0 0 50px inset;}.panel#feature-cont {	overflow: hidden;	overflow-y:auto; }#release_selector_chzn {	right: 25px;position: absolute;}.panels {	margin-top: 30px;}#copy-tc-modal .modal-body {	overflow: hidden;}
 .feature .icon-user{position: absolute !important;right: 0px !important;bottom: 2px !important;z-index: 999 !important; left:inherit !important;top: inherit !important;visibility:hidden;}
 .suite .icon-user{position: absolute !important;right: 0px !important;bottom: 2px !important;z-index: 999 !important; left:inherit !important;top: inherit !important;visibility:hidden;}

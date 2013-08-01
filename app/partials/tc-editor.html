@@ -1,6 +1,6 @@
-<div id="tc-mod" style="">
+<div id="tc-mod" ng-show='displayEditor'>
     <div class="modal-header">
-        <h5 class="rp-title"></h5>
+        <h5 class="rp-title">{{editorTitle}}</h5>
     </div>
     <div class="modal-body">
         <div class="tc-fields">
@@ -24,7 +24,7 @@
         </div>
         <label class="checkbox inline" style="float:left;margin-left:5px;">
             <input type="checkbox" class="proposed" ng-checked={{selectedTC.proposed}}/> Save as proposed</label>
-        <a class="btn cancel"  >Cancel</a>
-        <a class="btn btn-primary save" data-complete-text="Update" data-loading-text="working..." ng-click="save()" >{{mode}}</a>
+        <a class="btn cancel" ng-click="cancelEdit()" >Cancel</a>
+        <a class="btn btn-primary save" data-complete-text="Update" data-loading-text="working..." ng-click="save()" >{{btnText}}</a>
     </div>
 </div>

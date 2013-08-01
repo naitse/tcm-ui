@@ -1,35 +1,33 @@
 
 
-function ManagerCntl($scope, $routeParams, $http, $rootScope) {
-    console.log('ManagerCntl');
-    $scope.basePath = "http://tcm-backend-qa.cloudhub.io/"
-    $scope.apiKey = "b79f712c-f6ec-4407-ab6d-ec9b3fc50af6";
+function ManagerCntl($scope, $routeParams, $http, $rootScope, tcm_model) {
+
+    $scope.showAddTestCase = false;
+    $scope.showCopyTestCase = false;
+    $scope.leftWrapperStyle = {width: "100%", height: "96.30996309963099%"};
 
     $scope.getReleases = function() {
-        $http({method: 'GET', url: $scope.basePath + 'api/releases_iterations?apiKey='+$scope.apiKey+'&projectId='+$routeParams.projectId }).
-            success(function(data, status, headers, config) {
 
-                for(var i = 0; i< data.length;i++){
-                    data[i].display = 'none';
-                }
+        tcm_model.getReleases(function(data, status, headers, config) {
 
-                $scope.releases = data;
-                $scope.releasesTitle = "Releases";
-                $scope.releasesView = 'app/partials/releases_iterations.html';
-            }).
-            error(function(data, status, headers, config) {
-                console.log("Request failed");
-                $scope.releasesView = 'app/partials/releases_iterations.html';
-            });
+            for(var i = 0; i< data.length;i++){
+                data[i].display = 'none';
+            }
 
+            $scope.releases = data;
+            $scope.releasesTitle = "Releases";
+            $scope.releasesView = 'app/partials/releases_iterations.html';
+
+        }, function(data, status, headers, config) {
+            console.log("Request failed");
+            $scope.releasesView = 'app/partials/releases_iterations.html';
+        });
     };
 
-    $scope.getExecutedTestCases = function(releaseId, iterationId, featureId){
+    $scope.getExecutedTestCases = function(featureId){
 
-        $http({method: 'GET', url: $scope.basePath + 'api/releases/67/iterations/59/features/' + featureId + '/executedtestcases?apiKey='+$scope.apiKey+'&projectId='+$routeParams.projectId }).
-            success(function(data, status, headers, config) {
-
-
+        tcm_model.getExecutedTestCases(featureId,
+            function(data, status, headers, config) {
                 for(var i = 0; i< $scope.features.length;i++){
 
                     if($scope.features[i].featureId == featureId){
@@ -50,39 +48,39 @@ function ManagerCntl($scope, $routeParams, $http, $rootScope) {
                         }
                     }
                 }
-            }).
-            error(function(data, status, headers, config) {
+            },
+            function(data, status, headers, config) {
                 console.log("Request failed");
-            });
+            }
+        );
     };
 
     $scope.showFeatures = function(release, iteration){
-        $http({method: 'GET', url: $scope.basePath + 'api/releases/'+release.id+'/iterations/'+iteration.id+'/features?apiKey='+$scope.apiKey+'&projectId='+$routeParams.projectId }).
-            success(function(data, status, headers, config) {
+        tcm_model.getFeatures(release, iteration,
+            function(data, status, headers, config) {
 
-                $scope.backButton = 'inline';
+
+                $scope.backButton = true;
                 $scope.features = data;
                 $scope.releasesView = 'app/partials/features.html';
                 $scope.releasesTitle = release.name + '/' + iteration.name;
 
                 for(var i=0; i < data.length; i++){
-                    $scope.getExecutedTestCases(release.id, iteration.id, data[i].featureId);
+                    $scope.getExecutedTestCases(data[i].featureId);
                 }
-
-
-
-            }).
-            error(function(data, status, headers, config) {
+            },
+            function(data, status, headers, config) {
                 console.log("Request failed");
                 $scope.releasesView = 'app/partials/releases_iterations.html';
-            });
+            }
+        );
 
     };
 
 
     $scope.getTestCases = function(featureId){
-        $http({method: 'GET', url: $scope.basePath + 'api/releases/1/iterations/0/features/'+featureId+'/testcases?apiKey='+$scope.apiKey+'&projectId='+$routeParams.projectId }).
-            success(function(data, status, headers, config) {
+
+        tcm_model.getTestCases(featureId, function(data, status, headers, config) {
 
                 $scope.feature_testcases = data;
                 for(var i=0; i< $scope.feature_testcases.length; i++){
@@ -117,8 +115,7 @@ function ManagerCntl($scope, $routeParams, $http, $rootScope) {
                 }
 
                 $scope.testCasesView = 'app/partials/testcases.html';
-            }).
-            error(function(data, status, headers, config) {
+            },function(data, status, headers, config) {
                 console.log("Request failed");
                 $scope.testCasesView = '';
             });
@@ -126,9 +123,11 @@ function ManagerCntl($scope, $routeParams, $http, $rootScope) {
     };
 
     $scope.showFeatureDetails = function(feature){
+        $scope.showAddTestCase = true;
+        $scope.showCopyTestCase = true;
         $scope.selectedFeature = feature;
-        $scope.featuresDetailsView = 'app/partials/feature_details.html';
-
+        $scope.displayEditor = false;
+        $scope.editorActiveMode = 1;
         $scope.getTestCases(feature.featureId);
     };
 
@@ -153,15 +152,35 @@ function ManagerCntl($scope, $routeParams, $http, $rootScope) {
     };
 
     $scope.selectTC = function(tc){
+        $scope.leftWrapperStyle = {width: "65%"};
+        $scope.editorWraperStyle = {width: "481px"};
+        $scope.displayEditor = true;
+        $scope.editorActiveMode = 2;
         $scope.selectedTC = tc;
     };
 
+    $scope.btnNewTestCase = function(){
+
+        $scope.selectedTC = {
+            name:"",
+            description: "",
+            proposed: 0
+        };
+        $scope.leftWrapperStyle = {width: "65%"};
+        $scope.editorWraperStyle = {width: "481px"};
+        $scope.editorActiveMode = 1;
+        $scope.displayEditor = true;
+    }
+
+
+
+
     $scope.releasesView = 'app/partials/releases_iterations.html';
     $scope.testCasesView = '';
-    $scope.backButton = 'none';
+    $scope.backButton = false;
     $scope.releasesTitle = "Releases";
-    $scope.selectedTC = null;
+
     $scope.getReleases();
 
 }
-ManagerCntl.$inject = ['$scope', '$routeParams', '$http', '$rootScope'];
+ManagerCntl.$inject = ['$scope', '$routeParams', '$http', '$rootScope', 'tcm_model'];

@@ -105,13 +105,15 @@ box-shadow: inherit;
 
             <ul id="user-menu" class="nav pull-right">
                 <li id="fat-menu" class="dropdown">
-                    <a href="#" id="usrdrop" role="button" class="dropdown-toggle" data-toggle="dropdown"><span id="username"></span> <b class="caret"></b></a>
+                    <a id="usrdrop" role="button" class="dropdown-toggle" data-toggle="dropdown">
+                        <span id="username">{{userName}}</span> <b class="caret"></b>
+                    </a>
                     <ul class="dropdown-menu" role="menu" aria-labelledby="drop3">
                         <li role="presentation"><a role="menuitem" tabindex="-1" id="switchProject" >Switch Project</a></li>
                         <li role="presentation"><a role="menuitem" tabindex="-1" href="#project">Project Settings</a></li>
                         <li role="presentation"><a role="menuitem" tabindex="-1" href="#plugins-settings">Project Plugins Settings</a></li>
                         <li role="presentation" class="divider"></li>
-                        <li role="presentation"><a role="menuitem" id="logout" tabindex="-1" href="login.html">Log out</a></li>
+                        <li role="presentation"><a role="menuitem" id="logout" tabindex="-1" ng-click="logout()">Log out</a></li>
                     </ul>
                 </li>
             </ul>

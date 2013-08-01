@@ -1,0 +1,49 @@
+tcmModule.controller('LoginCtrl',
+    ['$rootScope', '$scope', '$location', '$window', 'Auth', '$cookieStore', 'tcm_model', function($rootScope, $scope, $location, $window, Auth, $cookieStore, tcm_model) {
+        $scope.loginErrorMessage = "";
+        $scope.alertClass = "login-alert alert hide";
+        $scope.displayButton = true;
+        $scope.displayProjects = false;
+        $scope.projects = null;
+        $scope.loginFormStyle ="";
+
+        $scope.login = function() {
+            Auth.login({
+                    username: $scope.username,
+                    password: $scope.password,
+                    rememberme: $scope.rememberme,
+                    role: Auth.userRoles.user //so far all roles are user or anon
+                },
+                function(res) {
+
+                    $cookieStore.put('user', res);
+
+                    tcm_model.getProjects(function(data){
+                            $scope.loginFormStyle = {height: "310"};
+                            $scope.loginErrorMessage = 'User authenticated, Please select a project';
+                            $scope.alertClass = 'login-alert alert alert-success';
+
+                            $scope.projects = data;
+                            $scope.displayButton = false;
+                            $scope.displayProjects = true;
+                        },
+                        function(){
+                            $scope.loginErrorMessage ='Error retrieving projects';
+                            $scope.alertClass = 'login-alert alert alert-danger';
+                        }
+                    );
+                },
+                function(err) {
+                    $scope.loginErrorMessage ='Authentication error';
+                    $scope.alertClass = 'login-alert alert alert-danger';
+                    $rootScope.error = "Failed to login";
+                });
+        };
+
+        $scope.continueToManager = function(){
+            if(Auth.isLoggedIn){
+                $location.path('/manager/' + $scope.project.id);
+            }
+        };
+
+    }]);

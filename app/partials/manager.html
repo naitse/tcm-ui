@@ -43,56 +43,82 @@
 
     .item-control-buttons .wrapper div:hover {border:1px solid;}
 </style>
+<div class='tcm-top-menu-container' ng-controller="TopMenuCntl">
+    <ng-include src="topmenu"></ng-include>
+</div>
+<div class='tcm-container' >
+    <div id="pannel-wrapper">
+        <div id="tcViewer">
+            <div class="left-center-panel" ng-style="leftWrapperStyle">
+                <div id="lp-wrapper">
+                    <div class='left-pannel round-corner-all'>
+                        <div class="toolbar iteration-holder-name">
+                            <div id="holder"class="release-holder">
+                                <a href="#manager/{{params.projectId}}"><i class=" icon-chevron-left icon-white" ng-show="backButton"></i></a>
+                                <div class="iteration-holder-name">{{releasesTitle}}</div>
+                            </div>
 
+                        </div>
+                        <div id="releases-container" >
+                            <ng-include src="releasesView"></ng-include>
+                        </div>
+                    </div>
+                </div>
+                <div class='right-pannel round-corner-all' style="height: 100%; padding-bottom: 129px;">
+                    <div id="description">
+                        <div class="desc-header">
+                            <div id="desc-expander" class="detailsIcon ds detailsOpen #tcViewer desc-collapser"></div>
+                            <div type="button" title="Add new Item" class="add-tc" ng-show="showAddTestCase" ng-click="btnNewTestCase()">
+                                <i class="icon-plus-sign"></i>
+                            </div>
+                            <div type="button" title="Clone tcs" class="copy-tc" ng-show="showCopyTestCase">
+                                <i class="icon-copy"></i>
+                            </div>
 
-<div id="pannel-wrapper">
-    <div id="tcViewer">
-        <div class="left-center-panel" style="width: 60%;">
-            <div id="lp-wrapper">
-                <div class='left-pannel round-corner-all'>
-                    <div class="toolbar iteration-holder-name">
-                        <div id="holder"class="release-holder">
-                            <a href="#manager/{{params.projectId}}"><i class=" icon-chevron-left icon-white" style="display: {{backButton}}"></i></a>
-                            <div class="iteration-holder-name">{{releasesTitle}}</div>
+                            <div class="desc-header-text ds">
+                                <div class="jira-key" href="http://www.mulesoft.org/jira/browse/{{selectedFeature.jiraKey}}">{{selectedFeature.jiraKey}} - {{selectedFeature.featureName}}</div>
+                            </div>
                         </div>
 
+                        <div id="desc-wrapper" style="width: 100%; height: 100px;" class="ui-resizable">
+                            <pre id="desc-container" class="ui-resizable" style="width: 98.10964083175803%; height: 80px;">{{selectedFeature.featureDescription}}
+                            </pre>
+                            <div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div>
+                        </div>
                     </div>
-                    <div id="releases-container" >
-                        <ng-include src="releasesView"></ng-include>
+                    <div id="tc-container" class="round-corner-all">
+                        <ng-include src="testCasesView"></ng-include>
                     </div>
                 </div>
             </div>
-            <div class='right-pannel round-corner-all' style="height: 100%; padding-bottom: 129px;">
-                <ng-include src="featuresDetailsView"></ng-include>
-            </div>
-        </div>
-        <div id="rp-wrapper" style="width: 500;">
-            <tc-editor selected="{{selectedTC}}"></tc-editor>
-            <div id="copy-tc-mod" style="display:none;">
+            <div id="rp-wrapper" ng-style="editorWraperStyle">
+                <tc-editor selected="{{selectedTC}}"></tc-editor>
+                <div id="copy-tc-mod" style="display:none;">
 
-            </div>
-        </div>
-
-
-        <div id="new-feature-modal" class="modal" style="display:none;">
-            <div class="modal-header">
-                <h4 class="feature-title">Create Item</h4>
-            </div>
-            <div class="modal-body">
-                <div class="feature-fields">
-                    <h7>Title:</h7>
-                    <input class="new-feature-title" type="text" style=" width: 100%; "></input>
-                    <br/>
-                    <h7>Description:</h7>
-                    <textarea class="new-feature-desc" style=" width: 100%; height:200px; resize: none;"></textarea>
                 </div>
             </div>
-            <div class="modal-footer">
-                <div class="alert alert-error hide">
-                    There was an error, please try again...
+
+
+            <div id="new-feature-modal" class="modal" style="display:none;">
+                <div class="modal-header">
+                    <h4 class="feature-title">Create Item</h4>
                 </div>
-                <a href="#" class="btn cancel"  >Close</a>
-                <a href="#" class="btn btn-primary save-feature" data-loading-text="working...">Add</a>
+                <div class="modal-body">
+                    <div class="feature-fields">
+                        <h7>Title:</h7>
+                        <input class="new-feature-title" type="text" style=" width: 100%; "></input>
+                        <br/>
+                        <h7>Description:</h7>
+                        <textarea class="new-feature-desc" style=" width: 100%; height:200px; resize: none;"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="alert alert-error hide">
+                        There was an error, please try again...
+                    </div>
+                    <a href="#" class="btn cancel"  >Close</a>
+                    <a href="#" class="btn btn-primary save-feature" data-loading-text="working...">Add</a>
+                </div>
             </div>
         </div>
     </div>

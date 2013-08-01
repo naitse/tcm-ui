@@ -2,10 +2,10 @@
     <div class="feature-actions">
         <div class="feature-buttons">
             <input type="text" id="feature-filter" ng-model="filter"/>{{filter}}
-            <div id="add-feature" type="button" title="Add new Item" class="" disabled="true">
+            <div id="add-feature" type="button" title="Add new Item" class="" ng-click="btnNewTestCase()">
                 <i class="icon-plus-sign icon-white"></i>
             </div>
-            <div id="filter-completed-features" title="Filter completed features" type="button" class="" data-toggle="button" disabled="true">
+            <div id="filter-completed-features" title="Filter completed features" type="button" class="" data-toggle="button">
                 <i class="icon-filter icon-white"></i>
             </div>
         </div>

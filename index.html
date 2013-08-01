@@ -7,8 +7,17 @@
 
     <title>Test Case Manager</title>
 
-    <script src="http://code.angularjs.org/1.0.6/angular.min.js"></script>
+    <script src="//code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="js/libs/jquery.base64/jquery.base64.js"></script>
+    <script src="js/libs/chosen/chosen.jquery.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0-rc1/js/bootstrap.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"></script>
+    <script src="http://code.angularjs.org/1.0.7/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular-cookies.js"></script>
+    <script src="app/js/routingConfig.js"></script>
     <script src="app/js/app.js"></script>
+    <script src="app/js/services.js"></script>
+    <script src="app/js/LoginCtrl.js"></script>
     <script src="app/js/ManagerCntl.js"></script>
     <script src="app/js/TopMenuCntl.js"></script>
     <script src="app/js/tcEditor.js"></script>
@@ -16,6 +25,8 @@
 
     <link href="js/libs/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
     <link rel="stylesheet" type="text/css" href="assets/tcm2.css" />
+    <link href="js/libs/chosen/chosen.css" rel="stylesheet" />
+    <link href="assets/log.css" rel="stylesheet">
 
     <!--<link href="js/libs/chosen/chosen.css" rel="stylesheet" />
     <link href="assets/jqui/jquery-ui-1.10.2.custom.min.css" rel="stylesheet" />
@@ -24,13 +35,7 @@
     <link rel="stylesheet" type="text/css" media="screen" href="js/libs/jquery.grid/jquery.handsontable.full.css" />
     <link href="js/libs/gritter/css/jquery.gritter.css"rel="stylesheet" type="text/css" />-->
 </head>
-<body>
-    <div class='tcm-top-menu-container' ng-controller="TopMenuCntl">
-        <ng-include src="topmenu"></ng-include>
-    </div>
-  <div class='tcm-container' ng-view>
-
-  </div>
+<body class="val-tooltip login-signup" ng-view>
     <!--  <script>
           (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
               (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),

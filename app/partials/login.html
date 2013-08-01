@@ -1,0 +1,113 @@
+<style  type="text/css">
+#login-form input:focus {
+border-color:inherit !important;
+box-shadow: inherit !important;
+-moz-box-shadow: inherit !important;
+-webkit-box-shadow: inherit !important;
+}
+
+.inputs {
+position: relative;
+border: 1px solid #ccc;
+width: 70%;
+margin-left: auto;
+margin-right: auto;
+padding-left: 5px;
+}
+
+.login-alert {
+text-align: center;
+width: 50%;
+margin-left: auto;
+margin-right: auto;
+}
+
+#login-button {
+display: table;
+margin-left: auto;
+margin-right: auto;
+}
+
+#project-button {
+margin-left: -23px;
+position: relative;
+top: 20px;
+}
+
+#projects_dd_chzn {
+margin-left: auto;
+margin-right: auto;
+display: table;
+}
+
+#project-button {
+display: table;
+margin-left: auto;
+margin-right: auto;
+}
+
+.login #login-form input[type="text"],
+.login #login-form input[type="password"] {
+width: 22em;
+height: 1em;
+}
+
+#login-block {
+background: white;
+padding: 5px 0px 5px 0px;
+width: 484px;
+}
+#login-block h2 {
+margin-left: 25px;
+}
+
+.round-corner-all {
+-moz-border-radius: 6px;
+-webkit-border-radius: 6px;
+-khtml-border-radius: 6px;
+border-radius: 6px;
+}
+#login-form {
+margin-top: 10px;
+}
+</style>
+<div >
+    <div class="page-container">
+        <div class="main-container">
+            <div class="header">
+                <h1 class="logo"><a href="#">Test Cases Manager</a></h1>
+            </div>
+            <div id="ion-main" class="login">
+                <div id="login-block" class="round-corner-all" ng-style="loginFormStyle">
+                    <h2>Login</h2>
+                    <form id="login-form" method="post" class="form-horizontal" >
+                        <div class="control-group">
+
+                            <div class="inputs" style="position: relative">
+                                <div class="icon-user icon-dark for-input"></div>
+                                <input id="username" class="ember-view ember-text-field" placeholder="Username" type="text" value="" style="border:none;" ng-model="username">
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <div class="inputs" style="position: relative">
+                                <div class="icon-asterisk icon-dark for-input"></div>
+                                <input id="password" class="ember-view ember-text-field" placeholder="Password" type="password" value="" style="border:none;" ng-model="password">
+                            </div>
+                        </div>
+                        <div ng-class="alertClass">{{loginErrorMessage}}</div>
+                        <input id="login-button" type="button" class="btn btn-primary " data-loading-text="Logging in..." value="Login" ng-click="login()" ng-show="displayButton"/>
+                    </form>
+                    <div ng-show="displayProjects" id="projectsContainer" class="form-horizontal">
+
+                        <select id="projects_dd" data-placeholder="Choose Project" chosen="projects" ng-model="project" ng-options="p.name for p in projects">
+
+                        </select>
+                        <br />
+                        <input id="project-button" type="button" class="btn btn-primary" value="Continue" ng-click="continueToManager()"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
