@@ -75,30 +75,13 @@ box-shadow: inherit;
         <div class="container" style="width: auto;">
 
             <ul class="nav" role="navigation">
-                <li class="dropdown">
-                    <a href="#" role="button" class="dropdown-toggle brand" data-toggle="dropdown">TCM <b class="caret"></b></a>
+                <li class="dropdown" ng-repeat="menu in menuList">
+                    <a href="#" role="button" class="dropdown-toggle brand" ng-class="menu.active" data-toggle="dropdown">{{menu.name}} <b class="caret"></b></a>
                     <ul class="dropdown-menu pull-left" role="menu" aria-labelledby="drop2">
-                        <li role="presentation">
-                            <a id="link-iterations" role="menuitem" tabindex="-1" href="#/manager">Iterations</a>
+                        <li role="presentation" ng-repeat="submenu in menu.subMenuList">
+                            <a id="link-iterations" role="menuitem" tabindex="-1" ng-class="submenu.active" href="{{submenu.link}}">{{submenu.name}}</a>
                         </li>
-                        <li role="presentation">
-                            <a id="link-suites" role="menuitem" tabindex="-1" href="#/suites">Suites</a>
-                        </li>
-                    </ul>
-                </li>
-                <li class="dropdown">
-                    <a href="#" role="button" class="dropdown-toggle" data-toggle="dropdown">Metrics <b class="caret"></b></a>
-                    <ul class="dropdown-menu pull-right" role="menu" aria-labelledby="drop2">
-                        <li role="presentation"><a id="link-plan" role="menuitem" tabindex="-1" href="#/plan">Test Plan</a></li>
-                        <li role="presentation"><a id="link-rls-metrics" role="menuitem" tabindex="-1" href="#/rlsmetrics">Release</a></li>
-                        <li role="presentation"><a id="link-metrics" role="menuitem" tabindex="-1" href="#/metrics">Iteration</a></li>
-                    </ul>
-                </li>
-                <li class="dropdown" id="pluginMenu">
-                    <a href="#" role="button" class="dropdown-toggle" data-toggle="dropdown">Plugins <b class="caret"></b></a>
-                    <ul class="dropdown-menu pull-right" role="menu" aria-labelledby="drop2">
-                        <li role="presentation"><a id="link-sync" role="menuitem" tabindex="-1" href="#/sync" style="display: none;">JIRA Sync</a></li>
-                        <li role="presentation"><a id="link-export-import" role="menuitem" tabindex="-1" href="#/import-export" style="display: none;">Import/Export</a></li>
+
                     </ul>
                 </li>
             </ul>
@@ -109,7 +92,7 @@ box-shadow: inherit;
                         <span id="username">{{userName}}</span> <b class="caret"></b>
                     </a>
                     <ul class="dropdown-menu" role="menu" aria-labelledby="drop3">
-                        <li role="presentation"><a role="menuitem" tabindex="-1" id="switchProject" data-toggle="modal" data-target="#modal-switchProject">Switch Project</a></li>
+                        <li role="presentation"><a role="menuitem" tabindex="-1" id="switchProject" data-toggle="modal" data-target="#modal-switchProject" ng-click="switchProjectModal()">Switch Project</a></li>
                         <li role="presentation"><a role="menuitem" tabindex="-1" href="#project">Project Settings</a></li>
                         <li role="presentation"><a role="menuitem" tabindex="-1" href="#plugins-settings">Project Plugins Settings</a></li>
                         <li role="presentation" class="divider"></li>
@@ -126,7 +109,7 @@ box-shadow: inherit;
             <h3>Switch Project</h3>
         </div>
         <div class="modal-body" style="overflow: visible">
-            <select id="modal-switch-projects_dd" />
+            <project-select name="modal-switch-projects_dd" > </project-select>
         </div>
         <div class="modal-footer">
             <a class="btn" data-dismiss="modal" aria-hidden="true">Close</a>
