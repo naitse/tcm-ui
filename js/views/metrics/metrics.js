@@ -30,7 +30,7 @@ define(function(require){
                  var template = $(planTemplate)
 
                 if (typeof iterIdR != 'undefined'){
-                    $(template).find('#metrics-controls').hide();
+                    // $(template).find('#metrics-controls').hide();
                     $(template).find('.permalink').remove();
                     $("#pannel-wrapper").append(template);
                     iterId = iterIdR
