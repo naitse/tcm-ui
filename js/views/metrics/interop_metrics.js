@@ -23,6 +23,8 @@ define(function(require){
     var iterationsArray = [];
     var rlsFeatures = false;
     var rlsGlobalGraph = true;
+    var reportTeamId = '';
+    var reportStatusId = '';
 
 
     var InteropMetricsView = {
@@ -112,6 +114,7 @@ define(function(require){
                                                 $('#InteropMetrics a[href=#xteams]').css("visibility","visible");
                                             }
                                             $('#InteropMetrics .ioteams ul').children().remove();
+                                            $('#InteropMetrics .repioteams ul').children().remove();
                                             $(this.iterations).each(function(){
 
                                                 iterationsArray.push(this);
@@ -122,13 +125,50 @@ define(function(require){
                                                     if(teamLoaded != iterId){
                                                         InteropMetricsView.loadIterMetrics(0,iterId);
                                                     }
-
+                                                    
+                                                    $(this).parents('.ioteams').find('.dropdown-toggle').text($(this).text()).append('<b class="caret"></b>')
+                                                    
                                                     $('#xteams .btn-pill').css('visibility','visible');
                                                 
 
                                                 })
                                                 $('#InteropMetrics .ioteams ul').append(node)
+
+
+                                                
+
+                                                var node = $('<li class=""><a href="" data-toggle="tab" iterid="'+this.id+'">'+this.name+'</a></li>').click(function(){
+
+                                                    var self = this;
+                                                    $('.team').each(function(){
+                                                        if($(this).attr('id') != $(self).find('a').attr('iterid')){
+                                                            $(this).hide();
+                                                        }else{
+                                                            $(this).show();
+                                                            reportTeamId = $(self).find('a').attr('iterid')
+                                                            $(self).parents('.repioteams').find('.dropdown-toggle').text($(self).text()).append('<b class="caret"></b>')
+                                                        }
+                                                    })
+                                                
+
+                                                })
+                                                $('#InteropMetrics .repioteams ul').append(node)
+
+
                                             })
+
+                                            var repnode = $('<li class=""><a href="" iterid="all" >All Teams</a></li>').click(function(e){
+                                                e.preventDefault();
+                                                var self = this;
+                                                $('.team').each(function(){
+                                                        $(this).show();
+                                                        reportTeamId = $(self).find('a').attr('iterid')
+                                                        $(self).parents('.repioteams').find('.dropdown-toggle').text($(self).text()).append('<b class="caret"></b>')
+                                                })
+
+                                            })
+                                            $('#InteropMetrics .repioteams ul').prepend(repnode)
+
                                         }
                                     })
                                 })
@@ -403,6 +443,37 @@ define(function(require){
 
     function attachEvents(){
 
+
+        $('#InteropMetrics .repstates .dropdown-menu li a').click(function(e){
+            e.preventDefault();
+            var self = this;
+            reportStatusId = $(self).attr('statusid')
+            $(self).parents('.repstates').find('.dropdown-toggle').text($(self).text()).append('<b class="caret"></b>')
+
+            $('.team-feature').each(function(){
+
+                $(this).find('.report-tc-status-inner').each(function(){
+                    if(reportStatusId != 'all'){
+                        if($(this).attr('statusid') != $(self).attr('statusid')){
+                            $(this).parents('.report-tc').hide();
+                        }else{
+                            $(this).parents('.report-tc').show();
+                        }
+                    }else if (reportStatusId == 'all'){
+                        $(this).parents('.report-tc').show();
+                    }
+                })
+
+                if($(this).find('.report-feature-tcs').find('.report-tc:visible').size() == 0){
+                    $(this).find('.report-feature-tcs').append('<div class="nofilterresults"> No TCs matching filtering criteria</div>')
+                }else{
+                    $(this).find('.report-feature-tcs').find('.nofilterresults').remove()
+                }
+
+            })
+
+        })
+
         $('#interopTabs a').click(function (e) {
           e.preventDefault();
           $(this).tab('show');
@@ -620,35 +691,86 @@ function showPillRefresh(parent){
 
 
 
-                                        var tc = $('<div class="report-tc"></div>').append('<div class="report-tc-name">'+this.name+'</div><div class="report-tc-priority">P'+this.priority+'</div><div class="report-tc-status"><div class="report-tc-status-inner label '+statusClass+'">'+this.statusName+'</div></div>');
+                                        var tc = $('<div class="report-tc"></div>').append('<div class="report-tc-name">'+this.name+'</div><div class="report-tc-priority">P'+this.priority+'</div><div class="report-tc-status"><div statusid="'+this.statusId+'" class="report-tc-status-inner label '+statusClass+'">'+this.statusName+'</div></div>');
                                         $(tcs).append(tc)
                                         
                                      })
+                                    
+                                    if(reportStatusId != ''){
+                                        refilterTCS();
+                                    }
+
                                 })
                                 $(feature).append(tcs);
                             })
 
                             $(team).append(feature)
+                            
                     })
                 })
 
                 $('#report .teams').append(team);
 
+            })
+            
+            if(reportTeamId != ''){
+                refilter()
+            }
 
+    }
+
+    function refilter(){
+        if (reportTeamId != '' && reportTeamId != 'all'){
+            $('.team').each(function(){
+                if($(this).attr('id') != reportTeamId){
+                    $(this).hide();
+                }else{
+                    $(this).show();
+                }
+                if($(this).find('.report-feature-tcs').find('.report-tc:visible').size() == 0){
+                    $(this).find('.report-feature-tcs').append('<div class="nofilterresults"> No TCs matching filtering criteria</div>')
+                }else{
+                    $(this).find('.report-feature-tcs').find('.nofilterresults').remove()
+                }
+            })
+        }else if(reportTeamId = 'all'){
+                $('.team').each(function(){
+                    $(this).show();
+            })
+        }
+
+    }
+
+    function refilterTCS(){
+
+            $('.team-feature').each(function(){
+
+
+                    $(this).find('.report-tc-status-inner').each(function(){
+                        if(reportStatusId != 'all' && reportStatusId != ''){
+                            if($(this).attr('statusid') != reportStatusId){
+                                $(this).parents('.report-tc').hide();
+                            }else{
+                                $(this).parents('.report-tc').show();
+                            }
+                        }else if (reportStatusId == 'all'){
+                            $(this).parents('.report-tc').show();
+                        }
+                    })
+
+                    if($(this).find('.report-feature-tcs').find('.report-tc:visible').size() == 0){
+                        if($(this).find('.report-feature-tcs').find('.nofilterresults').size() == 0){
+                            $(this).find('.report-feature-tcs').append('<div class="nofilterresults"> No TCs matching filtering criteria</div>')
+                        }
+                    }else{
+                        $(this).find('.report-feature-tcs').find('.nofilterresults').remove()
+                    }
 
             })
 
-
-
-
-
-
-
-
-
-
-
     }
+
+
     function renderExecutionPie(container, dataIN){
         var setSize = (typeof dataIN === 'undefined')? false : true;
         var data = (typeof dataIN === 'undefined')? $(container).data('data') : dataIN;
