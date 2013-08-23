@@ -620,7 +620,7 @@ function showPillRefresh(parent){
 
            $(iterationsArray).each(function(){
             // console.log(this)
-                var team = $('<div class="team"></div>').attr('id',this.id).append('<div class="team-name">'+this.name+'</div>');
+                var team = $('<div class="team"></div>').attr('id',this.id).append('<div class="team-name">'+this.name+' Team</div>');
 
                tcmModel.releases.iterations.features.fetch(0,this.id).done(function(data){
 
