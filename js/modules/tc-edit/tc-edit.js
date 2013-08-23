@@ -66,6 +66,7 @@ define(function(require){
                 $('#tcViewer #rp-wrapper .save').text('Update')
                 $('.new-tc-title').val(inputData.name);
                 $('.new-tc-desc').val(inputData.description);
+                $('.new-tc-priority').val(inputData.priority);
 
                 if(inputData.proposed == 1){
                     $('.proposed').attr('checked','checked')
@@ -121,6 +122,7 @@ define(function(require){
             $('#tcViewer #rp-wrapper .save').text('Add')
             $('#tcViewer .new-tc-title').val('').removeClass('title-error');
             $('#tcViewer .new-tc-desc').val('');
+            $('#tcViewer .new-tc-priority').val('');
             $('#tcViewer .actual-result').val('')
             $('#tcViewer #rp-wrapper .modal-body').data('flag',0);
             $('#tcViewer #rp-wrapper .modal-body').data('tcObject','');
