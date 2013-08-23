@@ -283,7 +283,6 @@ define(function(require){
                 $("#InteropMetrics #xteams #byitem").attr('disabled',false);
                 $('#InteropMetrics #xteams').data('globalGraph',true)
                 $("#InteropMetrics #xteams #refresh-graph").attr('disabled',false);
-
                 
             });
 
@@ -371,6 +370,7 @@ define(function(require){
                 $("#InteropMetrics #rlscontrol #byitem").attr('disabled',false);
                 $('#InteropMetrics #rlscontrol').data('globalGraph',true)
                 $("#InteropMetrics #rlscontrol #refresh-graph").attr('disabled',false);
+                $("#InteropMetrics #rep").click()
 
                 
             });
@@ -620,7 +620,7 @@ function showPillRefresh(parent){
 
 
 
-                                        var tc = $('<div class="report-tc"></div>').append('<div class="report-tc-name">'+this.name+'</div><div class="report-tc-status"><div class="report-tc-status-inner label '+statusClass+'">'+this.statusName+'</div></div>');
+                                        var tc = $('<div class="report-tc"></div>').append('<div class="report-tc-name">'+this.name+'</div><div class="report-tc-priority">P'+this.priority+'</div><div class="report-tc-status"><div class="report-tc-status-inner label '+statusClass+'">'+this.statusName+'</div></div>');
                                         $(tcs).append(tc)
                                         
                                      })
