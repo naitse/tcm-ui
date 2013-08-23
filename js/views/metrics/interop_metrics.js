@@ -465,6 +465,7 @@ define(function(require){
                 })
 
                 if($(this).find('.report-feature-tcs').find('.report-tc:visible').size() == 0){
+                    $(this).find('.report-feature-tcs').find('.nofilterresults').remove()
                     $(this).find('.report-feature-tcs').append('<div class="nofilterresults"> No TCs matching filtering criteria</div>')
                 }else{
                     $(this).find('.report-feature-tcs').find('.nofilterresults').remove()
@@ -760,6 +761,7 @@ function showPillRefresh(parent){
 
                     if($(this).find('.report-feature-tcs').find('.report-tc:visible').size() == 0){
                         if($(this).find('.report-feature-tcs').find('.nofilterresults').size() == 0){
+                            $(this).find('.report-feature-tcs').find('.nofilterresults').remove()
                             $(this).find('.report-feature-tcs').append('<div class="nofilterresults"> No TCs matching filtering criteria</div>')
                         }
                     }else{
