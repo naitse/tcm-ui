@@ -155,12 +155,15 @@ define(function(require){
                 editorWrapper.find('.new-tc-title').removeClass('title-error')
             }
 
+            var prioValue = editorWrapper.find('.new-tc-priority').val();
+            var prio = (!prioValue.match(/\d/))? 1 : prioValue;
 
             var objectToSave ={
                 tcId: "",
                 name: editorWrapper.find('.new-tc-title').val(),
                 description: editorWrapper.find('.new-tc-desc').val(),
-                proposed: $("#pluginEnabled-jira").prop('checked')
+                proposed: $("#pluginEnabled-jira").prop('checked'),
+                priority:prio
             }
 
 

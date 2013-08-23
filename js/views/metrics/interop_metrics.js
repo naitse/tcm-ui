@@ -565,7 +565,7 @@ function showPillRefresh(parent){
                                 $(data).each(function(){
                                     var cellWidth = 100 / parseInt(this.total);
 
-                                    var propgressBar = $('<div class="progress" style="width: 100px; height: 12px; border: 1px solid rgb(108, 120, 133);">')
+                                    var propgressBar = $('<div class="progress" style="height: 12px; border: 1px solid rgb(108, 120, 133);">')
 
                                     for(var i=0; i<parseInt(this.pass);i++){
                                         var node = $('<div class="bar bar-success" style="width: '+cellWidth+'%;"></div>')
