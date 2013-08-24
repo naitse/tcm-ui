@@ -147,7 +147,9 @@ define(function(require){
                                                         if($(this).attr('id') != $(self).find('a').attr('iterid')){
                                                             $(this).hide();
                                                         }else{
-                                                            $(this).show();
+                                                            $(this).show(function(){
+                                                                notcMessage($(this).find('.team-feature'))
+                                                            });
                                                             reportTeamId = $(self).find('a').attr('iterid')
                                                             $(self).parents('.repioteams').find('.dropdown-toggle').text($(self).text()).append('<b class="caret"></b>')
                                                         }
@@ -164,7 +166,9 @@ define(function(require){
                                                 e.preventDefault();
                                                 var self = this;
                                                 $('.team').each(function(){
-                                                        $(this).show();
+                                                        $(this).show(function(){
+                                                                notcMessage($(this).find('.team-feature'))
+                                                            });
                                                         reportTeamId = $(self).find('a').attr('iterid')
                                                         $(self).parents('.repioteams').find('.dropdown-toggle').text($(self).text()).append('<b class="caret"></b>')
                                                 })
@@ -779,17 +783,16 @@ function filterTCs(){
                 if($(this).attr('id') != reportTeamId){
                     $(this).hide();
                 }else{
-                    $(this).show();
-                }
-                if($(this).find('.report-feature-tcs').find('.report-tc:visible').size() == 0){
-                    $(this).find('.report-feature-tcs').append('<div class="nofilterresults"> No TCs matching filtering criteria</div>')
-                }else{
-                    $(this).find('.report-feature-tcs').find('.nofilterresults').remove()
+                    $(this).show(function(){
+                        notcMessage($(this).find('.team-feature'))
+                    });
                 }
             })
         }else if(reportTeamId = 'all'){
                 $('.team').each(function(){
-                    $(this).show();
+                    $(this).show(function(){
+                        notcMessage($(this).find('.team-feature'))
+                    });
             })
         }
 
@@ -797,12 +800,11 @@ function filterTCs(){
 
 
 function notcMessage(_this){
-
         if($(_this).find('.report-feature-tcs').find('.report-tc:visible').size() == 0){
-        if($(_this).find('.report-feature-tcs').find('.nofilterresults').size() == 0){
-            $(_this).find('.report-feature-tcs').find('.nofilterresults').remove()
-            $(_this).find('.report-feature-tcs').append('<div class="nofilterresults"> No TCs matching filtering criteria</div>')
-        }
+            if($(_this).find('.report-feature-tcs').find('.nofilterresults').size() == 0){
+                $(_this).find('.report-feature-tcs').find('.nofilterresults').remove()
+                $(_this).find('.report-feature-tcs').append('<div class="nofilterresults"> No TCs matching filtering criteria</div>')
+            }
         }else{
             $(_this).find('.report-feature-tcs').find('.nofilterresults').remove()
         }
