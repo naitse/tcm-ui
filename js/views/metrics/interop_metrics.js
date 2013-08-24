@@ -25,6 +25,8 @@ define(function(require){
     var rlsGlobalGraph = true;
     var reportTeamId = '';
     var reportStatusId = '';
+    var reportPriority = '';
+    var prioritiesArray = [];
 
 
     var InteropMetricsView = {
@@ -450,29 +452,13 @@ define(function(require){
             reportStatusId = $(self).attr('statusid')
             $(self).parents('.repstates').find('.dropdown-toggle').text($(self).text()).append('<b class="caret"></b>')
 
-            $('.team-feature').each(function(){
+            filterTCs();
 
-                $(this).find('.report-tc-status-inner').each(function(){
-                    if(reportStatusId != 'all'){
-                        if($(this).attr('statusid') != $(self).attr('statusid')){
-                            $(this).parents('.report-tc').hide();
-                        }else{
-                            $(this).parents('.report-tc').show();
-                        }
-                    }else if (reportStatusId == 'all'){
-                        $(this).parents('.report-tc').show();
-                    }
-                })
+        })
 
-                if($(this).find('.report-feature-tcs').find('.report-tc:visible').size() == 0){
-                    $(this).find('.report-feature-tcs').find('.nofilterresults').remove()
-                    $(this).find('.report-feature-tcs').append('<div class="nofilterresults"> No TCs matching filtering criteria</div>')
-                }else{
-                    $(this).find('.report-feature-tcs').find('.nofilterresults').remove()
-                }
-
-            })
-
+        $('#InteropMetrics .priorityall').click(function(e){
+            e.preventDefault();
+            filterTCs();
         })
 
         $('#interopTabs a').click(function (e) {
@@ -490,6 +476,7 @@ define(function(require){
 
         $('#InteropMetrics #report #refresh').click(function(){
             $('#InteropMetrics .teams').children().remove();
+            prioritiesArray = [];
             fillReport();
         })
 
@@ -617,6 +604,15 @@ function showPillRefresh(parent){
 
     function fillReport(){
 
+            $('.addedp').remove();
+            var node = $('<li class="addedp"><a href="" priority="all">All priorities</a></li>').click(function(e){
+                  reportPriority = $(this).find('a').attr('priority')
+                e.preventDefault();
+                $(this).parents('.reppriority').find('.dropdown-toggle').text($(this).text()).append('<b class="caret"></b>')
+                filterTCs()                                                          
+            })
+
+            $('.reppriority .dropdown-menu').append(node)
 
            $(iterationsArray).each(function(){
             // console.log(this)
@@ -694,12 +690,23 @@ function showPillRefresh(parent){
 
                                         var tc = $('<div class="report-tc"></div>').append('<div class="report-tc-name">'+this.name+'</div><div class="report-tc-priority">P'+this.priority+'</div><div class="report-tc-status"><div statusid="'+this.statusId+'" class="report-tc-status-inner label '+statusClass+'">'+this.statusName+'</div></div>');
                                         $(tcs).append(tc)
+
+                                        if( typeof prioritiesArray[this.priority] === 'undefined'){
+                                            prioritiesArray[this.priority] = this.priority;
+
+                                            var node = $('<li class="addedp"><a href="" priority="P'+this.priority+'">P'+this.priority+'</a></li>').click(function(e){
+                                                reportPriority = $(this).find('a').attr('priority')
+                                                e.preventDefault();
+                                                $(this).parents('.reppriority').find('.dropdown-toggle').text($(this).text()).append('<b class="caret"></b>')
+                                                filterTCs();                                                          
+                                            })
+
+                                            $('.reppriority .dropdown-menu').append(node)
+                                        }
                                         
                                      })
                                     
-                                    if(reportStatusId != ''){
-                                        refilterTCS();
-                                    }
+                                    filterTCs()
 
                                 })
                                 $(feature).append(tcs);
@@ -720,7 +727,52 @@ function showPillRefresh(parent){
 
     }
 
+
+
+function filterTCs(){
+
+            $('.report-tc').hide();
+            
+            $('.team-feature').each(function(){
+
+                var nodes;
+
+                if(reportPriority == '' || reportPriority == 'all' ){
+                    nodes = $(this).find('.report-tc');
+                    if(reportStatusId == '' || reportStatusId == 'all'){
+                    }else{
+                        nodes = $(nodes).filter(function(){
+                            return $(this).find('.report-tc-status-inner').attr('statusid') == reportStatusId
+                        })
+                    }
+                }else{
+                    nodes = $(this).find('.report-tc').filter(function(){
+                        return $(this).find('.report-tc-priority').text() == reportPriority
+                    })
+                    if(reportStatusId == '' || reportStatusId == 'all'){
+                    }else{
+                        nodes = $(nodes).filter(function(){
+                            return $(this).find('.report-tc-status-inner').attr('statusid') == reportStatusId
+                        })
+                    }
+                }
+
+
+                $(nodes).each(function(){
+                    $(this).show();
+                })
+
+                notcMessage(this)
+
+            })
+
+
+
+}
+
+
     function refilter(){
+
         if (reportTeamId != '' && reportTeamId != 'all'){
             $('.team').each(function(){
                 if($(this).attr('id') != reportTeamId){
@@ -742,36 +794,18 @@ function showPillRefresh(parent){
 
     }
 
-    function refilterTCS(){
 
-            $('.team-feature').each(function(){
+function notcMessage(_this){
 
-
-                    $(this).find('.report-tc-status-inner').each(function(){
-                        if(reportStatusId != 'all' && reportStatusId != ''){
-                            if($(this).attr('statusid') != reportStatusId){
-                                $(this).parents('.report-tc').hide();
-                            }else{
-                                $(this).parents('.report-tc').show();
-                            }
-                        }else if (reportStatusId == 'all'){
-                            $(this).parents('.report-tc').show();
-                        }
-                    })
-
-                    if($(this).find('.report-feature-tcs').find('.report-tc:visible').size() == 0){
-                        if($(this).find('.report-feature-tcs').find('.nofilterresults').size() == 0){
-                            $(this).find('.report-feature-tcs').find('.nofilterresults').remove()
-                            $(this).find('.report-feature-tcs').append('<div class="nofilterresults"> No TCs matching filtering criteria</div>')
-                        }
-                    }else{
-                        $(this).find('.report-feature-tcs').find('.nofilterresults').remove()
-                    }
-
-            })
-
-    }
-
+        if($(_this).find('.report-feature-tcs').find('.report-tc:visible').size() == 0){
+        if($(_this).find('.report-feature-tcs').find('.nofilterresults').size() == 0){
+            $(_this).find('.report-feature-tcs').find('.nofilterresults').remove()
+            $(_this).find('.report-feature-tcs').append('<div class="nofilterresults"> No TCs matching filtering criteria</div>')
+        }
+        }else{
+            $(_this).find('.report-feature-tcs').find('.nofilterresults').remove()
+        }
+}
 
     function renderExecutionPie(container, dataIN){
         var setSize = (typeof dataIN === 'undefined')? false : true;
