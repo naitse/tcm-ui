@@ -628,6 +628,7 @@ function showPillRefresh(parent){
                     $(data).each(function(){
                             var featureId= this.featureId
                             var featureName = this.featureName;
+                            var featureDescription =this.featureDescription;
                             var self = this;
                             var feature = $('<div class="team-feature well" id="'+featureId+'"></div>')
 
@@ -661,7 +662,7 @@ function showPillRefresh(parent){
                                         $(propgressBar).append(node)
                                     }
 
-                                    $(featureData).append(propgressBar)
+                                    $(featureData).append(propgressBar,'<div class="feature-descrip">'+featureDescription+'</div>')
                                     $(feature).append(featureData)
                                 })
                                 
