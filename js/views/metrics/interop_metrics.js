@@ -123,6 +123,7 @@ define(function(require){
                                                 var node = $('<li class=""><a href="#xteams" data-toggle="tab" iterid="'+this.id+'">'+this.name+'</a></li>').click(function(){
                                                     iterId =  $(this).find('a').attr('iterid');
                                                     iterName =  $(this).find('a').text();
+                                                    $('#InteropMetrics #xteams').data('rendered',false);
                                                     
                                                     if(teamLoaded != iterId){
                                                         InteropMetricsView.loadIterMetrics(0,iterId);
