@@ -3,9 +3,7 @@
 margin-left: auto;
 margin-right: auto;
 }
-body {
-    background: url("images/bg_dark");
-}
+
 .page-container {
     position: relative;
     min-height: 100%;

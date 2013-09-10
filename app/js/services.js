@@ -1,4 +1,4 @@
-var  basePath =  "http://tcm-backend-qa.cloudhub.io/";
+var  basePath =  "http://tcm-backend.cloudhub.io/";
 
 
 tcmModule.factory('Auth', function($http, $cookieStore){
@@ -7,7 +7,7 @@ tcmModule.factory('Auth', function($http, $cookieStore){
         , userRoles = routingConfig.userRoles
         , currentUser = $cookieStore.get('user') || { username: '', role: userRoles.public };
 
-    $cookieStore.remove('user');
+    //$cookieStore.remove('user');
 
     function changeUser(user) {
         _.extend(currentUser, user);

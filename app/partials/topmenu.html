@@ -76,7 +76,7 @@ box-shadow: inherit;
 
             <ul class="nav" role="navigation">
                 <li class="dropdown" ng-repeat="menu in menuList">
-                    <a href="#" role="button" class="dropdown-toggle brand" ng-class="menu.active" data-toggle="dropdown">{{menu.name}} <b class="caret"></b></a>
+                    <a role="button" class="dropdown-toggle brand" ng-class="menu.active" data-toggle="dropdown">{{menu.name}} <b class="caret"></b></a>
                     <ul class="dropdown-menu pull-left" role="menu" aria-labelledby="drop2">
                         <li role="presentation" ng-repeat="submenu in menu.subMenuList">
                             <a id="link-iterations" role="menuitem" tabindex="-1" ng-class="submenu.active" href="{{submenu.link}}">{{submenu.name}}</a>
@@ -102,7 +102,7 @@ box-shadow: inherit;
             </ul>
         </div>
     </div>
-    <sprint-progress></sprint-progress>
+    <!--<sprint-progress></sprint-progress> -->
     <div id="modal-switchProject" ng-class="switchProjectModalClass">
         <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>

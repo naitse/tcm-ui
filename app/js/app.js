@@ -7,13 +7,18 @@ var tcmModule = angular.module('tcm', ['ngCookies']).
 
             $routeProvider.when('/manager/:projectId',
                                 {templateUrl: '/app/partials/manager.html',
-                                 controller: ManagerCntl,
+                                 controller: 'ManagerCntl',
                                  access: access.user
                                 }).when('/login',
                                 {
                                     templateUrl: 'app/partials/login.html',
                                     controller: 'LoginCtrl',
                                     access: access.anon
+                                }).when('/testplan',
+                                {
+                                    templateUrl: 'app/partials/testplan.html',
+                                    controller: 'MetricsTestPlanCtrl',
+                                    access: access.user
                                 }).
                otherwise({redirectTo:'/login'});
 
@@ -68,7 +73,42 @@ tcmModule.directive('chosen',function(){
         restrict:'A',
         link: linker
     }
-})
+});
+
+tcmModule.directive('draggable', ['$document' , function($document) {
+    return {
+        restrict: 'A',
+        link: function(scope, elm, attrs) {
+            var startX, startY, initialMouseX, initialMouseY;
+            elm.css({position: 'absolute'});
+
+            elm.bind('mousedown', function($event) {
+                startX = elm.prop('offsetLeft');
+                startY = elm.prop('offsetTop');
+                initialMouseX = $event.clientX;
+                initialMouseY = $event.clientY;
+                $document.bind('mousemove', mousemove);
+                $document.bind('mouseup', mouseup);
+                return false;
+            });
+
+            function mousemove($event) {
+                var dx = $event.clientX - initialMouseX;
+                var dy = $event.clientY - initialMouseY;
+                elm.css({
+                    top:  startY + dy + 'px',
+                    left: startX + dx + 'px'
+                });
+                return false;
+            }
+
+            function mouseup() {
+                $document.unbind('mousemove', mousemove);
+                $document.unbind('mouseup', mouseup);
+            }
+        }
+    };
+}]);
 
 
 tcmModule.run(['$rootScope', '$location', 'Auth', function ($rootScope, $location, Auth) {
@@ -76,7 +116,7 @@ tcmModule.run(['$rootScope', '$location', 'Auth', function ($rootScope, $locatio
     $rootScope.$on("$routeChangeStart", function (event, next, current) {
         $rootScope.error = null;
 
-        if (!Auth.authorize(next.access)) {
+        if (next.bitMask != null && !Auth.authorize(next.access)) {
             if(Auth.isLoggedIn()) $location.path('/manager');
             else $location.path('/login');
         }

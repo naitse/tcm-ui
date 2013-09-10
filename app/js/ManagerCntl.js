@@ -6,6 +6,15 @@ function ManagerCntl($scope, $routeParams, $http, $rootScope, tcm_model) {
     $scope.showCopyTestCase = false;
     $scope.leftWrapperStyle = {width: "100%", height: "96.30996309963099%"};
 
+    $scope.dragger = {title: "dragger"};
+
+
+    function dragging2(e){
+
+            console.log(e);
+
+    };
+
     $scope.getReleases = function() {
 
         tcm_model.getReleases(function(data, status, headers, config) {

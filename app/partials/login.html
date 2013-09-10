@@ -17,9 +17,10 @@ padding-left: 5px;
 
 .login-alert {
 text-align: center;
-width: 50%;
+width: 20em;
 margin-left: auto;
 margin-right: auto;
+margin-bottom: 1em;
 }
 
 #login-button {
@@ -80,7 +81,7 @@ margin-top: 10px;
             <div id="ion-main" >
                 <div id="login-block" class="round-corner-all" ng-style="loginFormStyle">
                     <h2>Login</h2>
-                    <form id="login-form" method="post" class="form-horizontal" >
+                    <form id="login-form" method="post" class="form-horizontal" ng:submit="login()">
                         <div class="control-group">
 
                             <div class="inputs" style="position: relative">
@@ -95,7 +96,7 @@ margin-top: 10px;
                             </div>
                         </div>
                         <div ng-class="alertClass">{{loginErrorMessage}}</div>
-                        <input id="login-button" type="button" class="btn btn-primary " data-loading-text="Logging in..." value="Login" ng-click="login()" ng-show="displayButton"/>
+                        <input id="login-button" type="submit" class="btn btn-primary " data-loading-text="Logging in..." value="Login" ng-show="displayButton"/>
                     </form>
                     <div ng-show="displayProjects" id="projectsContainer" class="form-horizontal">
                         <project-select > </project-select>

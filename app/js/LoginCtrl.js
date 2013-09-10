@@ -1,7 +1,7 @@
 tcmModule.controller('LoginCtrl',
     ['$rootScope', '$scope', '$location', '$window', 'Auth', '$cookieStore', 'tcm_model', function($rootScope, $scope, $location, $window, Auth, $cookieStore, tcm_model) {
         $scope.loginErrorMessage = "";
-        $scope.alertClass = "login-alert alert hide";
+        $scope.alertClass = "login-alert hide";
         $scope.displayButton = true;
         $scope.displayProjects = false;
         $scope.projects = null;
@@ -20,7 +20,7 @@ tcmModule.controller('LoginCtrl',
 
                     $scope.loginFormStyle = {height: "310"};
                     $scope.loginErrorMessage = 'User authenticated, Please select a project';
-                    $scope.alertClass = 'login-alert alert alert-success';
+                    $scope.alertClass = 'login-alert alert-success';
                     $scope.displayButton = false;
                     $scope.displayProjects = true;
 
@@ -29,7 +29,7 @@ tcmModule.controller('LoginCtrl',
                 },
                 function(err) {
                     $scope.loginErrorMessage ='Authentication error';
-                    $scope.alertClass = 'login-alert alert alert-danger';
+                    $scope.alertClass = 'login-alert alert-danger';
                     $rootScope.error = "Failed to login";
                 });
         };

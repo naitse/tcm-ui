@@ -22,11 +22,11 @@ function TopMenuCntl($scope, $route, $routeParams, $location, $cookieStore, Auth
         },
         {
             name: 'Metrics',
-            active: $location.path().indexOf('plan') >=0 || $location.path().indexOf('rlsmetrics')>=0 || $location.path().indexOf('/metrics')>=0 ? 'active':'',
+            active: $location.path().indexOf('testplan') >=0 || $location.path().indexOf('rlsmetrics')>=0 || $location.path().indexOf('/metrics')>=0 ? 'active':'',
             subMenuList: [
                 { name: 'TestPlan',
-                  active: $location.path().indexOf('plan') >=0 ? 'active':'',
-                  link: '#/plan'
+                  active: $location.path().indexOf('testplan') >=0 ? 'active':'',
+                  link: '#/testplan'
                 },
                 { name: 'Release',
                   active: $location.path().indexOf('rlsmetrics') >=0 ? 'active':'',

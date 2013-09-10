@@ -1,7 +1,7 @@
 <div id="feature-container">
     <div class="feature-actions">
         <div class="feature-buttons">
-            <input type="text" id="feature-filter" ng-model="filter"/>{{filter}}
+            <input type="text" id="feature-filter" ng-model="search"/>
             <div id="add-feature" type="button" title="Add new Item" class="" ng-click="btnNewTestCase()">
                 <i class="icon-plus-sign icon-white"></i>
             </div>
@@ -11,7 +11,7 @@
         </div>
     </div>
     <div class="theFeatures">
-        <div ng-repeat="feature in features" feature-id="{{feature.featureid}}" ng-click='showFeatureDetails(feature)' class="feature {{feature.jiraStatus}}" >
+        <div ng-animate="'animate'" ng-repeat="feature in features | filter:search" feature-id="{{feature.featureid}}" ng-click='showFeatureDetails(feature)' class="feature {{feature.jiraStatus}}" >
             <div class="title-bar">
                 <a target="_blank" class="jira-key" href="http://www.mulesoft.org/jira/browse/{{feature.jiraKey}}">{{feature.jiraKey}}</a>
                 <div class="stats">

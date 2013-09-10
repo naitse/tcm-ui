@@ -42,6 +42,35 @@
     }
 
     .item-control-buttons .wrapper div:hover {border:1px solid;}
+
+
+
+    .animate-enter,
+    .animate-leave
+    {
+        -webkit-transition: 400ms cubic-bezier(0.250, 0.100, 0.250, 1.000) all;
+        -moz-transition: 400ms cubic-bezier(0.250, 0.100, 0.250, 1.000) all;
+        -ms-transition: 400ms cubic-bezier(0.250, 0.100, 0.250, 1.000) all;
+        -o-transition: 400ms cubic-bezier(0.250, 0.100, 0.250, 1.000) all;
+        transition: 400ms cubic-bezier(0.250, 0.100, 0.250, 1.000) all;
+        position: relative;
+        display: block;
+    }
+
+    .animate-enter.animate-enter-active,
+    .animate-leave {
+        opacity: 1;
+        right: 0;
+        height: 30px;
+    }
+
+    .animate-leave.animate-leave-active,
+    .animate-enter {
+        opacity: 0;
+        right: -50px;
+        height: 0px;
+    }
+
 </style>
 <div class='tcm-top-menu-container' ng-controller="TopMenuCntl">
     <ng-include src="topmenu"></ng-include>
@@ -63,6 +92,8 @@
                             <ng-include src="releasesView"></ng-include>
                         </div>
                     </div>
+                    <div data-draggable="true" onDrag="dragging2()" class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div>
+
                 </div>
                 <div class='right-pannel round-corner-all' style="height: 100%; padding-bottom: 129px;">
                     <div id="description">
