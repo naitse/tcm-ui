@@ -26,7 +26,7 @@ function TopMenuCntl($scope, $route, $routeParams, $location, $cookieStore, Auth
             subMenuList: [
                 { name: 'TestPlan',
                   active: $location.path().indexOf('testplan') >=0 ? 'active':'',
-                  link: '#/testplan'
+                  link: '#/testplan/'+$routeParams.projectId
                 },
                 { name: 'Release',
                   active: $location.path().indexOf('rlsmetrics') >=0 ? 'active':'',
