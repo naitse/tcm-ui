@@ -1,4 +1,22 @@
 <div id="tcSync" style="display:none">
+    <style>
+    #jiras-wrapper {
+        border: 1px dashed #ccc;
+        padding: 10px 15px 0px 15px;
+    }
+
+/*    #jiras-wrapper table tr:nth-child(odd) td{
+    background: #ddd;
+    }
+    #jiras-wrapper table tr:nth-child(even) td{
+        background: #ccc;
+    }*/
+    #jiras-wrapper table td {
+        padding-left:20px;
+        padding-top:3px;
+        padding-bottom: 3px;
+    }
+    </style>
     <div><h3>Select Iteration:</h3></div>
     <div><select id="ddIterations"></select>
         <button type="button" id="btnStep1" class="btn btn-primary" data-loading-text="Loading...">Get Issues</button></div>
@@ -15,7 +33,7 @@
                 <button type="button" id="btnSync"  class="btn btn-primary" data-toggle="button" disabled="true" >Syncronize...</button>
             </div>
         </div>
-        <div data-target="#navbar" data-spy="scroll" data-offset="10" style="display: block; overflow: scroll; height: 500px;">
+        <div id="jiras-wrapper" ata-target="#navbar" data-spy="scroll" data-offset="10" style="display: block; overflow: scroll;">
             <div id="jiras">
                 <table id="jiraItems" class="nav"></table>
             </div>

@@ -4,6 +4,7 @@ define(function(require){
     tcmModel = require('tcmModel'),
     global = require('global'),
     sprint = require('modules/sprint/sprint');
+    styles = require('text!templates/topmenu');
     require('jquery.cookie');
 
     var TopMenuView = {
@@ -22,29 +23,6 @@ define(function(require){
 
             this.attachEvents();
 
-            // global.channelSubscribe('being-seen');
-            // global.channelBind('being-seen','item-selected',function(data){
-
-            //   if($.cookie('usrname') !== data.userName && $.cookie('projectId') === data.projectId){
-            //     var previous = global.users[data.userName];
-            //     var current = data.itemId
-
-            //     if( $('.feature[feature-id='+previous+']').size() > 0 ){
-            //         notBeingSeen( $('.feature[feature-id='+previous+']'),data.userName );
-            //     } else if( $('.item.suite[item-id='+previous+']').size() > 0 ){
-            //         notBeingSeen( $('.item.suite[item-id='+previous+']'),data.userName );
-            //     }
-
-            //     if( $('.feature[feature-id='+current+']').size() > 0 ){
-            //         beingSeen($('.feature[feature-id='+current+']'),data.userName );
-            //     }else if($('.item.suite[item-id='+current+']').size() > 0){
-            //         beingSeen($('.item.suite[item-id='+current+']'),data.userName);
-            //     }
-            //     global.users[data.userName] = current;
-
-            //   }
-
-            // });
 
         },
 
@@ -89,7 +67,7 @@ define(function(require){
                   day:data[0].currentrelease.split('/')[2],
                 }
                                 // console.log(data,currentR)
-                sprint.render(sprint.create(data[0].springIterations,data[0].iterationDuration,currentR),'.spring-progress',160,29);
+                // sprint.render(sprint.create(data[0].springIterations,data[0].iterationDuration,currentR),'.spring-progress',160,29);
               }
             });
 
@@ -153,6 +131,23 @@ define(function(require){
            element.find('.icon-user').css('visibility','hidden');
         }
     }
+
+
+        function attachStyles(){
+          loaded= false;
+          
+          $('style').each(function(){
+              if($(this).attr('sof') == "topmenu"){
+                  loaded = true;
+              }
+          })
+          if(!loaded){
+              $('body').append($(styles));
+          }
+    }
+
+
+  attachStyles();
     return TopMenuView;
 
 });

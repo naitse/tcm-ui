@@ -54,9 +54,15 @@ define(function(require){
                 jiraItems = jiraItems[0];
                 ftrIters = ftrIters[0];
 
+                var c = 0;
+
                 _.each(jiraItems, function (item) {
 
                     var row = $('<tr class="jiraRow"></tr>');
+
+                    var color = ( c & 1 ) ? "#ccc" : "#ddd";
+
+                    row.css("background-color",color);
 
                     _.each(ftrIters, function(item2, key, list){
                         if(item2.jiraKey == item.key){
@@ -85,7 +91,11 @@ define(function(require){
                     jirasContainer.append(row);
                     alreadyExists = null;
 
+                    c++
+
                 });
+
+                adjustSyncHeight();
 
                 $('#jiraItems input[type="checkbox"]').on('click', function(){
                     if($("#jiraItems tr input:checked").size() > 0){
@@ -221,6 +231,21 @@ define(function(require){
         //$("#alertCompleted-Sync").alert();
         $("#alertCompleted-Sync").show();
     }
+
+    function adjustSyncHeight(){
+
+        try{
+            $('#tcSync').css('height',(($('.tcm-container').height() - 30)*100)/$('.tcm-container').height()+'%')
+
+            var parentHeight = $('.tcm-container').height()
+            var metrics_controls = 210;
+            var newHeight = parentHeight - metrics_controls;
+            $('#tcSync #jiras-wrapper').css('height', newHeight)
+
+        }catch(err){}
+    }
+
+    $(window).resize(adjustSyncHeight);
 
     return SyncView;
 
