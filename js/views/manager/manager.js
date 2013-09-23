@@ -13,6 +13,7 @@ define(function(require){
         jquerycookie = require('jquery.cookie'),
         notificator = require('notificator'),
         tcEditor = require('tcEditor'),
+        rlsIterWidget = require('views/rlsIter/rlsIter'),
         copytc = require('copytc');
 
         var view_container = "#tcViewer";
@@ -40,6 +41,7 @@ define(function(require){
         render: function(){
             if(!this.rendered){
                 $("#pannel-wrapper").append(managerTemplate);
+                rlsIter = new rlsIterWidget("#tcViewer",{"action":"prepend"},ManagerView);
                 channel = new notificator('features-position-tracking');
                 channel_monitoring = new notificator('features-position-tracking');
                 channel_monitoring.debug = true;
@@ -56,7 +58,7 @@ define(function(require){
             $('#tcViewer').css('height',(($('#tcViewer .tcm-container').height() - 20)*100)/$('#tcViewer .tcm-container').height()+'%')
             adjustTabHeight()
 
-            getReleases();
+            // getReleases();
         },
 
         refreshRender:function(){
@@ -67,12 +69,29 @@ define(function(require){
               'width' : '100%'
             });
           console.log($('#tcViewer #feature-container').height())
-          getReleases();
+          // getReleases();
         },
 
         expose:{
-          newfeature:function(data){prepareFeatures(data)},
-          expandrightpanel:function(){PM.colapseExpandRightPanel('#tcViewer','block')}
+          getFeatures:function(iterId, iterName){itSelected(iterId, iterName)},
+          clear:function(){
+            PM.colapseExpandRightPanel('#tcViewer','none');
+              clearTimeout(statCheck);
+              $('.noresult').remove();
+              $('#tcViewer .feature.active').removeClass('active')
+             $('#filter-completed-features').removeClass('enabled').attr("disabled",true);
+            $('#tcViewer .add-tc').attr('disabled',true)
+            $('#desc-container').children().remove()
+            $('#desc-container').text('');
+            $('#desc-wrapper').hide()
+            $('.desc-header-text').html('')
+            $('#desc-expander').removeClass('desc-collapser').addClass('desc-expander')
+            clearTCs()
+            $('#feature-container').stop(true,true).hide("slide", { direction: "right"},100,function(){}); 
+            $('#feature-container .theFeatures').children().remove();
+          }
+          // newfeature:function(data){prepareFeatures(data)},
+          // expandrightpanel:function(){PM.colapseExpandRightPanel('#tcViewer','block')}
         },
 
 
@@ -685,9 +704,9 @@ define(function(require){
           'height' : '100%'
         });
 
-        $('#tcViewer').css('height',(($('#tcViewer .tcm-container').height() - 20)*100)/$('#tcViewer .tcm-container').height()+'%')
+        $('#tcViewer').css('height',(($('#tcViewer .tcm-container').height() - 45)*100)/$('#tcViewer .tcm-container').height()+'%')
 
-        $('#tcViewer .left-center-panel').css('height',(($('.tcm-container').height() - 20)*100)/$('.tcm-container').height()+'%')
+        $('#tcViewer .left-center-panel').css('height',(($('.tcm-container').height() - 45)*100)/$('.tcm-container').height()+'%')
 
         
 
@@ -728,7 +747,7 @@ function getReleases(){
 
 //######################################### iteration ops
 
-function itSelected(iterationId, iterationName) {
+function itSelected2(iterationId, iterationName) {
 
             var releaseName = global.currentSS.releaseName;
                   $('#tcViewer .theFeatures').children().remove();
@@ -762,7 +781,43 @@ function itSelected(iterationId, iterationName) {
                      channel.sendMessage("get-history")
               });
         });
-    })
+    }) }
+
+function itSelected(iterationId, iterationName) {
+            global.currentSS.iterationId = iterationId
+            var releaseName = global.currentSS.releaseName;
+                  $('#tcViewer .theFeatures').children().remove();
+                  PM.colapseExpandRightPanel('#tcViewer','none');
+                  clearData();
+                  $('.noresult').remove();
+                  var noresult = $('<div>').addClass('noresult').text('No Items found')
+                  
+    // $('#releases-container').hide("slide", { direction: "left"},100,function(){
+        $('#feature-container').show("slide", { direction: "right"},100,function(){
+                  $('#filter-completed-features').removeClass('enabled').attr('disabled',true);
+                  $('#add-feature').removeClass('enabled').attr('disabled',true);
+                  
+                 tcmModel.releases.iterations.features.fetch(global.currentSS.releaseId, global.currentSS.iterationId).done(function(data){
+                    if (data.length > 0){
+                      $(data).each(function(){
+                          featuresModule.render('#tcViewer .theFeatures',featuresModule.create(this))
+                      })
+                      if (monitoring==true){
+                        clearTimeout(statCheck)
+                        statCheck=setTimeout(function(){statsMonitoring(iterationId)}, monitoring_interval);
+                      }
+                    }else{
+
+                      $('#tcViewer #feature-container').append(noresult)
+                    }
+                    $('#filter-completed-features').addClass('enabled').attr("disabled",false);
+                     $('#add-feature').addClass('enabled').attr('disabled',false);
+                    $('#tcViewer #holder').attr('class', 'features').find('.iteration-holder-name').text(releaseName+'/'+iterationName);
+
+                     channel.sendMessage("get-history")
+              });
+        });
+    // })
 
 }
 //######################################### iteration ops end

@@ -4,7 +4,7 @@ margin-left: auto;
 margin-right: auto;
 }
 body {
-    background: url("images/bg_dark");
+    background: url("images/bg_dark.png");
 }
 .page-container {
     position: relative;

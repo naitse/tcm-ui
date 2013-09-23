@@ -4,6 +4,7 @@ define(function(require){
     tcmModel = require('tcmModel'),
     global = require('global'),
     sprint = require('modules/sprint/sprint');
+    styles = require('text!templates/topmenu');
     require('jquery.cookie');
 
     var TopMenuView = {
@@ -130,6 +131,23 @@ define(function(require){
            element.find('.icon-user').css('visibility','hidden');
         }
     }
+
+
+        function attachStyles(){
+          loaded= false;
+          
+          $('style').each(function(){
+              if($(this).attr('sof') == "topmenu"){
+                  loaded = true;
+              }
+          })
+          if(!loaded){
+              $('body').append($(styles));
+          }
+    }
+
+
+  attachStyles();
     return TopMenuView;
 
 });
