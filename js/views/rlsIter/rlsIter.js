@@ -53,7 +53,8 @@ define(function(require){
                 global.currentSS.releaseName = $(this).find('a').text();
 
                 widget.find('#rls .dropdown-toggle').text('Release ' + global.currentSS.releaseName);
-                widget.find('#iter .dropdown-toggle').text('Select an Iteration');
+                var clearIter = ($.cookie('projectId') == '6')?'Select a Team':'Select an Iteration';
+                widget.find('#iter .dropdown-toggle').text(clearIter);
                 widget.find('#iter li[rls-id="'+$(this).find('a').attr('rls-id')+'"]').show();
                 widget.find('#iter').show().addClass('open');
 
