@@ -389,14 +389,26 @@ define(function(require){
                 if(metricsExecuted.length > 0){
                     var chartData = new Array();
 
+
+
                     iterName = metricsExecuted[0].iterName
 
                     delete metricsExecuted[0]['iterName'];
+                    var totala = 0
                     _.each(metricsExecuted[0], function(value, key, list){
 
                         chartData.push(new Array( key, value));
+                        totala += value
                     });
+                    
+                    var inp = $('<div>').addClass('rls-inp').append($('<span>').text('In Progress'),$('<span>').addClass('value label label-info').text(chartData[1][1]));
+                    var nrun = $('<div>').addClass('rls-nrun').append($('<span>').text('Not Run'),$('<span>').addClass('value label').text(chartData[0][1]));
+                    var blocked = $('<div>').addClass('rls-blocked').append($('<span>').text('Blocked'),$('<span>').addClass('value label label-warning').text(chartData[4][1]));
+                    var failed = $('<div>').addClass('rls-failed').append($('<span>').text('Failed'),$('<span>').addClass('value label label-important').text(chartData[3][1]));
+                    var passed = $('<div>').addClass('rls-passed').append($('<span>').text('Passed'),$('<span>').addClass('value label label-success').text(chartData[2][1]));
+                    var total = $('<div>').addClass('rls-total').append($('<span>').text('Total'),$('<span>').addClass('value label label-inverse').text(totala));
 
+                    $('.graph-previews #overal').append(total,passed,failed,blocked,inp,nrun)
 
                     $('#rlscontrol #executionContainerr').data('data',chartData);
                     $('#InteropMetrics #rlscontrol .permalink').attr('disabled',false)
@@ -426,6 +438,7 @@ define(function(require){
                 tcmModel.metrics.metricsDailyExecutedRls(rlsId).done(function(data){
                 var metricsDaily = data;
                 if(metricsDaily.length > 0){
+
                     var days = new Array();
                     var testcases = new Array();
 

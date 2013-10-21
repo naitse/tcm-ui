@@ -279,6 +279,31 @@ cursor:pointer;
 #InteropMetrics #report #refresh:hover {
     background: #ddd;
 }
+#overal div {
+    height:16%;
+border-bottom: 1px dashed;
+position: relative;
+line-height: 2;
+padding-left: 5px;
+font-size: 16px;
+}
+
+#overal div .value{
+position: absolute;
+right: 4px;
+top: 7;
+font-size: 16px;
+}
+
+#overal div:nth-child(odd)
+{
+    background:#f7f7f7;
+}
+#overal div:nth-child(even)
+{
+    background:#efefef;
+}
+
 </style>
 <div id="InteropMetrics">
 
@@ -332,8 +357,7 @@ cursor:pointer;
                             </div>
                             <div class="graph-previews round-corner-all">
                                 <div id="dailyExecutionContainerr" style="width: 300px; height: 200px" class="graph round-corner-all"></div>
-                                <!-- <div id="tc-container" style="width: 300px; height: 200px" class="graph round-corner-all"> -->
-                                <!-- </div> -->
+                                <div id="overal" style="width: 300px; height: 200px" class="graph round-corner-all"></div>
                             </div>
                         </div>
                     </div>
