@@ -638,6 +638,35 @@ define( function(require){
                     contentType: "application/json",
                     dataType: "json"
                 });
+            },
+            interop:{
+                base:'http://interop-report.herokuapp.com/',
+                // base:'http://localhost:9000/',
+                fetch:function(rlsId){
+                    return   $.ajax({
+                        type:'GET',
+                        url: this.base + "getTeams?rlsId=" + rlsId,
+                        dataType: "json"
+                     });
+                },
+                save:function(data){
+                    return   $.ajax({
+                        type:'POST',
+                        url: this.base + "saveData",
+                           data: JSON.stringify(data),
+                            dataType: "json",
+                            contentType : 'application/json'
+                     });
+                },
+                send:function(rls){
+                    return   $.ajax({
+                        type:'GET',
+                        url: this.base + "build?rlsId=" + rls,
+                        dataType: "json",
+                        contentType : 'application/json'
+                     });
+                }
+
             }
 
         }
