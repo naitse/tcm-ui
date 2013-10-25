@@ -3,13 +3,12 @@ define(function(require){
     var $ = require('jquery'),
         planTemplate = require('text!templates/interop/interop.html'),
         tcmModel = require('tcmModel'),
-        tcsModule = require('modules/tc/tc'),
         global = require('global'),
-        sprint = require('modules/sprint/sprint'),
         styles = require('text!templates/interop/style'),
+        rlsIterWidget = require('views/rlsInter/rlsInter'),
         pV = "#interOp";
         _ = require('underscore');
-
+        var relId;
 
     var InteropView = {
         moduleId: "Interop",
@@ -20,8 +19,8 @@ define(function(require){
         render: function(){
             if(!this.rendered){
                 $("#pannel-wrapper").append(planTemplate);
-
-                this.loadIterations();
+                var releaseNavigator = new rlsIterWidget("#interOp",{"action":"prepend"},InteropView);
+                this.loadData();
                 this.attachEvents();
                 this.rendered = true;
             }
@@ -31,81 +30,169 @@ define(function(require){
         },
 
         refreshRender:function () {
-            $(pV + ' .time-line').remove();
-
-            renderProjectBar()
-
-            tcmModel.suites.source(1).done(function(data){
-                if(data.length > 0){
-
-                    tcmModel.suites.testcases.fetch(parseInt(data[0].id)).done(function(data){
-                        $(pV + ' .suite-tcs').children().remove();
-                        $(data).each(function(){
-                            var tc_html = tcsModule.createTcHTML(this,null,false);
-                            $(tc_html).find('.btn-group').remove();
-                            $(tc_html).find('.tc-suites').remove();
-                            $(tc_html).find('.suites-label').remove();
-                            tcsModule.renderTC(tc_html, '#interOp'); //REMOVE THE PARSER
-                        })
-                    });
-                }
-            });
+            this.loadData();
         },
 
-        loadIterations: function(){
-
-            renderProjectBar();
-
-            tcmModel.suites.source(1).done(function(data){
-                if(data.length > 0){
-
-                    tcmModel.suites.testcases.fetch(parseInt(data[0].id)).done(function(data){
-                        $(pV + ' .suite-tcs').children().remove();
-                        $(data).each(function(){
-                            var tc_html = tcsModule.createTcHTML(this,null,false);
-                            $(tc_html).find('.btn-group').remove();
-                            $(tc_html).find('.tc-suites').remove();
-                            $(tc_html).find('.suites-label').remove();
-                            tcsModule.renderTC(tc_html, '#interOp'); //REMOVE THE PARSER
-                        })
-                    });
-                }
-            });
-            // sprint.render(sprint.create(2,1,{"year":2013,"month":5,"day":3}),'#interOp')//,'90%',120);
-
+        loadData: function(){
+            tcmModel.releases_iterations.fetch().done(function(data){
+            })
         },
 
         attachEvents: function(){
                 
+        $('#interOp #sendreport').live({
+          click: function(e){
+            e.stopPropagation();
+            if($(this).hasClass('sec-state')){
+                sendReport(relId);
+            }else{
+              $(this).addClass('sec-state');
+              $(this).stop(true, true).animate({"width":"-=50"});
+              $(this).find('i').hide(0);
+              $(this).find('.tex').hide();
+              $(this).append($('<span class="del-feature-confirm-label" style="display:none; position: relative; top: -2; color: red; ">Sure?</span>'))
+              $(this).find('.del-feature-confirm-label').show();
+            }
+          },
+          mouseleave:function(e){
+            e.stopPropagation();
+            if($(this).hasClass('sec-state')){
+              $(this).removeClass('sec-state')
+              $(this).stop(true, true).animate({"width":"+=50"},0);
+              $(this).find('.del-feature-confirm-label').remove();
+              $(this).find('.tex').show();
+              $(this).find('i').show(0);
+            }
+          }
+        });
+
+
+
+
+        },
+        expose:{
+            clear: function(rlsId){
+                relId = rlsId;
+                $('#interOp #sendreport').hide();
+                $('#interOp .teams').children().remove();
+            },
+            renderTeam: function(rlsId){
+
+                tcmModel.plugins.interop.fetch(rlsId).done(function(data){
+                    render(data);
+                })
+
+            }
         }
 
     };
 
-    function renderProjectBar(){
-            var currentR = {
-                  year:global.project.config.currentrelease.split('/')[0],
-                  month:global.project.config.currentrelease.split('/')[1],
-                  day:global.project.config.currentrelease.split('/')[2],
-                }
-
-            sprint.render(sprint.create(global.project.config.springIterations,global.project.config.iterationDuration,currentR),'#interOp')//,'90%',120);
-    }
 
     function adjustTabtHeight(){
 
-        // $('.tab-content').css('height',(($('.tcm-container').height() - $('#plan-controls').height() - $('#tcPlan .nav-tabs').height() - 70)*100)/$('.tcm-container').height()+'%')
     }
 
     $(window).resize(function(){
 
-    //     try{
-    // $('.tab-content').css('height',(($('.tcm-container').height() - $('#plan-controls').height() - $('#tcPlan .nav-tabs').height() - 70)*100)/$('.tcm-container').height()+'%')
-    //     }catch(err){}
     });
 
+    function sendReport(){
+        tcmModel.plugins.interop.send(relId).done(function(){
+            alert('Email Sent!!');
+        })
+    }
+
+function render(data){
+
+    var cont = $('#interOp .teams');
+
+    $(data).each(function(){
+
+        var light = ''
+        var action = ''
+        if(this.state == 0){
+            action = ' Green'
+            light = 'btn-success'
+        }else if(this.state == 1){
+            action = ' Yellow'
+            light = 'btn-warning'
+        }else {
+            action = ' OMG!'
+            light = 'btn-danger'
+        }
+
+        var states = [
+            'Green',
+            'Yellow',
+            'OMG!'
+        ]
+
+        var states2 = [
+            'btn-success',
+            'btn-warning',
+            'btn-danger'
+        ]
+
+        var drop = $('<div class="btn-group">' +
+            '<a class="btn '+light+' dropdown-toggle" data-toggle="dropdown" href="#">'+
+            action +
+            '<span class="caret"></span>'+
+            '</a>'+
+          '<ul class="dropdown-menu">'+
+          '</ul>'+
+        '</div>');
+
+        for (var i = 0; i <3 ;i++){
+            var li = $('<li id="'+i+'">'+states[i]+'</li>').click(function(){
+                $(this).parents('.team').find('.status').attr('id', $(this).attr('id'));
+
+                $(this).parents('.btn-group').find('.dropdown-toggle').removeClass(function (index, css) {
+                    return (css.match (/\bbtn-\S+/g) || []).join(' ')
+                })
+                 
+                $(this).parents('.btn-group').find('.dropdown-toggle').addClass(states2[$(this).attr('id')]).text(states[$(this).attr('id')]).append('<span class="caret"></span>');
+            })
+            $(drop).find('ul').append(li);
+        }
+
+        var team = $('<div class="team">').attr('id',this.id);
+        var name = $('<div class="name">').text(this.name)
+        var status = $('<div class="status">').attr('id',this.state);
+        var risk = $('<textarea class="risk">').text(this.risk)
+        var jql = $('<input class="jql">').val(this.jql)
+        var save = $('<button type="button" class="btn btn-info" data-loading-text="Saving...">Save</button>').click(function(){
+
+            $(this).button('loading');
+            var parent = $(this).parents('.team');
+            var id = $(parent).attr('id');
+            var status = $(parent).find('.status').attr('id');
+            var risk = $(parent).find('.risk').val();
+            var jql = $(parent).find('.jql').val();
+
+
+            req = {
+                id:parseInt(id),
+                state:parseInt(status),
+                risk:risk,
+                jql:jql
+            }
+
+            var that = this;
+
+            tcmModel.plugins.interop.save(req).done(function(data){
+                $(that).button('reset');
+            })
+        })
+
+        $(team).append(name,status,'Risk:<br />',risk,'JQL:<br />',jql,'<br />','Status:<br />',drop,save)
+        cont.append(team);
+
+    })
+    $('#interOp #sendreport').show();
+}
     function attachStyles(){
 
-                loaded= false;
+        loaded= false;
         
         $('style').each(function(){
             if($(this).attr('sof') == "interop"){
