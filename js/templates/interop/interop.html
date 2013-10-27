@@ -38,9 +38,53 @@ textarea {
 left: 200px;
 	display: none;
 }
+
+#myTab, .tab-content {
+	display: none;
+}
+
+.email-list {
+margin-left: 23%;	
+}
+
+.email-list input {
+	width: 745px;
+}
+
+#email-preview {
+	width: 767px;
+height: 100%;
+margin-left: 23%;
+}
+
+#interOp div.active {
+box-shadow: #fff 0 0 0px inset;
+border: none;
+}
+
+#interOp li.active {
+box-shadow: #fff 0 0 0px inset;
+border: none;
+}
 </style>
 <div id="interOp" style="display:none">
-	<div id="sendreport" class="" style="margin-top: 5px; float:right;"><span class="tex">Send Report</span><i class="icon-share-alt"></i></div>
-	<div class="teams">
+<ul class="nav nav-tabs" id="myTab">
+  <li class="active"><a name="data" href="#home">Teams data</a></li>
+  <li><a name="preview" href="#preview">Preview</a></li>
+</ul>
+ 
+<div class="tab-content">
+  <div class="tab-pane active" id="home">
+  	<div class="teams">
 	</div>
+  </div>
+  <div class="tab-pane" id="preview">
+	<div id="sendreport" class="" style="margin-top: 5px; float:right;"><span class="tex">Send Report</span><i class="icon-share-alt"></i></div>
+  	<div class="email-list"><span>To: </span><input type="text"></input></div>
+  	<iframe id="email-preview" frameborder="0">
+  		
+  	</iframe>
+  </div>
+</div>
+	
 </div>
