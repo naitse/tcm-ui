@@ -42,6 +42,7 @@ define(function(require){
 
 
             $('#myTab a').click(function (e) {
+                adjustTabtHeight()
               e.preventDefault();
               $(this).tab('show');
             })
@@ -49,6 +50,7 @@ define(function(require){
            $('#myTab a[name=preview]').click(function (e) {
               e.preventDefault();
               $(this).tab('show');
+              adjustTabtHeight()
               tcmModel.plugins.interop.getEmails().done(function(data){
                 $('.email-list input').val(data[0].emails);
               })
@@ -124,11 +126,11 @@ define(function(require){
 
 
     function adjustTabtHeight(){
-
+        $('#interOp .tab-pane.active').height(document.height - 320)
     }
 
     $(window).resize(function(){
-
+        adjustTabtHeight()
     });
 
 
