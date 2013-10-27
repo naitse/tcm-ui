@@ -658,10 +658,30 @@ define( function(require){
                             contentType : 'application/json'
                      });
                 },
-                send:function(rls){
+                send:function(object){
+                    return   $.ajax({
+                        type:'POST',
+                        url: this.base + "build",
+                        data: JSON.stringify(object),
+                        dataType: "html",
+                        contentType : 'application/json'
+                     });
+                },
+                preview:function(){
+                    return this.base + "build";
+                },
+                getEmails:function(){
                     return   $.ajax({
                         type:'GET',
-                        url: this.base + "build?rlsId=" + rls,
+                        url: this.base + "getEmails",
+                        dataType: "json"
+                     });
+                },
+                setEmails:function(object){
+                    return   $.ajax({
+                        type:'POST',
+                        url: this.base + "setEmails",
+                        data: JSON.stringify(object),
                         dataType: "json",
                         contentType : 'application/json'
                      });

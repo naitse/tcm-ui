@@ -39,12 +39,43 @@ define(function(require){
         },
 
         attachEvents: function(){
+
+
+            $('#myTab a').click(function (e) {
+              e.preventDefault();
+              $(this).tab('show');
+            })
+
+           $('#myTab a[name=preview]').click(function (e) {
+              e.preventDefault();
+              $(this).tab('show');
+              tcmModel.plugins.interop.getEmails().done(function(data){
+                $('.email-list input').val(data[0].emails);
+              })
+              $('#email-preview').attr('src', tcmModel.plugins.interop.preview() + '?rlsId=' + relId)
+            })
                 
         $('#interOp #sendreport').live({
           click: function(e){
             e.stopPropagation();
             if($(this).hasClass('sec-state')){
-                sendReport(relId);
+
+                var emails = $('.email-list input').val();
+
+                emailsArray = emails.split(';');
+
+                for(var i = 0; i < emailsArray.length; i++){
+                    emailsArray[i] = emailsArray[i].trim();
+                }
+
+                var req = {
+                    emails: emails
+                }
+
+                tcmModel.plugins.interop.setEmails(req).done(function(data){
+                    sendReport(true,emailsArray);
+                })
+
             }else{
               $(this).addClass('sec-state');
               $(this).stop(true, true).animate({"width":"-=50"});
@@ -73,6 +104,10 @@ define(function(require){
         expose:{
             clear: function(rlsId){
                 relId = rlsId;
+                $('#email-preview').attr('src','');
+                $('[name=data]').tab('show');
+                $('#myTab').hide();
+                $('.tab-content').hide();
                 $('#interOp #sendreport').hide();
                 $('#interOp .teams').children().remove();
             },
@@ -96,8 +131,16 @@ define(function(require){
 
     });
 
-    function sendReport(){
-        tcmModel.plugins.interop.send(relId).done(function(){
+
+    function sendReport(sendFlag, emailsArray){
+
+        var req = {
+            rlsId:relId,
+            send:sendFlag,
+            emails:emailsArray
+        }
+
+        tcmModel.plugins.interop.send(req).done(function(data){
             alert('Email Sent!!');
         })
     }
@@ -105,6 +148,9 @@ define(function(require){
 function render(data){
 
     var cont = $('#interOp .teams');
+
+    $('#myTab').show();
+    $('.tab-content').show();
 
     $(data).each(function(){
 
